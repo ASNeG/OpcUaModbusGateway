@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<OpcUaModbusGateway Name="OpcUaModbusGateway" xmlns="http://ASNeG/OpcUaModbusGateway.xsd">
+
+  <ModbusTCPClient Name="xx">
+    <IPAddress>127.0.0.1</IPAddress>
+    <Port>123</Port>
+  </ModbusTCPClient>
+  
+  <ModbusTCPClient Name="yy">
+    <IPAddress>127.0.0.1</IPAddress>
+    <Port>123</Port>
+  </ModbusTCPClient>
+
+</OpcUaModbusGateway>
