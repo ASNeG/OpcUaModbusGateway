@@ -41,15 +41,13 @@ namespace OpcUaModbusGateway
 	bool
 	Library::startup(void)
 	{
-		Log(Debug, "Library::startup");
-		return true;
+		return application_.startup(applicationInfo()->configFileName(), this);
 	}
 
 	bool
 	Library::shutdown(void)
 	{
-		Log(Debug, "Library::shutdown");
-		return true;
+		return application_.shutdown();
 	}
 
 	std::string

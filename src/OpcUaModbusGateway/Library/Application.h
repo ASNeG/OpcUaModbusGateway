@@ -1,5 +1,5 @@
 /*
-   Copyright 2015-2020 Kai Huebl (kai@huebl-sgh.de)
+   Copyright 2025 Kai Huebl (kai@huebl-sgh.de)
 
    Lizenziert gemäß Apache Licence Version 2.0 (die „Lizenz“); Nutzung dieser
    Datei nur in Übereinstimmung mit der Lizenz erlaubt.
@@ -15,32 +15,32 @@
    Autor: Kai Huebl (kai@huebl-sgh.de)
  */
 
-#ifndef __OpcUaModbusGateway_Library_h__
-#define __OpcUaModbusGateway_Library_h__
+#ifndef __OpcUaModbusGateway_Application_h__
+#define __OpcUaModbusGateway_Application_h__
+
+#include <string>
 
 #include "OpcUaStackServer/Application/ApplicationIf.h"
-#include "OpcUaModbusGateway/Library/Application.h"
+#include "OpcUaModbusGateway/Util/ModbusGatewayConfig.h"
 
 namespace OpcUaModbusGateway
 {
 
-	class Library
-	: public OpcUaStackServer::ApplicationIf
+	class Application
 	{
 	  public:
-		Library(void);
-		virtual ~Library(void);
+		Application(void);
+		~Application(void);
 
-		//- ApplicationIf -----------------------------------------------------
-		bool startup(void) override;
-		bool shutdown(void) override;
-		std::string version(void) override;
-		std::string gitCommit(void) override;
-		std::string gitBranch(void) override;
-		//- ApplicationIf -----------------------------------------------------
+		bool startup(
+			const std::string& configFileName,
+			OpcUaStackServer::ApplicationIf* applicationIf
+		);
+		bool shutdown(void);
 
 	  private:
-		Application application_;
+		OpcUaStackServer::ApplicationIf* applicationIf_ = nullptr;
+		ModbusGatewayConfig modbusGatewayConfig_;
 	};
 
 }
