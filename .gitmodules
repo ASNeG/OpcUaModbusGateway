@@ -1,3 +1,0 @@
-[submodule "external/ModbusProt"]
-	path = external/ModbusProt
-	url = git@srv-git-01.konvekta-ag.local:konvekta/Protocol/modbusprot.git

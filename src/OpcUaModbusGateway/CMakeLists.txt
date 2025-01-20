@@ -25,6 +25,7 @@ configure_file(
     "${PROJECT_BINARY_DIR}/OpcUaModbusGateway.service"
 )
 
+set(MODBUS_PROT_LIBRARY "${OPCUASTACK_INSTALL_PREFIX}/usr/lib/libModbusProt_shared.so")
 
 # -----------------------------------------------------------------------------
 # -----------------------------------------------------------------------------
@@ -50,6 +51,7 @@ file(
 add_library(
     OpcUaModbusGateway SHARED
     ${OpcUaModbusGateway_SRC}
+    ${OPCUASTACK_INSTALL_PREFIX}/usr/lib/libModbusProt_static.a
 )
 
 target_link_libraries(
@@ -59,6 +61,7 @@ target_link_libraries(
     ${OPCUASTACK_LIBRARY_CLIENT}
     ${OPCUASTACK_LIBRARY_SERVER}
     ${OPCUASTACK_LIBRARY_PUBSUB}
+    ${MODBUS_PROT_LIBRARY}
     ${Boost_LIBRARIES}
 )
 
