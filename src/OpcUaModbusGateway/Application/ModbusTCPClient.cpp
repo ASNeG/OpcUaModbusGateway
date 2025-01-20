@@ -58,5 +58,20 @@ namespace OpcUaModbusGateway
 		}
 	}
 
+	void
+	ModbusTCPClient::readDiscreteInputs(
+		uint16_t startingAddress,
+		uint16_t quantityOfInputs,
+		uint32_t& errorCode,
+		std::vector<bool>& inputStatus
+	)
+	{
+		// FIXME: Test
+		errorCode = 0;
+		for (uint32_t idx = 0; idx < quantityOfInputs; idx++) {
+			inputStatus.push_back(true);
+		}
+	}
+
 }
 

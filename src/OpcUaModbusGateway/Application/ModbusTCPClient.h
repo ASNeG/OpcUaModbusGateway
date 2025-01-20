@@ -46,6 +46,12 @@ namespace OpcUaModbusGateway
 			uint32_t& errorCode,
 			std::vector<bool>& coilStatus
 		);
+		void readDiscreteInputs(
+			uint16_t startingAddress,
+			uint16_t quantityOfInputs,
+			uint32_t& errorCode,
+			std::vector<bool>& inputStatus
+		);
 
 	  private:
 		ModbusTCPClientImpl* modbusTCPClientImpl_ = nullptr;
