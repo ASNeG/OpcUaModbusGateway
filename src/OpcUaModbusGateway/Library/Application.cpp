@@ -30,6 +30,11 @@ using namespace OpcUaStackServer;
 namespace OpcUaModbusGateway
 {
 
+	namespace NodeId {
+
+		const uint32_t modbusClientFolder_ = 5006;
+	};
+
 	Application::Application(void)
 	{
 	}
@@ -63,8 +68,35 @@ namespace OpcUaModbusGateway
 				.parameter("IPAddress", modbusTCPClientConfig->ipAddress())
 				.parameter("Port", modbusTCPClientConfig->port());
 
+			// Create opc ua instance
+			auto opcuaModbusClientInterface = boost::make_shared<OpcUaModbusClientInterface>();
+			rc = opcuaModbusClientInterface->init(
+					modbusTCPClientConfig,
+					&applicationIf->service(),
+					"http://ASNEG.de/OpcUaModbusGateway/"
+			);
+			if (rc == false) {
+				Log(Error, "init modbus client interface error")
+					.parameter("Name", modbusTCPClientConfig->name());
+				return false;
+			}
 
+			// Add new object instance to opc ua model
+			OpcUaStackCore::OpcUaNodeId documentDataEventTypeNodeId_;
+
+			rc  = opcuaModbusClientInterface->addToOpcUaModel(
+				NodeId::modbusClientFolder_,
+				OpcUaNodeId((uint32_t)OpcUaId_HasComponent)
+			);
+			if (rc == false) {
+				Log(Error, "add modbus tcp client to opc ua model error")
+					.parameter("Name", modbusTCPClientConfig->name());
+				return false;
+			}
+
+			modbusClients_.push_back(opcuaModbusClientInterface);
 		}
+
 
 		return true;
 	}
@@ -73,6 +105,12 @@ namespace OpcUaModbusGateway
 	Application::shutdown(void)
 	{
 		Log(Debug, "shutdown opc ua modbus gateway server");
+
+		// Cleanup modbus client interfaces
+		for (auto opcuaModbusClientInterface : modbusClients_) {
+			opcuaModbusClientInterface->deleteFromOpcUaModel();
+		}
+		modbusClients_.clear();
 
 		return true;
 	}

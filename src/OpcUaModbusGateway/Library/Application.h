@@ -22,6 +22,7 @@
 
 #include "OpcUaStackServer/Application/ApplicationIf.h"
 #include "OpcUaModbusGateway/Util/ModbusGatewayConfig.h"
+#include "OpcUaModbusGateway/OpcUa/OpcUaModbusClientInterface.h"
 
 namespace OpcUaModbusGateway
 {
@@ -41,6 +42,8 @@ namespace OpcUaModbusGateway
 	  private:
 		OpcUaStackServer::ApplicationIf* applicationIf_ = nullptr;
 		ModbusGatewayConfig modbusGatewayConfig_;
+
+		OpcUaModbusClientInterface::Vec modbusClients_;
 	};
 
 }
