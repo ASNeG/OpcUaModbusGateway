@@ -35,6 +35,7 @@ set(MODBUS_PROT_LIBRARY "${OPCUASTACK_INSTALL_PREFIX}/usr/lib/libModbusProt_shar
 # -----------------------------------------------------------------------------
 # -----------------------------------------------------------------------------
 include_directories(
+    ${OPCUASTACK_INSTALL_PREFIX}/usr/include/ModbusProt
     ${OPCUASTACK_INSTALL_PREFIX}/usr/include/OpcUaStack${OPCUASTACK_VERSION_MAJOR}
     ${PROJECT_SOURCE_DIR}
     ${PROJECT_BINARY_DIR}
