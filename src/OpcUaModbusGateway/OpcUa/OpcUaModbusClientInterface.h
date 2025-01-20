@@ -92,6 +92,11 @@ namespace OpcUaModbusGateway
 
         std::string namespaceName_ = "";
         uint32_t namespaceIndex_ = 0;
+
+        void createResult(
+        	OpcUaStackCore::OpcUaVariantArray::SPtr& outputArguments,
+        	uint32_t resultCode
+        );
    };
 
 }

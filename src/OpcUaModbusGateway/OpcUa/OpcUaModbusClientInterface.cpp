@@ -26,7 +26,7 @@ using namespace OpcUaStackServer;
 
 namespace OpcUaModbusGateway
 {
-    
+
     OpcUaModbusClientInterface::OpcUaModbusClientInterface(void)
     : ModbusClientInterface()
     {
@@ -111,12 +111,94 @@ namespace OpcUaModbusGateway
 		return true;
 	}
 
+	void
+	OpcUaModbusClientInterface::createResult(
+		OpcUaVariantArray::SPtr& outputArguments,
+		uint32_t resultCode
+	)
+	{
+		OpcUaVariant::SPtr variant;
+
+		// Create output parameter list
+		outputArguments->resize(1);
+
+		// Set result code
+		variant = boost::make_shared<OpcUaVariant>();
+		variant->variant((OpcUaUInt32)resultCode);
+		outputArguments->push_back(variant);
+	}
+
     void
     OpcUaModbusClientInterface::call_ReadCoils_Method(
     	ApplicationMethodContext* applicationMethodContext
 	)
     {
-        applicationMethodContext->statusCode_ = BadNotSupported;
+    	OpcUaVariant::SPtr variant;
+
+    	// Check modbus tcp client
+		if (modbusTCPClient_ == nullptr) {
+			Log(Debug, "modbus tcp client not exist");
+				createResult(applicationMethodContext->outputArguments_, 0);
+				applicationMethodContext->statusCode_ = BadServiceUnsupported;
+			return;
+		}
+
+		// Check number of input parameters
+		if (applicationMethodContext->inputArguments_->size() != 2) {
+			Log(Debug, "number of input arguments error");
+			createResult(applicationMethodContext->outputArguments_, 0);
+			applicationMethodContext->statusCode_ = BadInvalidArgument;
+			return;
+		}
+
+		// Get input parameter [0]: StartingAddress
+		applicationMethodContext->inputArguments_->get(0,variant);
+		if (variant->variantType() != OpcUaBuildInType_OpcUaUInt16) {
+			Log(Debug, "get input argument [0] error");
+			createResult(applicationMethodContext->outputArguments_, 0);
+			applicationMethodContext->statusCode_ = BadInvalidArgument;
+			return;
+		}
+		uint16_t startingAddress = variant->get<OpcUaUInt16>();
+
+		// Get input parameter [1]: QuantityOfInputs
+		applicationMethodContext->inputArguments_->get(1,variant);
+		if (variant->variantType() != OpcUaBuildInType_OpcUaUInt16) {
+			Log(Debug, "get input argument [1] error");
+			createResult(applicationMethodContext->outputArguments_, 0);
+			applicationMethodContext->statusCode_ = BadInvalidArgument;
+			return;
+		}
+		uint16_t quantityOfInputs = variant->get<OpcUaUInt16>();
+
+		// Call method
+		uint32_t errorCode;
+		std::vector<bool> coilStatus;
+		modbusTCPClient_->readCoils(startingAddress, quantityOfInputs, errorCode, coilStatus);
+		if (errorCode != 0) {
+			createResult(applicationMethodContext->outputArguments_, errorCode);
+			applicationMethodContext->statusCode_ = BadInvalidArgument;
+			return;
+		}
+
+		// Create output parameter list
+		applicationMethodContext->outputArguments_->resize(2);
+
+		// Set error code
+		variant = boost::make_shared<OpcUaVariant>();
+		variant->variant((OpcUaUInt32)errorCode);
+		applicationMethodContext->outputArguments_->push_back(variant);
+
+		// Set coil status
+		variant = boost::make_shared<OpcUaVariant>();
+		for (uint32_t idx = 0; idx < coilStatus.size(); idx++) {
+			OpcUaVariantValue value;
+			value.variant(coilStatus[idx]);
+			variant->pushBack(value);
+		}
+		applicationMethodContext->outputArguments_->push_back(variant);
+
+        applicationMethodContext->statusCode_ = Success;
     }
 
     void

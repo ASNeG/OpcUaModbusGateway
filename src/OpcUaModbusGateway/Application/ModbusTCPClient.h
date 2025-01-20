@@ -40,6 +40,13 @@ namespace OpcUaModbusGateway
 		bool connect(ModbusTCPClientConfig::SPtr& modbusTCPClientConfig);
 		bool disconnect(void);
 
+		void readCoils(
+			uint16_t startingAddress,
+			uint16_t quantityOfInputs,
+			uint32_t& errorCode,
+			std::vector<bool>& coilStatus
+		);
+
 	  private:
 		ModbusTCPClientImpl* modbusTCPClientImpl_ = nullptr;
 	};
