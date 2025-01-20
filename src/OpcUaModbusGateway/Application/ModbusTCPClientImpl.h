@@ -18,6 +18,8 @@
 #ifndef __OpcUaModbusGateway_ModbusTCPClientImpl_h__
 #define __OpcUaModbusGateway_ModbusTCPClientImpl_h__
 
+#include "OpcUaModbusGateway/Util/ModbusGatewayConfig.h"
+
 #include "ModbusTCP/TCPClient.h"
 
 namespace OpcUaModbusGateway
@@ -29,7 +31,7 @@ namespace OpcUaModbusGateway
 		ModbusTCPClientImpl(void);
 		~ModbusTCPClientImpl(void);
 
-		bool connect(const std::string& address, uint32_t port);
+		bool connect(ModbusTCPClientConfig::SPtr& modbusTCPClientConfig);
 		bool disconnect(void);
 
 	  private:

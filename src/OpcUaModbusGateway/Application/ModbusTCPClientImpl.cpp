@@ -29,7 +29,7 @@ namespace OpcUaModbusGateway
 	}
 
 	bool
-	ModbusTCPClientImpl::connect(const std::string& address, uint32_t port)
+	ModbusTCPClientImpl::connect(ModbusTCPClientConfig::SPtr& modbusTCPClientConfig)
 	{
 		bool rc = true;
 
@@ -37,7 +37,11 @@ namespace OpcUaModbusGateway
 		modbusTCPClient_.reconnectTimeout(5000);
 
 		// Create client endpoint
-		rc = modbusTCPClient_.getEndpoint(address, port, serverEndpoint_);
+		rc = modbusTCPClient_.getEndpoint(
+			modbusTCPClientConfig->ipAddress(),
+			modbusTCPClientConfig->port(),
+			serverEndpoint_
+		);
 		if (!rc) {
 			return false;
 		}
