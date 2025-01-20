@@ -21,8 +21,9 @@
 #include <string>
 
 #include "OpcUaStackServer/Application/ApplicationIf.h"
-#include "OpcUaModbusGateway/Util/ModbusGatewayConfig.h"
 #include "OpcUaModbusGateway/OpcUa/OpcUaModbusClientInterface.h"
+
+#include "OpcUaModbusGateway/Application/ModbusTCPClient.h"
 
 namespace OpcUaModbusGateway
 {
@@ -43,7 +44,8 @@ namespace OpcUaModbusGateway
 		OpcUaStackServer::ApplicationIf* applicationIf_ = nullptr;
 		ModbusGatewayConfig modbusGatewayConfig_;
 
-		OpcUaModbusClientInterface::Vec modbusClients_;
+		OpcUaModbusClientInterface::Vec opcuaModbusClients_;
+		ModbusTCPClient::Vec tcpModbusClients_;
 	};
 
 }

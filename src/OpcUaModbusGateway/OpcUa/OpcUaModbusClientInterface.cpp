@@ -39,11 +39,13 @@ namespace OpcUaModbusGateway
 	bool
 	OpcUaModbusClientInterface::init(
 		ModbusTCPClientConfig::SPtr modbusTCPClientConfig,
+		ModbusTCPClient::SPtr modbusTCPClient,
 		ApplicationServiceIf* applicationServiceIf,
 		const std::string& namespaceName
 	)
 	{
 		modbusTCPClientConfig_ = modbusTCPClientConfig;
+		modbusTCPClient_ = modbusTCPClient;
 		applicationServiceIf_ = applicationServiceIf;
 		namespaceName_ = namespaceName;
 

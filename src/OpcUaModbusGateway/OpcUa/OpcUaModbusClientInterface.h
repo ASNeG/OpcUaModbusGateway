@@ -24,6 +24,7 @@
 
 #include "OpcUaModbusGateway/Util/ModbusGatewayConfig.h"
 #include "OpcUaModbusGateway/CustomerObjectType/ModbusClientInterface.h"
+#include "OpcUaModbusGateway/Application/ModbusTCPClient.h"
 
 namespace OpcUaModbusGateway
 {
@@ -41,6 +42,7 @@ namespace OpcUaModbusGateway
 
 		bool init(
 			ModbusTCPClientConfig::SPtr modbusTCPClientConfig,
+			ModbusTCPClient::SPtr modbusTCPClient,
 			OpcUaStackServer::ApplicationServiceIf* applicationServiceIf,
 			const std::string& namespaceName
 		);
@@ -84,6 +86,7 @@ namespace OpcUaModbusGateway
 		) override;
     
       private:
+        ModbusTCPClient::SPtr modbusTCPClient_ = nullptr;
         ModbusTCPClientConfig::SPtr modbusTCPClientConfig_;
         OpcUaStackServer::ApplicationServiceIf* applicationServiceIf_ = nullptr;
 

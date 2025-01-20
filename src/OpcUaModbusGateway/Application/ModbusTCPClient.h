@@ -18,26 +18,30 @@
 #ifndef __OpcUaModbusGateway_ModbusTCPClient_h__
 #define __OpcUaModbusGateway_ModbusTCPClient_h__
 
-#include "ModbusTCP/TCPClient.h"
+#include <memory>
+#include <vector>
+
+#include "OpcUaModbusGateway/Util/ModbusGatewayConfig.h"
 
 namespace OpcUaModbusGateway
 {
 
+	class ModbusTCPClientImpl;
+
 	class ModbusTCPClient
 	{
 	  public:
+		using SPtr = std::shared_ptr<ModbusTCPClient>;
+		using Vec = std::vector<SPtr>;
+
 		ModbusTCPClient(void);
 		~ModbusTCPClient(void);
 
-		bool connect(const std::string& address, uint32_t port);
+		bool connect(ModbusTCPClientConfig::SPtr& modbusTCPClientConfig);
 		bool disconnect(void);
 
 	  private:
-		asio::ip::tcp::endpoint serverEndpoint_;
-		ModbusTCP::TCPClient modbusTCPClient_;
-		ModbusTCP::TCPClientState modbusTCPClientState_;
-
-		void clientConnectionHandler(ModbusTCP::TCPClientState clientState);
+		ModbusTCPClientImpl* modbusTCPClientImpl_ = nullptr;
 	};
 
 }

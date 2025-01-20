@@ -16,50 +16,31 @@
  */
 
 #include "OpcUaModbusGateway/Application/ModbusTCPClient.h"
+#include "OpcUaModbusGateway/Application/ModbusTCPClientImpl.h"
 
 namespace OpcUaModbusGateway
 {
 
 	ModbusTCPClient::ModbusTCPClient(void)
 	{
+		modbusTCPClientImpl_ = new ModbusTCPClientImpl();
 	}
 
 	ModbusTCPClient::~ModbusTCPClient(void)
 	{
+		delete modbusTCPClientImpl_;
 	}
 
 	bool
-	ModbusTCPClient::connect(const std::string& address, uint32_t port)
+	ModbusTCPClient::connect(ModbusTCPClientConfig::SPtr& modbusTCPClientConfig)
 	{
-		bool rc = true;
-
-		// Create client endpoint
-		rc = modbusTCPClient_.getEndpoint(address, port, serverEndpoint_);
-		if (!rc) {
-			return false;
-		}
-
-		// Connect to modbus tcp server
-		modbusTCPClient_.connect(
-			serverEndpoint_,
-			[this](ModbusTCP::TCPClientState clientState) {
-				clientConnectionHandler(clientState);
-		});
+		return modbusTCPClientImpl_->connect(modbusTCPClientConfig);
 	}
 
 	bool
 	ModbusTCPClient::disconnect(void)
 	{
-		modbusTCPClient_.disconnect();
-		return true;
-	}
-
-	void
-	ModbusTCPClient::clientConnectionHandler(
-		ModbusTCP::TCPClientState clientState
-	)
-	{
-		modbusTCPClientState_ = clientState;
+		return modbusTCPClientImpl_->disconnect();
 	}
 
 }
