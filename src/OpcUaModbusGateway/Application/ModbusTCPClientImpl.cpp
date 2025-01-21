@@ -69,5 +69,113 @@ namespace OpcUaModbusGateway
 		modbusTCPClientState_ = clientState;
 	}
 
+	void
+	ModbusTCPClientImpl::readCoils(
+		uint16_t startingAddress,
+		uint16_t quantityOfInputs,
+		uint32_t& errorCode,
+		std::vector<bool>& coilStatus
+	)
+	{
+		// FIXME: Test
+		errorCode = 0;
+		for (uint32_t idx = 0; idx < quantityOfInputs; idx++) {
+			coilStatus.push_back(true);
+		}
+	}
+
+	void
+	ModbusTCPClientImpl::readDiscreteInputs(
+		uint16_t startingAddress,
+		uint16_t quantityOfInputs,
+		uint32_t& errorCode,
+		std::vector<bool>& inputStatus
+	)
+	{
+		// FIXME: Test
+		errorCode = 0;
+		for (uint32_t idx = 0; idx < quantityOfInputs; idx++) {
+			inputStatus.push_back(true);
+		}
+	}
+
+	void
+	ModbusTCPClientImpl::readInputRegisters(
+		uint16_t startingAddress,
+		uint16_t quantityOfInputs,
+		uint32_t& errorCode,
+		std::vector<uint16_t>& inputRegisters
+	)
+	{
+		// FIXME: Test
+		errorCode = 0;
+		for (uint32_t idx = 0; idx < quantityOfInputs; idx++) {
+			inputRegisters.push_back((uint16_t)idx);
+		}
+	}
+
+	void
+	ModbusTCPClientImpl::readHoldingRegisters(
+		uint16_t startingAddress,
+		uint16_t quantityOfInputs,
+		uint32_t& errorCode,
+		std::vector<uint16_t>& holdingRegisters
+	)
+	{
+		// FIXME: Test
+		errorCode = 0;
+		for (uint32_t idx = 0; idx < quantityOfInputs; idx++) {
+			holdingRegisters.push_back((uint16_t)idx);
+		}
+	}
+
+	void
+	ModbusTCPClientImpl::writeMultipleCoils(
+		uint16_t startingAddress,
+		std::vector<bool>& coils,
+		uint32_t& errorCode,
+		uint16_t& count
+	)
+	{
+		// FIXME: Test
+		errorCode = 0;
+		count = coils.size();
+	}
+
+	void
+	ModbusTCPClientImpl::writeMultipleHoldingRegisters(
+		uint16_t startingAddress,
+		std::vector<uint16_t>& holdingRegisters,
+		uint32_t& errorCode,
+		uint16_t& count
+	)
+	{
+		// FIXME: Test
+		errorCode = 0;
+		count = holdingRegisters.size();
+	}
+
+	void
+	ModbusTCPClientImpl::writeSingleCoil(
+		uint16_t startingAddress,
+		bool value,
+		uint32_t& errorCode
+	)
+	{
+		// FIXME: Test
+		errorCode = 0;
+	}
+
+	void
+	ModbusTCPClientImpl::writeSingleHoldingRegister(
+		uint16_t startingAddress,
+		uint16_t holdingRegister,
+		uint32_t& errorCode
+	)
+	{
+		// FIXME: Test
+		errorCode = 0;
+	}
+
 }
 

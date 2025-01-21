@@ -34,6 +34,53 @@ namespace OpcUaModbusGateway
 		bool connect(ModbusTCPClientConfig::SPtr& modbusTCPClientConfig);
 		bool disconnect(void);
 
+		void readCoils(
+			uint16_t startingAddress,
+			uint16_t quantityOfInputs,
+			uint32_t& errorCode,
+			std::vector<bool>& coilStatus
+		);
+		void readDiscreteInputs(
+			uint16_t startingAddress,
+			uint16_t quantityOfInputs,
+			uint32_t& errorCode,
+			std::vector<bool>& inputStatus
+		);
+		void readInputRegisters(
+			uint16_t startingAddress,
+			uint16_t quantityOfInputs,
+			uint32_t& errorCode,
+			std::vector<uint16_t>& inputRegisters
+		);
+		void readHoldingRegisters(
+			uint16_t startingAddress,
+			uint16_t quantityOfInputs,
+			uint32_t& errorCode,
+			std::vector<uint16_t>& holdingRegisters
+		);
+		void writeMultipleCoils(
+			uint16_t startingAddress,
+			std::vector<bool>& coils,
+			uint32_t& errorCode,
+			uint16_t& count
+		);
+		void writeMultipleHoldingRegisters(
+			uint16_t startingAddress,
+			std::vector<uint16_t>& holdingRegisters,
+			uint32_t& errorCode,
+			uint16_t& count
+		);
+		void writeSingleCoil(
+			uint16_t startingAddress,
+			bool value,
+			uint32_t& errorCode
+		);
+		void writeSingleHoldingRegister(
+			uint16_t startingAddress,
+			uint16_t holdingRegister,
+			uint32_t& errorCode
+		);
+
 	  private:
 		asio::ip::tcp::endpoint serverEndpoint_;
 		ModbusTCP::TCPClient modbusTCPClient_;
