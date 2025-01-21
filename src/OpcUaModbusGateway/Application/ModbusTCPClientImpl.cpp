@@ -39,13 +39,34 @@ namespace OpcUaModbusGateway
 	{
 	}
 
+	void
+	ModbusTCPClientImpl::connectTimeout(uint32_t connectTimeout)
+	{
+		modbusTCPClient_.connectTimeout(connectTimeout);
+	}
+
+	void
+	ModbusTCPClientImpl::reconnectTimeout(uint32_t reconnectTimeout)
+	{
+		modbusTCPClient_.reconnectTimeout(reconnectTimeout);
+	}
+
+	void
+	ModbusTCPClientImpl::sendTimeout(uint32_t sendTimeout)
+	{
+		modbusTCPClient_.sendTimeout(sendTimeout);
+	}
+
+	void
+	ModbusTCPClientImpl::recvTimeout(uint32_t recvTimeout)
+	{
+		modbusTCPClient_.recvTimeout(recvTimeout);
+	}
+
 	bool
 	ModbusTCPClientImpl::connect(ModbusTCPClientConfig::SPtr& modbusTCPClientConfig)
 	{
 		bool rc = true;
-
-		// Set reconnect timeout
-		modbusTCPClient_.reconnectTimeout(5000);
 
 		// Create client endpoint
 		rc = modbusTCPClient_.getEndpoint(

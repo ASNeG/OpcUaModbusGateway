@@ -31,6 +31,30 @@ namespace OpcUaModbusGateway
 		delete modbusTCPClientImpl_;
 	}
 
+	void
+	ModbusTCPClient::connectTimeout(uint32_t connectTimeout)
+	{
+		modbusTCPClientImpl_->connectTimeout(connectTimeout);
+	}
+
+	void
+	ModbusTCPClient::reconnectTimeout(uint32_t reconnectTimeout)
+	{
+		modbusTCPClientImpl_->reconnectTimeout(reconnectTimeout);
+	}
+
+	void
+	ModbusTCPClient::sendTimeout(uint32_t sendTimeout)
+	{
+		modbusTCPClientImpl_->sendTimeout(sendTimeout);
+	}
+
+	void
+	ModbusTCPClient::recvTimeout(uint32_t recvTimeout)
+	{
+		modbusTCPClientImpl_->recvTimeout(recvTimeout);
+	}
+
 	bool
 	ModbusTCPClient::connect(ModbusTCPClientConfig::SPtr& modbusTCPClientConfig)
 	{

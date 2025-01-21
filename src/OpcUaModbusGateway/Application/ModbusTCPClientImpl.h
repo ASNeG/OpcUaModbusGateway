@@ -34,6 +34,11 @@ namespace OpcUaModbusGateway
 		bool connect(ModbusTCPClientConfig::SPtr& modbusTCPClientConfig);
 		bool disconnect(void);
 
+		void connectTimeout(uint32_t connectTimeout);
+		void reconnectTimeout(uint32_t reconnectTimeout);
+		void sendTimeout(uint32_t sendTimeout);
+		void recvTimeout(uint32_t recvTimeout);
+
 		void readCoils(
 			uint16_t startingAddress,
 			uint16_t quantityOfInputs,

@@ -70,6 +70,10 @@ namespace OpcUaModbusGateway
 
 			// Add new tcp modbus client instance
 			auto tcpModbusClient = std::make_shared<ModbusTCPClient>();
+			tcpModbusClient->connectTimeout(modbusTCPClientConfig->connectTimeout());
+			tcpModbusClient->reconnectTimeout(modbusTCPClientConfig->reconnectTimeout());
+			tcpModbusClient->sendTimeout(modbusTCPClientConfig->sendTimeout());
+			tcpModbusClient->recvTimeout(modbusTCPClientConfig->recvTimeout());
 			rc = tcpModbusClient->connect(modbusTCPClientConfig);
 			if (rc == false) {
 				Log(Error, "create modbus tcp module error")
