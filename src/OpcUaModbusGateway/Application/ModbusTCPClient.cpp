@@ -131,9 +131,12 @@ namespace OpcUaModbusGateway
 		uint16_t& count
 	)
 	{
-		// FIXME: Test
-		errorCode = 0;
-		count = holdingRegisters.size();
+		modbusTCPClientImpl_->writeMultipleHoldingRegisters(
+			startingAddress,
+			holdingRegisters,
+			errorCode,
+			count
+		);
 	}
 
 	void
@@ -143,8 +146,11 @@ namespace OpcUaModbusGateway
 		uint32_t& errorCode
 	)
 	{
-		// FIXME: Test
-		errorCode = 0;
+		modbusTCPClientImpl_->writeSingleCoil(
+			startingAddress,
+			value,
+			errorCode
+		);
 	}
 
 	void
@@ -154,8 +160,11 @@ namespace OpcUaModbusGateway
 		uint32_t& errorCode
 	)
 	{
-		// FIXME: Test
-		errorCode = 0;
+		modbusTCPClientImpl_->writeSingleHoldingRegister(
+			startingAddress,
+			holdingRegister,
+			errorCode
+		);
 	}
 
 }
