@@ -130,7 +130,7 @@ namespace OpcUaModbusGateway
 		);
 
 		// Handle error
-		if (!responseCondition.wait(2000)) {
+		if (!responseCondition.wait(2000)) { // FIXME: Use configuration parameter
 			errorCode = static_cast<int>(ModbusProt::ModbusError::Timeout) + 100;
 			return;
 		}

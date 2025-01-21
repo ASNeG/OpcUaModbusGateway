@@ -82,6 +82,8 @@ namespace OpcUaModbusGateway
 			}
 			tcpModbusClients_.push_back(tcpModbusClient);
 
+			// FIXME: Add modbus tcp client logging
+
 
 			// Create opc ua instance
 			auto opcuaModbusClientInterface = boost::make_shared<OpcUaModbusClientInterface>();
