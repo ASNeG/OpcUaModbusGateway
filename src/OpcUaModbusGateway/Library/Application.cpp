@@ -74,6 +74,7 @@ namespace OpcUaModbusGateway
 			tcpModbusClient->reconnectTimeout(modbusTCPClientConfig->reconnectTimeout());
 			tcpModbusClient->sendTimeout(modbusTCPClientConfig->sendTimeout());
 			tcpModbusClient->recvTimeout(modbusTCPClientConfig->recvTimeout());
+			tcpModbusClient->queryTimeout(modbusTCPClientConfig->queryTimeout());
 			rc = tcpModbusClient->connect(modbusTCPClientConfig);
 			if (rc == false) {
 				Log(Error, "create modbus tcp module error")

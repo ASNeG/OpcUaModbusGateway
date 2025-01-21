@@ -41,6 +41,7 @@ namespace OpcUaModbusGateway
 		void reconnectTimeout(uint32_t reconnectTimeout);
 		void sendTimeout(uint32_t sendTimeout);
 		void recvTimeout(uint32_t recvTimeout);
+		void queryTimeout(uint32_t queryTimeout);
 
 		bool connect(ModbusTCPClientConfig::SPtr& modbusTCPClientConfig);
 		bool disconnect(void);

@@ -63,6 +63,12 @@ namespace OpcUaModbusGateway
 		modbusTCPClient_.recvTimeout(recvTimeout);
 	}
 
+	void
+	ModbusTCPClientImpl::queryTimeout(uint32_t queryTimeout)
+	{
+		queryTimeout_ = queryTimeout;
+	}
+
 	bool
 	ModbusTCPClientImpl::connect(ModbusTCPClientConfig::SPtr& modbusTCPClientConfig)
 	{

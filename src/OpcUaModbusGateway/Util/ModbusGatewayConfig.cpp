@@ -103,6 +103,14 @@ namespace OpcUaModbusGateway
 				.parameter("Attribute", "RecvTimeout");
 		}
 
+		// Get query timeout from configuration
+		rc = config.getConfigParameter("QueryTimeout", queryTimeout_);
+		if (rc == false) {
+			Log(Debug, "attribute not found in modbus tcp client configuration, use default")
+				.parameter("QueryTimeout", queryTimeout_)
+				.parameter("Attribute", "queryTimeout");
+		}
+
 		return true;
 	}
 
@@ -146,6 +154,12 @@ namespace OpcUaModbusGateway
 	ModbusTCPClientConfig::recvTimeout(void)
 	{
 		return recvTimeout_;
+	}
+
+	uint32_t
+	ModbusTCPClientConfig::queryTimeout(void)
+	{
+		return queryTimeout_;
 	}
 
 

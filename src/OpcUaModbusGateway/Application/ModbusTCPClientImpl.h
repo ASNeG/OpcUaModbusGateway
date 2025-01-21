@@ -38,6 +38,7 @@ namespace OpcUaModbusGateway
 		void reconnectTimeout(uint32_t reconnectTimeout);
 		void sendTimeout(uint32_t sendTimeout);
 		void recvTimeout(uint32_t recvTimeout);
+		void queryTimeout(uint32_t queryTimeout);
 
 		void readCoils(
 			uint16_t startingAddress,
@@ -87,6 +88,8 @@ namespace OpcUaModbusGateway
 		);
 
 	  private:
+		uint32_t queryTimeout_ = 3000;
+
 		asio::ip::tcp::endpoint serverEndpoint_;
 		ModbusTCP::TCPClient modbusTCPClient_;
 		ModbusTCP::TCPClientState modbusTCPClientState_;

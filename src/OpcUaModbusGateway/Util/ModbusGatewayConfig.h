@@ -44,6 +44,7 @@ namespace OpcUaModbusGateway
 		uint32_t reconnectTimeout(void);
 		uint32_t sendTimeout(void);
 		uint32_t recvTimeout(void);
+		uint32_t queryTimeout(void);
 
 	  private:
 		// Mandatory attributes
@@ -56,6 +57,7 @@ namespace OpcUaModbusGateway
 		uint32_t reconnectTimeout_ = 5000;		/* 5000 milliseconds */
 		uint32_t sendTimeout_ = 1000;			/* 1000 milliseconds */
 		uint32_t recvTimeout_ = 3000;			/* 3000 milliseconds */
+		uint32_t queryTimeout_ = 3000;			/* 3000 milliseconds */
 	};
 
 
