@@ -129,6 +129,17 @@ namespace OpcUaModbusGateway
 		count = holdingRegisters.size();
 	}
 
+	void
+	ModbusTCPClient::writeSingleCoil(
+		uint16_t startingAddress,
+		bool value,
+		uint32_t& errorCode
+	)
+	{
+		// FIXME: Test
+		errorCode = 0;
+	}
+
 
 }
 

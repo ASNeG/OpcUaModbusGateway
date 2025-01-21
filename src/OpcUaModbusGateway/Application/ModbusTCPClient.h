@@ -76,6 +76,11 @@ namespace OpcUaModbusGateway
 			uint32_t& errorCode,
 			uint16_t& count
 		);
+		void writeSingleCoil(
+			uint16_t startingAddress,
+			bool value,
+			uint32_t& errorCode
+		);
 
 	  private:
 		ModbusTCPClientImpl* modbusTCPClientImpl_ = nullptr;
