@@ -16,6 +16,10 @@
  */
 
 #include "OpcUaModbusGateway/Application/ModbusTCPClientImpl.h"
+#include "OpcUaModbusGateway/Util/Condition.h"
+
+#include "ModbusProt/ReadCoilsPDU.h"
+#include "ModbusProt/ErrorPDU.h"
 
 namespace OpcUaModbusGateway
 {
@@ -67,6 +71,9 @@ namespace OpcUaModbusGateway
 	)
 	{
 		modbusTCPClientState_ = clientState;
+		std::cout << "CLIENT STATE: ";
+		std::cout << "...." << static_cast<typename std::underlying_type<ModbusTCP::TCPClientState>::type>(clientState) << std::endl;
+
 	}
 
 	void
@@ -77,10 +84,47 @@ namespace OpcUaModbusGateway
 		std::vector<bool>& coilStatus
 	)
 	{
-		// FIXME: Test
+		ModbusProt::ModbusError modbusError;
+		ModbusProt::ModbusPDU::SPtr modbusRes;
+		Condition responseCondition;
+
+		// Create and send read coils request
+		auto readCoilsReq = std::make_shared<ModbusProt::ReadCoilsReqPDU>();
+		readCoilsReq->startingAddress(startingAddress);
+		readCoilsReq->quantityOfInputs(quantityOfInputs);
+		ModbusProt::ModbusPDU::SPtr req = readCoilsReq;
+		modbusTCPClient_.send(0, req,
+			[this, &responseCondition, &modbusRes, &modbusError](ModbusProt::ModbusError error, ModbusProt::ModbusPDU::SPtr& req, ModbusProt::ModbusPDU::SPtr& res) {
+				modbusError = error;
+				modbusRes = res;
+				responseCondition.signal();
+			}
+		);
+
+		// Handle error
+		if (!responseCondition.wait(2000)) {
+			errorCode = static_cast<int>(ModbusProt::ModbusError::Timeout) + 100;
+			return;
+		}
+		if (modbusError != ModbusProt::ModbusError::Ok) {
+			errorCode = static_cast<int>(modbusError) + 100;
+			return;
+		}
+
+		// Handle error response
+		if (modbusRes->pduType() == ModbusProt::PDUType::Error) {
+			auto errorRes = std::static_pointer_cast<ModbusProt::ErrorPDU>(modbusRes);
+			errorCode = errorRes->exceptionCode();;
+			return;
+		}
+
+		// Handle response
 		errorCode = 0;
-		for (uint32_t idx = 0; idx < quantityOfInputs; idx++) {
-			coilStatus.push_back(true);
+		auto readCoilsRes = std::static_pointer_cast<ModbusProt::ReadCoilsResPDU>(modbusRes);
+		for (uint32_t idx = 0; idx < readCoilsReq->quantityOfInputs(); idx++) {
+			bool b;
+			readCoilsRes->getCoilStatus(idx, b);
+			coilStatus.push_back(b);
 		}
 	}
 

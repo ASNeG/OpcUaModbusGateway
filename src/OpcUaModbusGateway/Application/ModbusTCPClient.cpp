@@ -51,11 +51,12 @@ namespace OpcUaModbusGateway
 		std::vector<bool>& coilStatus
 	)
 	{
-		// FIXME: Test
-		errorCode = 0;
-		for (uint32_t idx = 0; idx < quantityOfInputs; idx++) {
-			coilStatus.push_back(true);
-		}
+		return modbusTCPClientImpl_->readCoils(
+			startingAddress,
+			quantityOfInputs,
+			errorCode,
+			coilStatus
+		);
 	}
 
 	void

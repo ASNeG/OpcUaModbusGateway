@@ -6,6 +6,7 @@
     <Port>5502</Port>
   </ModbusTCPClient>
 
+<!--  
   <ModbusTCPClient Name="ModbusClient1">
     <IPAddress>127.0.0.1</IPAddress>
     <Port>123</Port>
@@ -15,5 +16,6 @@
     <IPAddress>127.0.0.1</IPAddress>
     <Port>123</Port>
   </ModbusTCPClient>
+-->
 
 </OpcUaModbusGateway>
