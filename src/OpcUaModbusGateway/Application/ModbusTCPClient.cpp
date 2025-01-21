@@ -115,9 +115,12 @@ namespace OpcUaModbusGateway
 		uint16_t& count
 	)
 	{
-		// FIXME: Test
-		errorCode = 0;
-		count = coils.size();
+		modbusTCPClientImpl_->writeMultipleCoils(
+			startingAddress,
+			coils,
+			errorCode,
+			count
+		);
 	}
 
 	void

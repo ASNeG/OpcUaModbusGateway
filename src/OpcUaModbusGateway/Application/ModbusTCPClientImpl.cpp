@@ -22,6 +22,7 @@
 #include "ModbusProt/ReadDiscreteInputsPDU.h"
 #include "ModbusProt/ReadInputRegistersPDU.h"
 #include "ModbusProt/ReadMultipleHoldingRegistersPDU.h"
+#include "ModbusProt/WriteMultipleCoilsPDU.h"
 #include "ModbusProt/ErrorPDU.h"
 
 namespace OpcUaModbusGateway
@@ -295,9 +296,46 @@ namespace OpcUaModbusGateway
 		uint16_t& count
 	)
 	{
-		// FIXME: Test
-		errorCode = 0;
-		count = coils.size();
+		ModbusProt::ModbusError modbusError;
+		ModbusProt::ModbusPDU::SPtr modbusRes;
+		Condition responseCondition;
+
+		// Create and send write multiple coils request
+		auto writeMultipleCoilsReq = std::make_shared<ModbusProt::WriteMultipleCoilsReqPDU>();
+		writeMultipleCoilsReq->startingAddress(startingAddress);
+		writeMultipleCoilsReq->quantityOfOutputs(coils.size());
+		for (uint32_t idx = 0; idx < coils.size(); idx++) {
+			writeMultipleCoilsReq->setOutputsValue(idx, coils[idx]);
+		}
+		ModbusProt::ModbusPDU::SPtr req = writeMultipleCoilsReq;
+		modbusTCPClient_.send(0, req,
+			[this, &responseCondition, &modbusRes, &modbusError](ModbusProt::ModbusError error, ModbusProt::ModbusPDU::SPtr& req, ModbusProt::ModbusPDU::SPtr& res) {
+				modbusError = error;
+				modbusRes = res;
+				responseCondition.signal();
+			}
+		);
+
+		// Handle error
+		if (!responseCondition.wait(2000)) {
+			errorCode = static_cast<int>(ModbusProt::ModbusError::Timeout) + 100;
+			return;
+		}
+		if (modbusError != ModbusProt::ModbusError::Ok) {
+			errorCode = static_cast<int>(modbusError) + 100;
+			return;
+		}
+
+		// Handle error response
+		if (modbusRes->pduType() == ModbusProt::PDUType::Error) {
+			auto errorRes = std::static_pointer_cast<ModbusProt::ErrorPDU>(modbusRes);
+			errorCode = errorRes->exceptionCode();;
+			return;
+		}
+
+		// Handle response
+		auto writeMultipleCoilsRes = std::static_pointer_cast<ModbusProt::WriteMultipleCoilsResPDU>(modbusRes);
+		count = writeMultipleCoilsRes->quantityOfOutputs();
 	}
 
 	void
