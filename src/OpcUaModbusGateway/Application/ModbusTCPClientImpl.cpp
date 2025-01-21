@@ -68,6 +68,9 @@ namespace OpcUaModbusGateway
 	{
 		bool rc = true;
 
+		// Add own log handler to modbus tcp client
+		// FIXME: TODO
+
 		// Create client endpoint
 		rc = modbusTCPClient_.getEndpoint(
 			modbusTCPClientConfig->ipAddress(),
