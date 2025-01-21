@@ -337,7 +337,67 @@ namespace OpcUaModbusGateway
     	ApplicationMethodContext* applicationMethodContext
 	)
     {
-        applicationMethodContext->statusCode_ = BadNotSupported;
+    	OpcUaVariant::SPtr variant;
+
+    	// Check modbus tcp client
+		if (modbusTCPClient_ == nullptr) {
+			Log(Debug, "modbus tcp client not exist");
+				createResult(applicationMethodContext->outputArguments_, 0);
+				applicationMethodContext->statusCode_ = BadServiceUnsupported;
+			return;
+		}
+
+		// Check number of input parameters
+		if (applicationMethodContext->inputArguments_->size() != 2) {
+			Log(Debug, "number of input arguments error");
+			createResult(applicationMethodContext->outputArguments_, 0);
+			applicationMethodContext->statusCode_ = BadInvalidArgument;
+			return;
+		}
+
+		// Get input parameter [0]: StartingAddress
+		applicationMethodContext->inputArguments_->get(0,variant);
+		if (variant->variantType() != OpcUaBuildInType_OpcUaUInt16) {
+			Log(Debug, "get input argument [0] error");
+			createResult(applicationMethodContext->outputArguments_, 0);
+			applicationMethodContext->statusCode_ = BadInvalidArgument;
+			return;
+		}
+		uint16_t startingAddress = variant->get<OpcUaUInt16>();
+
+		// Get input parameter [1]: QuantityOfInputs
+		applicationMethodContext->inputArguments_->get(1,variant);
+		if (variant->variantType() != OpcUaBuildInType_OpcUaUInt16) {
+			Log(Debug, "get input argument [1] error");
+			createResult(applicationMethodContext->outputArguments_, 0);
+			applicationMethodContext->statusCode_ = BadInvalidArgument;
+			return;
+		}
+		uint16_t quantityOfInputs = variant->get<OpcUaUInt16>();
+
+		// Call method
+		uint32_t errorCode;
+		std::vector<uint16_t> holdingRegisters;
+		modbusTCPClient_->readHoldingRegisters(startingAddress, quantityOfInputs, errorCode, holdingRegisters);
+
+		// Create output parameter list
+		applicationMethodContext->outputArguments_->resize(2);
+
+		// Set error code
+		variant = boost::make_shared<OpcUaVariant>();
+		variant->variant((OpcUaUInt32)errorCode);
+		applicationMethodContext->outputArguments_->push_back(variant);
+
+		// Set input status
+		variant = boost::make_shared<OpcUaVariant>();
+		for (uint32_t idx = 0; idx < holdingRegisters.size(); idx++) {
+			OpcUaVariantValue value;
+			value.variant(holdingRegisters[idx]);
+			variant->pushBack(value);
+		}
+		applicationMethodContext->outputArguments_->push_back(variant);
+
+        applicationMethodContext->statusCode_ = Success;
     }
 
     void

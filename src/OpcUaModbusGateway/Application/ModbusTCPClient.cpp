@@ -88,5 +88,20 @@ namespace OpcUaModbusGateway
 		}
 	}
 
+	void
+	ModbusTCPClient::readHoldingRegisters(
+		uint16_t startingAddress,
+		uint16_t quantityOfInputs,
+		uint32_t& errorCode,
+		std::vector<uint16_t>& holdingRegisters
+	)
+	{
+		// FIXME: Test
+		errorCode = 0;
+		for (uint32_t idx = 0; idx < quantityOfInputs; idx++) {
+			holdingRegisters.push_back((uint16_t)idx);
+		}
+	}
+
 }
 

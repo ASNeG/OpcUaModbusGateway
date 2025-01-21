@@ -58,6 +58,12 @@ namespace OpcUaModbusGateway
 			uint32_t& errorCode,
 			std::vector<uint16_t>& inputRegisters
 		);
+		void readHoldingRegisters(
+			uint16_t startingAddress,
+			uint16_t quantityOfInputs,
+			uint32_t& errorCode,
+			std::vector<uint16_t>& holdingRegisters
+		);
 
 	  private:
 		ModbusTCPClientImpl* modbusTCPClientImpl_ = nullptr;
