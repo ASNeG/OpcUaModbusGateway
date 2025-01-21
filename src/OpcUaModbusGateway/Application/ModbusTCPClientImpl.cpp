@@ -139,7 +139,7 @@ namespace OpcUaModbusGateway
 		);
 
 		// Handle error
-		if (!responseCondition.wait(2000)) { // FIXME: Use configuration parameter
+		if (!responseCondition.wait(queryTimeout_)) {
 			errorCode = static_cast<int>(ModbusProt::ModbusError::Timeout) + 100;
 			return;
 		}
@@ -191,7 +191,7 @@ namespace OpcUaModbusGateway
 		);
 
 		// Handle error
-		if (!responseCondition.wait(2000)) {
+		if (!responseCondition.wait(queryTimeout_)) {
 			errorCode = static_cast<int>(ModbusProt::ModbusError::Timeout) + 100;
 			return;
 		}
@@ -243,7 +243,7 @@ namespace OpcUaModbusGateway
 		);
 
 		// Handle error
-		if (!responseCondition.wait(2000)) {
+		if (!responseCondition.wait(queryTimeout_)) {
 			errorCode = static_cast<int>(ModbusProt::ModbusError::Timeout) + 100;
 			return;
 		}
@@ -295,7 +295,7 @@ namespace OpcUaModbusGateway
 		);
 
 		// Handle error
-		if (!responseCondition.wait(2000)) {
+		if (!responseCondition.wait(queryTimeout_)) {
 			errorCode = static_cast<int>(ModbusProt::ModbusError::Timeout) + 100;
 			return;
 		}
@@ -350,7 +350,7 @@ namespace OpcUaModbusGateway
 		);
 
 		// Handle error
-		if (!responseCondition.wait(2000)) {
+		if (!responseCondition.wait(queryTimeout_)) {
 			errorCode = static_cast<int>(ModbusProt::ModbusError::Timeout) + 100;
 			return;
 		}
@@ -401,7 +401,7 @@ namespace OpcUaModbusGateway
 		);
 
 		// Handle error
-		if (!responseCondition.wait(2000)) {
+		if (!responseCondition.wait(queryTimeout_)) {
 			errorCode = static_cast<int>(ModbusProt::ModbusError::Timeout) + 100;
 			return;
 		}
@@ -448,7 +448,7 @@ namespace OpcUaModbusGateway
 		);
 
 		// Handle error
-		if (!responseCondition.wait(2000)) {
+		if (!responseCondition.wait(queryTimeout_)) {
 			errorCode = static_cast<int>(ModbusProt::ModbusError::Timeout) + 100;
 			return;
 		}
@@ -493,7 +493,7 @@ namespace OpcUaModbusGateway
 		);
 
 		// Handle error
-		if (!responseCondition.wait(2000)) {
+		if (!responseCondition.wait(queryTimeout_)) {
 			errorCode = static_cast<int>(ModbusProt::ModbusError::Timeout) + 100;
 			return;
 		}
