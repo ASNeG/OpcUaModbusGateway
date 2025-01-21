@@ -118,17 +118,17 @@ namespace OpcUaModbusGateway
 	{
 		Log(Debug, "shutdown opc ua modbus gateway server");
 
-		// Cleanup modbus client interfaces
-		for (auto opcuaModbusClientInterface : opcuaModbusClients_) {
-			opcuaModbusClientInterface->deleteFromOpcUaModel();
-		}
-		opcuaModbusClients_.clear();
-
 		// Cleanup tcp modbus clients
 		for (auto tcpModbusCLient : tcpModbusClients_) {
 			tcpModbusCLient->disconnect();
 		}
 		tcpModbusClients_.clear();
+
+		// Cleanup modbus client interfaces
+		for (auto opcuaModbusClientInterface : opcuaModbusClients_) {
+			opcuaModbusClientInterface->deleteFromOpcUaModel();
+		}
+		opcuaModbusClients_.clear();
 
 		return true;
 	}

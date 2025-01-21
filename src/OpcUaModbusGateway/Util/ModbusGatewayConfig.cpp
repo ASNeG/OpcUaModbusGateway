@@ -71,7 +71,39 @@ namespace OpcUaModbusGateway
 			return false;
 		}
 
-		return rc;
+		// Get connect timeout from configuration
+		rc = config.getConfigParameter("ConnectTimeout", connectTimeout_);
+		if (rc == false) {
+			Log(Debug, "attribute not found in modbus tcp client configuration, use default")
+				.parameter("ConnectTimeout", connectTimeout_)
+				.parameter("Attribute", "ConnectTimeout");
+		}
+
+		// Get reconnect timeout from configuration
+		rc = config.getConfigParameter("ReconnectTimeout", reconnectTimeout_);
+		if (rc == false) {
+			Log(Debug, "attribute not found in modbus tcp client configuration, use default")
+				.parameter("ReconnectTimeout", reconnectTimeout_)
+				.parameter("Attribute", "ReconnectTimeout");
+		}
+
+		// Get send timeout from configuration
+		rc = config.getConfigParameter("SendTimeout", sendTimeout_);
+		if (rc == false) {
+			Log(Debug, "attribute not found in modbus tcp client configuration, use default")
+				.parameter("SendTimeout", sendTimeout_)
+				.parameter("Attribute", "SendTimeout");
+		}
+
+		// Get recv timeout from configuration
+		rc = config.getConfigParameter("RecvTimeout", recvTimeout_);
+		if (rc == false) {
+			Log(Debug, "attribute not found in modbus tcp client configuration, use default")
+				.parameter("RecvTimeout", recvTimeout_)
+				.parameter("Attribute", "RecvTimeout");
+		}
+
+		return true;
 	}
 
 	std::string
@@ -90,6 +122,30 @@ namespace OpcUaModbusGateway
 	ModbusTCPClientConfig::port(void)
 	{
 		return port_;
+	}
+
+	uint32_t
+	ModbusTCPClientConfig::connectTimeout(void)
+	{
+		return connectTimeout_;
+	}
+
+	uint32_t
+	ModbusTCPClientConfig::reconnectTimeout(void)
+	{
+		return reconnectTimeout_;
+	}
+
+	uint32_t
+	ModbusTCPClientConfig::sendTimeout(void)
+	{
+		return sendTimeout_;
+	}
+
+	uint32_t
+	ModbusTCPClientConfig::recvTimeout(void)
+	{
+		return recvTimeout_;
 	}
 
 
@@ -134,7 +190,7 @@ namespace OpcUaModbusGateway
 			return false;
 		}
 
-		// parse file system entries
+		// parse modbus client entries
 		for (auto configEntry: configVec) {
 			auto modbusTCPClientConfig = std::make_shared<ModbusTCPClientConfig>();
 

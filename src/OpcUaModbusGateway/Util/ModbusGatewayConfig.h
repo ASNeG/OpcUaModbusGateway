@@ -40,10 +40,22 @@ namespace OpcUaModbusGateway
 		std::string ipAddress(void);
 		uint32_t port(void);
 
+		uint32_t connectTimeout(void);
+		uint32_t reconnectTimeout(void);
+		uint32_t sendTimeout(void);
+		uint32_t recvTimeout(void);
+
 	  private:
+		// Mandatory attributes
 		std::string name_ = "";
 		std::string ipAddress_ = "127.0.0.1";
 		uint32_t port_ = 123;
+
+		// Optional attributes
+		uint32_t connectTimeout_ = 1000; 		/* 1000 milliseconds */
+		uint32_t reconnectTimeout_ = 5000;		/* 5000 milliseconds */
+		uint32_t sendTimeout_ = 1000;			/* 1000 milliseconds */
+		uint32_t recvTimeout_ = 3000;			/* 3000 milliseconds */
 	};
 
 
