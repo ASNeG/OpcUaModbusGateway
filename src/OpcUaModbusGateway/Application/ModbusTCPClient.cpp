@@ -67,7 +67,7 @@ namespace OpcUaModbusGateway
 		std::vector<bool>& inputStatus
 	)
 	{
-		readDiscreteInputs(
+		modbusTCPClientImpl_->readDiscreteInputs(
 			startingAddress,
 			quantityOfInputs,
 			errorCode,
@@ -83,11 +83,12 @@ namespace OpcUaModbusGateway
 		std::vector<uint16_t>& inputRegisters
 	)
 	{
-		// FIXME: Test
-		errorCode = 0;
-		for (uint32_t idx = 0; idx < quantityOfInputs; idx++) {
-			inputRegisters.push_back((uint16_t)idx);
-		}
+		modbusTCPClientImpl_->readInputRegisters(
+			startingAddress,
+			quantityOfInputs,
+			errorCode,
+			inputRegisters
+		);
 	}
 
 	void
