@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <OpcUaModbusGateway Name="OpcUaModbusGateway" xmlns="http://ASNeG/OpcUaModbusGateway.xsd">
 
+  <ModbusTCPClient Name="PythonMmodbusServer">
+    <IPAddress>127.0.0.1</IPAddress>
+    <Port>5502</Port>
+  </ModbusTCPClient>
+
   <ModbusTCPClient Name="ModbusClient1">
     <IPAddress>127.0.0.1</IPAddress>
     <Port>123</Port>
