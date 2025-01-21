@@ -29,6 +29,14 @@ namespace OpcUaModbusGateway
        ModbusClientInterface(const ModbusClientInterface& value);
        virtual ~ModbusClientInterface(void);
 
+        //
+        // String
+        //
+        void modbusConnectionState_Variable(OpcUaStackServer::ServerVariable::SPtr& serverVariable);
+        OpcUaStackServer::ServerVariable::SPtr& modbusConnectionState_Variable(void);
+        bool get_ModbusConnectionState_Variable(OpcUaStackCore::OpcUaDataValue& dataValue);
+        bool set_ModbusConnectionState_Variable(const OpcUaStackCore::OpcUaDataValue& dataValue);
+
         virtual void call_ReadCoils_Method(OpcUaStackCore::ApplicationMethodContext* applicationMethodContext);
 
         virtual void call_ReadDiscreteInputs_Method(OpcUaStackCore::ApplicationMethodContext* applicationMethodContext);
@@ -46,6 +54,7 @@ namespace OpcUaModbusGateway
         virtual void call_WriteSingleHoldingRegister_Method(OpcUaStackCore::ApplicationMethodContext* applicationMethodContext);
     
       private:
+        OpcUaStackServer::ServerVariable::SPtr modbusConnectionState_Variable_;
         OpcUaStackServer::ServerMethod::SPtr readCoils_Method_;
         OpcUaStackServer::ServerMethod::SPtr readDiscreteInputs_Method_;
         OpcUaStackServer::ServerMethod::SPtr readInputRegisters_Method_;
