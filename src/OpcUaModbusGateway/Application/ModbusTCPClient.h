@@ -70,6 +70,12 @@ namespace OpcUaModbusGateway
 			uint32_t& errorCode,
 			uint16_t& count
 		);
+		void writeMultipleHoldingRegisters(
+			uint16_t startingAddress,
+			std::vector<uint16_t>& holdingRegisters,
+			uint32_t& errorCode,
+			uint16_t& count
+		);
 
 	  private:
 		ModbusTCPClientImpl* modbusTCPClientImpl_ = nullptr;

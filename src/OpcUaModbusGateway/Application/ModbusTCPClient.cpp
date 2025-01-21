@@ -116,5 +116,19 @@ namespace OpcUaModbusGateway
 		count = coils.size();
 	}
 
+	void
+	ModbusTCPClient::writeMultipleHoldingRegisters(
+		uint16_t startingAddress,
+		std::vector<uint16_t>& holdingRegisters,
+		uint32_t& errorCode,
+		uint16_t& count
+	)
+	{
+		// FIXME: Test
+		errorCode = 0;
+		count = holdingRegisters.size();
+	}
+
+
 }
 
