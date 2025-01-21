@@ -140,6 +140,16 @@ namespace OpcUaModbusGateway
 		errorCode = 0;
 	}
 
+	void
+	ModbusTCPClient::writeSingleHoldingRegister(
+		uint16_t startingAddress,
+		uint16_t holdingRegister,
+		uint32_t& errorCode
+	)
+	{
+		// FIXME: Test
+		errorCode = 0;
+	}
 
 }
 

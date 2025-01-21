@@ -81,6 +81,11 @@ namespace OpcUaModbusGateway
 			bool value,
 			uint32_t& errorCode
 		);
+		void writeSingleHoldingRegister(
+			uint16_t startingAddress,
+			uint16_t holdingRegister,
+			uint32_t& errorCode
+		);
 
 	  private:
 		ModbusTCPClientImpl* modbusTCPClientImpl_ = nullptr;
