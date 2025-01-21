@@ -19,6 +19,7 @@
 #include "OpcUaModbusGateway/Util/Condition.h"
 
 #include "ModbusProt/ReadCoilsPDU.h"
+#include "ModbusProt/ReadDiscreteInputsPDU.h"
 #include "ModbusProt/ErrorPDU.h"
 
 namespace OpcUaModbusGateway
@@ -136,10 +137,47 @@ namespace OpcUaModbusGateway
 		std::vector<bool>& inputStatus
 	)
 	{
-		// FIXME: Test
+		ModbusProt::ModbusError modbusError;
+		ModbusProt::ModbusPDU::SPtr modbusRes;
+		Condition responseCondition;
+
+		// Create and send read discrete inputs request
+		auto readDiscreteInputsReq = std::make_shared<ModbusProt::ReadDiscreteInputsReqPDU>();
+		readDiscreteInputsReq->startingAddress(startingAddress);
+		readDiscreteInputsReq->quantityOfInputs(quantityOfInputs);
+		ModbusProt::ModbusPDU::SPtr req = readDiscreteInputsReq;
+		modbusTCPClient_.send(0, req,
+			[this, &responseCondition, &modbusRes, &modbusError](ModbusProt::ModbusError error, ModbusProt::ModbusPDU::SPtr& req, ModbusProt::ModbusPDU::SPtr& res) {
+				modbusError = error;
+				modbusRes = res;
+				responseCondition.signal();
+			}
+		);
+
+		// Handle error
+		if (!responseCondition.wait(2000)) {
+			errorCode = static_cast<int>(ModbusProt::ModbusError::Timeout) + 100;
+			return;
+		}
+		if (modbusError != ModbusProt::ModbusError::Ok) {
+			errorCode = static_cast<int>(modbusError) + 100;
+			return;
+		}
+
+		// Handle error response
+		if (modbusRes->pduType() == ModbusProt::PDUType::Error) {
+			auto errorRes = std::static_pointer_cast<ModbusProt::ErrorPDU>(modbusRes);
+			errorCode = errorRes->exceptionCode();;
+			return;
+		}
+
+		// Handle response
 		errorCode = 0;
-		for (uint32_t idx = 0; idx < quantityOfInputs; idx++) {
-			inputStatus.push_back(true);
+		auto readDiscreteInputsRes = std::static_pointer_cast<ModbusProt::ReadDiscreteInputsResPDU>(modbusRes);
+		for (uint32_t idx = 0; idx < readDiscreteInputsReq->quantityOfInputs(); idx++) {
+			bool b;
+			readDiscreteInputsRes->getInputStatus(idx, b);
+			inputStatus.push_back(b);
 		}
 	}
 
