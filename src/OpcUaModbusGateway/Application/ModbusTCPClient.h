@@ -64,6 +64,12 @@ namespace OpcUaModbusGateway
 			uint32_t& errorCode,
 			std::vector<uint16_t>& holdingRegisters
 		);
+		void writeMultipleCoils(
+			uint16_t startingAddress,
+			std::vector<bool>& coils,
+			uint32_t& errorCode,
+			uint16_t& count
+		);
 
 	  private:
 		ModbusTCPClientImpl* modbusTCPClientImpl_ = nullptr;

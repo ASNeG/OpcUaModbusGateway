@@ -405,7 +405,72 @@ namespace OpcUaModbusGateway
     	ApplicationMethodContext* applicationMethodContext
 	)
     {
-        applicationMethodContext->statusCode_ = BadNotSupported;
+    	OpcUaVariant::SPtr variant;
+
+    	// Check modbus tcp client
+		if (modbusTCPClient_ == nullptr) {
+			Log(Debug, "modbus tcp client not exist");
+				createResult(applicationMethodContext->outputArguments_, 0);
+				applicationMethodContext->statusCode_ = BadServiceUnsupported;
+			return;
+		}
+
+		// Check number of input parameters
+		if (applicationMethodContext->inputArguments_->size() != 2) {
+			Log(Debug, "number of input arguments error");
+			createResult(applicationMethodContext->outputArguments_, 0);
+			applicationMethodContext->statusCode_ = BadInvalidArgument;
+			return;
+		}
+
+		// Get input parameter [0]: StartingAddress
+		applicationMethodContext->inputArguments_->get(0,variant);
+		if (variant->variantType() != OpcUaBuildInType_OpcUaUInt16) {
+			Log(Debug, "get input argument [0] error");
+			createResult(applicationMethodContext->outputArguments_, 0);
+			applicationMethodContext->statusCode_ = BadInvalidArgument;
+			return;
+		}
+		uint16_t startingAddress = variant->get<OpcUaUInt16>();
+
+		// Get input parameter [1]: Values
+		applicationMethodContext->inputArguments_->get(1,variant);
+		if (variant->variantType() != OpcUaBuildInType_OpcUaBoolean) {
+			Log(Debug, "get input argument [1] error");
+			createResult(applicationMethodContext->outputArguments_, 0);
+			applicationMethodContext->statusCode_ = BadInvalidArgument;
+			return;
+		}
+		std::vector<bool> values;
+		OpcUaVariantValue::Vec variantVec = variant->variant();
+		for (uint32_t idx = 0; idx < variantVec.size(); idx++) {
+			values.push_back(variantVec[idx].variant<OpcUaBoolean>());
+		}
+
+		// Call method
+		uint32_t errorCode;
+		uint16_t count;
+		modbusTCPClient_->writeMultipleCoils(startingAddress, values, errorCode, count);
+
+		// Create output parameter list
+		applicationMethodContext->outputArguments_->resize(3);
+
+		// Set error code
+		variant = boost::make_shared<OpcUaVariant>();
+		variant->variant((OpcUaUInt32)errorCode);
+		applicationMethodContext->outputArguments_->push_back(variant);
+
+		// Set starting address
+		variant = boost::make_shared<OpcUaVariant>();
+		variant->variant((OpcUaUInt16)startingAddress);
+		applicationMethodContext->outputArguments_->push_back(variant);
+
+		// Set count
+		variant = boost::make_shared<OpcUaVariant>();
+		variant->variant((OpcUaUInt16)count);
+		applicationMethodContext->outputArguments_->push_back(variant);
+
+        applicationMethodContext->statusCode_ = Success;
     }
 
     void

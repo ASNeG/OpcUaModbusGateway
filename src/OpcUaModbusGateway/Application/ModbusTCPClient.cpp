@@ -103,5 +103,18 @@ namespace OpcUaModbusGateway
 		}
 	}
 
+	void
+	ModbusTCPClient::writeMultipleCoils(
+		uint16_t startingAddress,
+		std::vector<bool>& coils,
+		uint32_t& errorCode,
+		uint16_t& count
+	)
+	{
+		// FIXME: Test
+		errorCode = 0;
+		count = coils.size();
+	}
+
 }
 
