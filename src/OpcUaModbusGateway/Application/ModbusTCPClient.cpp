@@ -51,7 +51,7 @@ namespace OpcUaModbusGateway
 		std::vector<bool>& coilStatus
 	)
 	{
-		return modbusTCPClientImpl_->readCoils(
+		modbusTCPClientImpl_->readCoils(
 			startingAddress,
 			quantityOfInputs,
 			errorCode,
@@ -67,11 +67,12 @@ namespace OpcUaModbusGateway
 		std::vector<bool>& inputStatus
 	)
 	{
-		// FIXME: Test
-		errorCode = 0;
-		for (uint32_t idx = 0; idx < quantityOfInputs; idx++) {
-			inputStatus.push_back(true);
-		}
+		readDiscreteInputs(
+			startingAddress,
+			quantityOfInputs,
+			errorCode,
+			inputStatus
+		);
 	}
 
 	void
