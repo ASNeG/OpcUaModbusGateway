@@ -33,6 +33,7 @@ namespace OpcUaModbusGateway
 	  public:
 		using SPtr = std::shared_ptr<ModbusTCPClient>;
 		using Vec = std::vector<SPtr>;
+		using StateCallback = std::function<void (const std::string&)>;
 
 		ModbusTCPClient(void);
 		~ModbusTCPClient(void);
@@ -42,6 +43,7 @@ namespace OpcUaModbusGateway
 		void sendTimeout(uint32_t sendTimeout);
 		void recvTimeout(uint32_t recvTimeout);
 		void queryTimeout(uint32_t queryTimeout);
+		void stateCallback(StateCallback stateCallback);
 
 		bool connect(ModbusTCPClientConfig::SPtr& modbusTCPClientConfig);
 		bool disconnect(void);

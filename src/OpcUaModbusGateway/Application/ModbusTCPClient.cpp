@@ -61,6 +61,12 @@ namespace OpcUaModbusGateway
 		modbusTCPClientImpl_->queryTimeout(recvTimeout);
 	}
 
+	void
+	ModbusTCPClient::stateCallback(StateCallback stateCallback)
+	{
+		modbusTCPClientImpl_->stateCallback(stateCallback);
+	}
+
 	bool
 	ModbusTCPClient::connect(ModbusTCPClientConfig::SPtr& modbusTCPClientConfig)
 	{

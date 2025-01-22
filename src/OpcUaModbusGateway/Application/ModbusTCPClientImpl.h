@@ -28,6 +28,8 @@ namespace OpcUaModbusGateway
 	class ModbusTCPClientImpl
 	{
 	  public:
+		using StateCallback = std::function<void (const std::string&)>;
+
 		ModbusTCPClientImpl(void);
 		~ModbusTCPClientImpl(void);
 
@@ -39,6 +41,7 @@ namespace OpcUaModbusGateway
 		void sendTimeout(uint32_t sendTimeout);
 		void recvTimeout(uint32_t recvTimeout);
 		void queryTimeout(uint32_t queryTimeout);
+		void stateCallback(StateCallback stateCallback);
 
 		void readCoils(
 			uint16_t startingAddress,
@@ -89,6 +92,7 @@ namespace OpcUaModbusGateway
 
 	  private:
 		uint32_t queryTimeout_ = 3000;
+		StateCallback stateCallback_;
 
 		asio::ip::tcp::endpoint serverEndpoint_;
 		ModbusTCP::TCPClient modbusTCPClient_;

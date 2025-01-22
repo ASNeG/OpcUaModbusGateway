@@ -69,6 +69,12 @@ namespace OpcUaModbusGateway
 		queryTimeout_ = queryTimeout;
 	}
 
+	void
+	ModbusTCPClientImpl::stateCallback(StateCallback stateCallback)
+	{
+		stateCallback_ = stateCallback;
+	}
+
 	bool
 	ModbusTCPClientImpl::connect(ModbusTCPClientConfig::SPtr& modbusTCPClientConfig)
 	{
@@ -92,7 +98,8 @@ namespace OpcUaModbusGateway
 			serverEndpoint_,
 			[this](ModbusTCP::TCPClientState clientState) {
 				clientConnectionHandler(clientState);
-		});
+			}
+		);
 
 		return true;
 	}
@@ -108,9 +115,9 @@ namespace OpcUaModbusGateway
 	)
 	{
 		modbusTCPClientState_ = clientState;
-		std::cout << "CLIENT STATE: ";
-		std::cout << "...." << static_cast<typename std::underlying_type<ModbusTCP::TCPClientState>::type>(clientState) << std::endl;
 
+		auto stateString = modbusTCPClient_.tcpClientStateToString(clientState);
+		stateCallback_(stateString);
 	}
 
 	void
