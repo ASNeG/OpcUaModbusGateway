@@ -42,7 +42,6 @@ namespace OpcUaModbusGateway
 
 		bool init(
 			ModbusTCPClientConfig::SPtr modbusTCPClientConfig,
-			ModbusTCPClient::SPtr modbusTCPClient,
 			OpcUaStackServer::ApplicationServiceIf* applicationServiceIf,
 			const std::string& namespaceName
 		);
@@ -52,6 +51,10 @@ namespace OpcUaModbusGateway
     		const OpcUaStackCore::OpcUaNodeId& referenceTypeNodeId
     	);
     	bool deleteFromOpcUaModel(void);
+
+    	void setModbusConnectionState(
+    		const std::string& setModbusConnectionState
+    	);
 
         virtual void call_ReadCoils_Method(
             OpcUaStackCore::ApplicationMethodContext* applicationMethodContext

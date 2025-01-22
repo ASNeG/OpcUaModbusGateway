@@ -39,13 +39,11 @@ namespace OpcUaModbusGateway
 	bool
 	OpcUaModbusClientInterface::init(
 		ModbusTCPClientConfig::SPtr modbusTCPClientConfig,
-		ModbusTCPClient::SPtr modbusTCPClient,
 		ApplicationServiceIf* applicationServiceIf,
 		const std::string& namespaceName
 	)
 	{
 		modbusTCPClientConfig_ = modbusTCPClientConfig;
-		modbusTCPClient_ = modbusTCPClient;
 		applicationServiceIf_ = applicationServiceIf;
 		namespaceName_ = namespaceName;
 
@@ -67,6 +65,14 @@ namespace OpcUaModbusGateway
 			return false;
 		}
 
+		// Create modbus tcp client
+		modbusTCPClient_ = std::make_shared<ModbusTCPClient>();
+		modbusTCPClient_->connectTimeout(modbusTCPClientConfig->connectTimeout());
+		modbusTCPClient_->reconnectTimeout(modbusTCPClientConfig->reconnectTimeout());
+		modbusTCPClient_->sendTimeout(modbusTCPClientConfig->sendTimeout());
+		modbusTCPClient_->recvTimeout(modbusTCPClientConfig->recvTimeout());
+		modbusTCPClient_->queryTimeout(modbusTCPClientConfig->queryTimeout());
+
 		return true;
 	}
 
@@ -76,6 +82,7 @@ namespace OpcUaModbusGateway
 		const OpcUaNodeId& referenceTypeNodeId
 	)
 	{
+		bool rc  = true;
 		OpcUaNodeId parentNodeId(parentId, namespaceIndex_);
 
 		// create a new object instance in opc ua information model
@@ -93,12 +100,31 @@ namespace OpcUaModbusGateway
 			return false;
 		}
 
+		// Set state callback
+		modbusTCPClient_->stateCallback(
+			[this](const std::string& state) {
+				setModbusConnectionState(state);
+			}
+		);
+
+		// Connect to modbus tcp server
+		rc = modbusTCPClient_->connect(modbusTCPClientConfig_);
+		if (rc == false) {
+			Log(Error, "create modbus tcp module error")
+				.parameter("Name", modbusTCPClientConfig_->name());
+			return false;
+		}
+
 		return true;
 	}
 
 	bool
 	OpcUaModbusClientInterface::deleteFromOpcUaModel(void)
 	{
+		// Disconnect modbus tcp connection
+		modbusTCPClient_->disconnect();
+		modbusTCPClient_ = nullptr;
+
 		// remove object from opc ua model
 		DeleteNodeInstance deleteNodeInstance;
 		deleteNodeInstance.node(nodeId());
@@ -109,6 +135,26 @@ namespace OpcUaModbusGateway
 			return false;
 		}
 		return true;
+	}
+
+	void
+	OpcUaModbusClientInterface::setModbusConnectionState(
+		const std::string& setModbusConnectionState
+	)
+	{
+		OpcUaDateTime now(boost::posix_time::microsec_clock::local_time());
+		OpcUaDataValue dataValue;
+
+		auto value = boost::make_shared<OpcUaString>();
+		value->value(setModbusConnectionState);
+		dataValue.variant()->variant(value);
+		dataValue.statusCode((OpcUaStatusCode)Success);
+		dataValue.sourceTimestamp(now);
+		dataValue.sourcePicoseconds(0);
+		dataValue.serverTimestamp(now);
+		dataValue.serverPicoseconds(0);
+
+		set_ModbusConnectionState_Variable(dataValue);
 	}
 
 	void

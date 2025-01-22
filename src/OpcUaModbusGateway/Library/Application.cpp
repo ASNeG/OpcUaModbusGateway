@@ -68,20 +68,6 @@ namespace OpcUaModbusGateway
 				.parameter("IPAddress", modbusTCPClientConfig->ipAddress())
 				.parameter("Port", modbusTCPClientConfig->port());
 
-			// Add new tcp modbus client instance
-			auto tcpModbusClient = std::make_shared<ModbusTCPClient>();
-			tcpModbusClient->connectTimeout(modbusTCPClientConfig->connectTimeout());
-			tcpModbusClient->reconnectTimeout(modbusTCPClientConfig->reconnectTimeout());
-			tcpModbusClient->sendTimeout(modbusTCPClientConfig->sendTimeout());
-			tcpModbusClient->recvTimeout(modbusTCPClientConfig->recvTimeout());
-			tcpModbusClient->queryTimeout(modbusTCPClientConfig->queryTimeout());
-			rc = tcpModbusClient->connect(modbusTCPClientConfig);
-			if (rc == false) {
-				Log(Error, "create modbus tcp module error")
-					.parameter("Name", modbusTCPClientConfig->name());
-				return false;
-			}
-			tcpModbusClients_.push_back(tcpModbusClient);
 
 			// FIXME: Add modbus tcp client logging
 
@@ -90,7 +76,6 @@ namespace OpcUaModbusGateway
 			auto opcuaModbusClientInterface = boost::make_shared<OpcUaModbusClientInterface>();
 			rc = opcuaModbusClientInterface->init(
 					modbusTCPClientConfig,
-					tcpModbusClient,
 					&applicationIf->service(),
 					"http://ASNEG.de/OpcUaModbusGateway/"
 			);
@@ -101,8 +86,6 @@ namespace OpcUaModbusGateway
 			}
 
 			// Add new modbus client object instance to opc ua model
-			OpcUaStackCore::OpcUaNodeId documentDataEventTypeNodeId_;
-
 			rc  = opcuaModbusClientInterface->addToOpcUaModel(
 				NodeId::modbusClientFolder_,
 				OpcUaNodeId((uint32_t)OpcUaId_HasComponent)
@@ -124,12 +107,6 @@ namespace OpcUaModbusGateway
 	Application::shutdown(void)
 	{
 		Log(Debug, "shutdown opc ua modbus gateway server");
-
-		// Cleanup tcp modbus clients
-		for (auto tcpModbusCLient : tcpModbusClients_) {
-			tcpModbusCLient->disconnect();
-		}
-		tcpModbusClients_.clear();
 
 		// Cleanup modbus client interfaces
 		for (auto opcuaModbusClientInterface : opcuaModbusClients_) {
