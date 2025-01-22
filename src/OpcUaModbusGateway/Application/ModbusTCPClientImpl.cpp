@@ -16,6 +16,7 @@
  */
 
 #include "OpcUaModbusGateway/Application/ModbusTCPClientImpl.h"
+#include "OpcUaModbusGateway/Application/LogDefault.h"
 #include "OpcUaModbusGateway/Util/Condition.h"
 
 #include "ModbusProt/ReadCoilsPDU.h"
@@ -81,7 +82,8 @@ namespace OpcUaModbusGateway
 		bool rc = true;
 
 		// Add own log handler to modbus tcp client
-		// FIXME: TODO
+		Base::LogHandler::SPtr logHandler = std::make_shared<LogDefault>();
+		modbusTCPClient_.logHandler(logHandler);
 
 		// Create client endpoint
 		rc = modbusTCPClient_.getEndpoint(

@@ -68,10 +68,6 @@ namespace OpcUaModbusGateway
 				.parameter("IPAddress", modbusTCPClientConfig->ipAddress())
 				.parameter("Port", modbusTCPClientConfig->port());
 
-
-			// FIXME: Add modbus tcp client logging
-
-
 			// Create opc ua instance
 			auto opcuaModbusClientInterface = boost::make_shared<OpcUaModbusClientInterface>();
 			rc = opcuaModbusClientInterface->init(
