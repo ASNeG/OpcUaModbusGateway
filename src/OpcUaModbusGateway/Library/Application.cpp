@@ -30,8 +30,8 @@ using namespace OpcUaStackServer;
 namespace OpcUaModbusGateway
 {
 
+	// Node Ids
 	namespace NodeId {
-
 		const uint32_t modbusClientFolder_ = 5006;
 	};
 
