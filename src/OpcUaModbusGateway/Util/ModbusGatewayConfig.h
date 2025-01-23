@@ -26,6 +26,44 @@
 namespace OpcUaModbusGateway
 {
 
+	class CoilConfig
+	{
+	  public:
+		using SPtr = std::shared_ptr<CoilConfig>;
+		using Vec = std::vector<CoilConfig::SPtr>;
+
+		CoilConfig(void);
+		~CoilConfig(void);
+
+		bool parse(OpcUaStackCore::Config& config);
+		uint16_t address(void);
+		std::string name(void);
+
+	  private:
+		uint16_t address_ = 0;
+		std::string name_ = "";
+	};
+
+
+	class CoilsConfig {
+	  public:
+		using SPtr = std::shared_ptr<CoilsConfig>;
+		using Vec = std::vector<CoilsConfig::SPtr>;
+
+		CoilsConfig(void);
+		~CoilsConfig(void);
+
+		bool parse(OpcUaStackCore::Config& config);
+		std::string name(void);
+		uint32_t interval(void);
+		CoilConfig::Vec& coilConfigVec(void);
+
+	  private:
+		std::string name_ = "";
+		uint32_t interval_ = 1000;
+		CoilConfig::Vec coilConfigVec_;
+	};
+
 	class ModbusTCPClientConfig
 	{
 	  public:
@@ -40,6 +78,7 @@ namespace OpcUaModbusGateway
 		std::string ipAddress(void);
 		uint32_t port(void);
 		uint8_t slaveId(void);
+		CoilsConfig::Vec& coilsConfigVec(void);
 
 		uint32_t connectTimeout(void);
 		uint32_t reconnectTimeout(void);
@@ -53,6 +92,7 @@ namespace OpcUaModbusGateway
 		std::string ipAddress_ = "127.0.0.1";
 		uint32_t port_ = 123;
 		uint8_t slaveId_ = 0;
+		CoilsConfig::Vec coilsConfigVec_;
 
 		// Optional attributes
 		uint32_t connectTimeout_ = 1000; 		/* 1000 milliseconds */

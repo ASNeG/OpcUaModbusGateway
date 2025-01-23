@@ -28,6 +28,82 @@ namespace OpcUaModbusGateway
 	// ------------------------------------------------------------------------
 	// ------------------------------------------------------------------------
 	//
+	// class CoilConfig
+	//
+	// ------------------------------------------------------------------------
+	// ------------------------------------------------------------------------
+	CoilConfig::CoilConfig(void)
+	{
+	}
+
+	CoilConfig::~CoilConfig(void)
+	{
+	}
+
+	bool
+	CoilConfig::parse(Config& config)
+	{
+		// FIXME: TODO
+		return true;
+	}
+
+	uint16_t
+	CoilConfig::address(void)
+	{
+		return address_;
+	}
+
+	std::string
+	CoilConfig::name(void)
+	{
+		return name_;
+	}
+
+
+	// ------------------------------------------------------------------------
+	// ------------------------------------------------------------------------
+	//
+	// class CoilsConfig
+	//
+	// ------------------------------------------------------------------------
+	// ------------------------------------------------------------------------
+	CoilsConfig::CoilsConfig(void)
+	{
+	}
+
+	CoilsConfig::~CoilsConfig(void)
+	{
+	}
+
+	bool
+	CoilsConfig::parse(Config& config)
+	{
+		// FIXME: TODO
+		return true;
+	}
+
+	std::string
+	CoilsConfig::name(void)
+	{
+		return name_;
+	}
+
+	uint32_t
+	CoilsConfig::interval(void)
+	{
+		return interval_;
+	}
+
+	CoilConfig::Vec&
+	CoilsConfig::coilConfigVec(void)
+	{
+		return coilConfigVec_;
+	}
+
+
+	// ------------------------------------------------------------------------
+	// ------------------------------------------------------------------------
+	//
 	// class ModbusTCPClientConfig
 	//
 	// ------------------------------------------------------------------------
@@ -145,6 +221,12 @@ namespace OpcUaModbusGateway
 	ModbusTCPClientConfig::slaveId(void)
 	{
 		return slaveId_;
+	}
+
+	CoilsConfig::Vec&
+	ModbusTCPClientConfig::coilsConfigVec(void)
+	{
+		return coilsConfigVec_;
 	}
 
 	uint32_t
