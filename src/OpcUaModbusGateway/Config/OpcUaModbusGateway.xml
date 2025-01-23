@@ -25,8 +25,8 @@
           <HoldingRegister Address="1" Name="Val2" Unit="A" Type="FLOAT" A="0" B="1"/>
       </HoldingRegisters>
       <InputRegisters Name="Name1" Interval="1000">
-          <InputRegister Address="0" Name="Val1" Type="UINT16"/>
-          <InputRegister Address="0" Name="Val1" Type="FLOAT" Type="FLOAT" A="0" B="1"/>
+          <InputRegister Address="0" Name="Val1" Unit="X" Type="UINT16"/>
+          <InputRegister Address="0" Name="Val1" Unit="Y" Type="FLOAT" A="0" B="1"/>
       </InputRegisters>
 
   </ModbusTCPClient>

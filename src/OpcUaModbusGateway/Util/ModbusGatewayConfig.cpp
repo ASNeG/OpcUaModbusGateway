@@ -43,7 +43,24 @@ namespace OpcUaModbusGateway
 	bool
 	CoilConfig::parse(Config& config)
 	{
-		// FIXME: TODO
+		bool rc = true;
+
+		// Get name attribute from configuration
+		rc = config.getConfigParameter("<xmlattr>.Name", name_);
+		if (rc == false) {
+			Log(Error, "attribute not found in coil configuration")
+				.parameter("Attribute", "Name");
+			return false;
+		}
+
+		// Get address attribute from configuration
+		rc = config.getConfigParameter("<xmlattr>.Address", address_);
+		if (rc == false) {
+			Log(Error, "attribute not found in coil configuration")
+				.parameter("Attribute", "Address");
+			return false;
+		}
+
 		return true;
 	}
 
@@ -157,7 +174,24 @@ namespace OpcUaModbusGateway
 	bool
 	InputConfig::parse(Config& config)
 	{
-		// FIXME: TODO
+		bool rc = true;
+
+		// Get name attribute from configuration
+		rc = config.getConfigParameter("<xmlattr>.Name", name_);
+		if (rc == false) {
+			Log(Error, "attribute not found in coil configuration")
+				.parameter("Attribute", "Name");
+			return false;
+		}
+
+		// Get address attribute from configuration
+		rc = config.getConfigParameter("<xmlattr>.Address", address_);
+		if (rc == false) {
+			Log(Error, "attribute not found in coil configuration")
+				.parameter("Attribute", "Address");
+			return false;
+		}
+
 		return true;
 	}
 
@@ -271,6 +305,52 @@ namespace OpcUaModbusGateway
 	bool
 	HoldingRegisterConfig::parse(Config& config)
 	{
+		bool rc = true;
+
+		// Get name attribute from configuration
+		rc = config.getConfigParameter("<xmlattr>.Name", name_);
+		if (rc == false) {
+			Log(Error, "attribute not found in holding register configuration")
+				.parameter("Attribute", "Name");
+			return false;
+		}
+
+		// Get address attribute from configuration
+		rc = config.getConfigParameter("<xmlattr>.Address", address_);
+		if (rc == false) {
+			Log(Error, "attribute not found in holding register configuration")
+				.parameter("Attribute", "Address");
+			return false;
+		}
+
+		// Get unit attribute from configuration
+		rc = config.getConfigParameter("<xmlattr>.Unit", unit_);
+		if (rc == false) {
+			Log(Error, "attribute not found in holding register configuration")
+				.parameter("Attribute", "Name");
+			return false;
+		}
+
+		// Get type attribute from configuration
+		rc = config.getConfigParameter("<xmlattr>.Type", type_);
+		if (rc == false) {
+			Log(Error, "attribute not found in holding register configuration")
+				.parameter("Attribute", "Type");
+			return false;
+		}
+
+		// Get a_ attribute from configuration
+		rc = config.getConfigParameter("<xmlattr>.Type", a_);
+		if (rc == false) {
+		    a_ = 0.0;
+		}
+
+		// Get b_ attribute from configuration
+		rc = config.getConfigParameter("<xmlattr>.Type", b_);
+		if (rc == false) {
+		    b_ = 1.0;
+		}
+
 		return true;
 	}
 
@@ -408,7 +488,52 @@ namespace OpcUaModbusGateway
 	bool
 	InputRegisterConfig::parse(Config& config)
 	{
-		// FIXME: TODO
+		bool rc = true;
+
+		// Get name attribute from configuration
+		rc = config.getConfigParameter("<xmlattr>.Name", name_);
+		if (rc == false) {
+			Log(Error, "attribute not found in input register configuration")
+				.parameter("Attribute", "Name");
+			return false;
+		}
+
+		// Get address attribute from configuration
+		rc = config.getConfigParameter("<xmlattr>.Address", address_);
+		if (rc == false) {
+			Log(Error, "attribute not found in input register configuration")
+				.parameter("Attribute", "Address");
+			return false;
+		}
+
+		// Get unit attribute from configuration
+		rc = config.getConfigParameter("<xmlattr>.Unit", unit_);
+		if (rc == false) {
+			Log(Error, "attribute not found in input register configuration")
+				.parameter("Attribute", "Name");
+			return false;
+		}
+
+		// Get type attribute from configuration
+		rc = config.getConfigParameter("<xmlattr>.Type", type_);
+		if (rc == false) {
+			Log(Error, "attribute not found in input register configuration")
+				.parameter("Attribute", "Type");
+			return false;
+		}
+
+		// Get a_ attribute from configuration
+		rc = config.getConfigParameter("<xmlattr>.Type", a_);
+		if (rc == false) {
+		    a_ = 0.0;
+		}
+
+		// Get b_ attribute from configuration
+		rc = config.getConfigParameter("<xmlattr>.Type", b_);
+		if (rc == false) {
+		    b_ = 1.0;
+		}
+
 		return true;
 	}
 
