@@ -280,6 +280,107 @@ namespace OpcUaModbusGateway
 	// ------------------------------------------------------------------------
 	// ------------------------------------------------------------------------
 	//
+	// class InputRegisterConfig
+	//
+	// ------------------------------------------------------------------------
+	// ------------------------------------------------------------------------
+	InputRegisterConfig::InputRegisterConfig(void)
+	{
+	}
+
+	InputRegisterConfig::~InputRegisterConfig(void)
+	{
+	}
+
+	bool
+	InputRegisterConfig::parse(Config& config)
+	{
+		// FIXME: TODO
+		return true;
+	}
+
+	uint16_t
+	InputRegisterConfig::address(void)
+	{
+		return address_;
+	}
+
+	std::string
+	InputRegisterConfig::name(void)
+	{
+		return name_;
+	}
+
+	std::string
+	InputRegisterConfig::unit(void)
+	{
+		return unit_;
+	}
+
+	std::string
+	InputRegisterConfig::type(void)
+	{
+		return type_;
+	}
+
+	double
+	InputRegisterConfig::a(void)
+	{
+		return a_;
+	}
+
+	double
+	InputRegisterConfig::b(void)
+	{
+		return b_;
+	}
+
+
+	// ------------------------------------------------------------------------
+	// ------------------------------------------------------------------------
+	//
+	// class InputRegistersConfig
+	//
+	// ------------------------------------------------------------------------
+	// ------------------------------------------------------------------------
+	InputRegistersConfig::InputRegistersConfig(void)
+	{
+	}
+
+	InputRegistersConfig::~InputRegistersConfig(void)
+	{
+	}
+
+	bool
+	InputRegistersConfig::parse(Config& config)
+	{
+		// FIXME: TODO
+		return true;
+	}
+
+	std::string
+	InputRegistersConfig::name(void)
+	{
+		return name_;
+	}
+
+	uint32_t
+	InputRegistersConfig::interval(void)
+	{
+		return interval_;
+	}
+
+	InputRegisterConfig::Vec&
+	InputRegistersConfig::inputRegisterConfigVec(void)
+	{
+		return inputRegisterConfigVec_;
+	}
+
+
+
+	// ------------------------------------------------------------------------
+	// ------------------------------------------------------------------------
+	//
 	// class ModbusTCPClientConfig
 	//
 	// ------------------------------------------------------------------------
@@ -415,6 +516,12 @@ namespace OpcUaModbusGateway
 	ModbusTCPClientConfig::holdingRegistersConfigVec(void)
 	{
 		return holdingRegistersConfigVec_;
+	}
+
+	InputRegistersConfig::Vec&
+	ModbusTCPClientConfig::inputRegistersConfigVec(void)
+	{
+		return inputRegistersConfigVec_;
 	}
 
 	uint32_t

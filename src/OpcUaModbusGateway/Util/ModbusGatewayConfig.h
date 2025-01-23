@@ -149,6 +149,53 @@ namespace OpcUaModbusGateway
 		HoldingRegisterConfig::Vec holdingRegisterConfigVec_;
 	};
 
+
+	class InputRegisterConfig
+	{
+	  public:
+		using SPtr = std::shared_ptr<InputRegisterConfig>;
+		using Vec = std::vector<InputRegisterConfig::SPtr>;
+
+		InputRegisterConfig(void);
+		~InputRegisterConfig(void);
+
+		bool parse(OpcUaStackCore::Config& config);
+		uint16_t address(void);
+		std::string name(void);
+		std::string unit(void);
+		std::string type(void);
+		double a(void);
+		double b(void);
+
+	  private:
+		uint16_t address_ = 0;
+		std::string name_ = "";
+		std::string unit_ = "";
+		std::string type_ = "";
+		double a_ = 0.0;
+		double b_ = 0.0;
+	};
+
+
+	class InputRegistersConfig {
+	  public:
+		using SPtr = std::shared_ptr<InputRegistersConfig>;
+		using Vec = std::vector<InputRegistersConfig::SPtr>;
+
+		InputRegistersConfig(void);
+		~InputRegistersConfig(void);
+
+		bool parse(OpcUaStackCore::Config& config);
+		std::string name(void);
+		uint32_t interval(void);
+		InputRegisterConfig::Vec& inputRegisterConfigVec(void);
+
+	  private:
+		std::string name_ = "";
+		uint32_t interval_ = 1000;
+		InputRegisterConfig::Vec inputRegisterConfigVec_;
+	};
+
 	class ModbusTCPClientConfig
 	{
 	  public:
@@ -166,6 +213,7 @@ namespace OpcUaModbusGateway
 		CoilsConfig::Vec& coilsConfigVec(void);
 		InputsConfig::Vec& inputsConfigVec(void);
 		HoldingRegistersConfig::Vec& holdingRegistersConfigVec(void);
+		InputRegistersConfig::Vec& inputRegistersConfigVec(void);
 
 		uint32_t connectTimeout(void);
 		uint32_t reconnectTimeout(void);
@@ -182,6 +230,7 @@ namespace OpcUaModbusGateway
 		CoilsConfig::Vec coilsConfigVec_;
 		InputsConfig::Vec inputsConfigVec_;
 		HoldingRegistersConfig::Vec holdingRegistersConfigVec_;
+		InputRegistersConfig::Vec inputRegistersConfigVec_;
 
 		// Optional attributes
 		uint32_t connectTimeout_ = 1000; 		/* 1000 milliseconds */
