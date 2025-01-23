@@ -467,7 +467,45 @@ namespace OpcUaModbusGateway
 	bool
 	InputRegistersConfig::parse(Config& config)
 	{
-		// FIXME: TODO
+		bool rc = true;
+
+		// Get name attribute from configuration
+		rc = config.getConfigParameter("<xmlattr>.Name", name_);
+		if (rc == false) {
+			Log(Error, "attribute not found in input register configuration")
+				.parameter("Attribute", "Name");
+			return false;
+		}
+
+		// Get interval attribute from configuration
+		rc = config.getConfigParameter("<xmlattr>.Interval", interval_);
+		if (rc == false) {
+			Log(Error, "attribute not found in input register configuration")
+				.parameter("Interval", interval_)
+				.parameter("Attribute", "Interval");
+			return false;
+		}
+
+		// Find input register entries in configuration
+		std::vector<Config> configVec;
+		config.getChilds("InputRegister", configVec);
+		if (configVec.size() != 0) {
+			// parse input register entries
+			for (auto configEntry: configVec) {
+				auto inputRegisterConfig = std::make_shared<InputRegisterConfig>();
+
+				// parse input register entry
+				rc = inputRegisterConfig->parse(configEntry);
+				if (rc == false) {
+					Log(Error, "parse input register entry error");
+					return false;
+				}
+
+				// add input register configuration entry to map
+				inputRegisterConfigVec_.push_back(inputRegisterConfig);
+			}
+		}
+
 		return true;
 	}
 
