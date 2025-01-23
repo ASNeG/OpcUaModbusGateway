@@ -72,6 +72,7 @@ namespace OpcUaModbusGateway
 		modbusTCPClient_->sendTimeout(modbusTCPClientConfig->sendTimeout());
 		modbusTCPClient_->recvTimeout(modbusTCPClientConfig->recvTimeout());
 		modbusTCPClient_->queryTimeout(modbusTCPClientConfig->queryTimeout());
+		modbusTCPClient_->slaveId(modbusTCPClientConfig->slaveId());
 
 		return true;
 	}

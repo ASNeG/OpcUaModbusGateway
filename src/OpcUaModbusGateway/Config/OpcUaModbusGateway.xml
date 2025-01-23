@@ -5,17 +5,18 @@
     <IPAddress>127.0.0.1</IPAddress>
     <Port>5502</Port>
     <SlaveId>0</SlaveId>
+    
+    <ConnectTimeout>1000</ConnectTimeout>
+    <ReconnectTimeout>5000</ReconnectTimeout>
+    <SendTimeout>1000</SendTimeout>
+    <RecvTimeout>3000</RecvTimeout>
+    <QueryTimeout>3000</QueryTimeout>
+
   </ModbusTCPClient>
 
 <!--  
   <ModbusTCPClient Name="ModbusClient1">
-    <IPAddress>127.0.0.1</IPAddress>
-    <Port>123</Port>
-  </ModbusTCPClient>
-  
-  <ModbusTCPClient Name="ModbusClient2">
-    <IPAddress>127.0.0.1</IPAddress>
-    <Port>123</Port>
+    ...
   </ModbusTCPClient>
 -->
 

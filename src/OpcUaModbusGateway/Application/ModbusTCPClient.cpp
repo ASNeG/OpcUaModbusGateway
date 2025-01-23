@@ -62,6 +62,12 @@ namespace OpcUaModbusGateway
 	}
 
 	void
+	ModbusTCPClient::slaveId(uint8_t slaveId)
+	{
+		modbusTCPClientImpl_->slaveId(slaveId);
+	}
+
+	void
 	ModbusTCPClient::stateCallback(StateCallback stateCallback)
 	{
 		modbusTCPClientImpl_->stateCallback(stateCallback);

@@ -41,6 +41,7 @@ namespace OpcUaModbusGateway
 		void sendTimeout(uint32_t sendTimeout);
 		void recvTimeout(uint32_t recvTimeout);
 		void queryTimeout(uint32_t queryTimeout);
+		void slaveId(uint8_t slaveId);
 		void stateCallback(StateCallback stateCallback);
 
 		void readCoils(
@@ -91,6 +92,7 @@ namespace OpcUaModbusGateway
 		);
 
 	  private:
+		uint8_t slaveId_ = 0;
 		uint32_t queryTimeout_ = 3000;
 		StateCallback stateCallback_;
 

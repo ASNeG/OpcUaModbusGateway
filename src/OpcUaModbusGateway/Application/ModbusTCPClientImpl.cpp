@@ -71,6 +71,12 @@ namespace OpcUaModbusGateway
 	}
 
 	void
+	ModbusTCPClientImpl::slaveId(uint8_t slaveId)
+	{
+		slaveId_ = slaveId;
+	}
+
+	void
 	ModbusTCPClientImpl::stateCallback(StateCallback stateCallback)
 	{
 		stateCallback_ = stateCallback;
@@ -139,7 +145,7 @@ namespace OpcUaModbusGateway
 		readCoilsReq->startingAddress(startingAddress);
 		readCoilsReq->quantityOfInputs(quantityOfInputs);
 		ModbusProt::ModbusPDU::SPtr req = readCoilsReq;
-		modbusTCPClient_.send(0, req,
+		modbusTCPClient_.send(slaveId_, req,
 			[this, &responseCondition, &modbusRes, &modbusError](ModbusProt::ModbusError error, ModbusProt::ModbusPDU::SPtr& req, ModbusProt::ModbusPDU::SPtr& res) {
 				modbusError = error;
 				modbusRes = res;
@@ -191,7 +197,7 @@ namespace OpcUaModbusGateway
 		readDiscreteInputsReq->startingAddress(startingAddress);
 		readDiscreteInputsReq->quantityOfInputs(quantityOfInputs);
 		ModbusProt::ModbusPDU::SPtr req = readDiscreteInputsReq;
-		modbusTCPClient_.send(0, req,
+		modbusTCPClient_.send(slaveId_, req,
 			[this, &responseCondition, &modbusRes, &modbusError](ModbusProt::ModbusError error, ModbusProt::ModbusPDU::SPtr& req, ModbusProt::ModbusPDU::SPtr& res) {
 				modbusError = error;
 				modbusRes = res;
@@ -243,7 +249,7 @@ namespace OpcUaModbusGateway
 		readInputRegistersReq->startingAddress(startingAddress);
 		readInputRegistersReq->quantityOfInputs(quantityOfInputs);
 		ModbusProt::ModbusPDU::SPtr req = readInputRegistersReq;
-		modbusTCPClient_.send(0, req,
+		modbusTCPClient_.send(slaveId_, req,
 			[this, &responseCondition, &modbusRes, &modbusError](ModbusProt::ModbusError error, ModbusProt::ModbusPDU::SPtr& req, ModbusProt::ModbusPDU::SPtr& res) {
 				modbusError = error;
 				modbusRes = res;
@@ -295,7 +301,7 @@ namespace OpcUaModbusGateway
 		readHoldingRegistersReq->startingAddress(startingAddress);
 		readHoldingRegistersReq->quantityOfInputs(quantityOfInputs);
 		ModbusProt::ModbusPDU::SPtr req = readHoldingRegistersReq;
-		modbusTCPClient_.send(0, req,
+		modbusTCPClient_.send(slaveId_, req,
 			[this, &responseCondition, &modbusRes, &modbusError](ModbusProt::ModbusError error, ModbusProt::ModbusPDU::SPtr& req, ModbusProt::ModbusPDU::SPtr& res) {
 				modbusError = error;
 				modbusRes = res;
@@ -350,7 +356,7 @@ namespace OpcUaModbusGateway
 			writeMultipleCoilsReq->setOutputsValue(idx, coils[idx]);
 		}
 		ModbusProt::ModbusPDU::SPtr req = writeMultipleCoilsReq;
-		modbusTCPClient_.send(0, req,
+		modbusTCPClient_.send(slaveId_, req,
 			[this, &responseCondition, &modbusRes, &modbusError](ModbusProt::ModbusError error, ModbusProt::ModbusPDU::SPtr& req, ModbusProt::ModbusPDU::SPtr& res) {
 				modbusError = error;
 				modbusRes = res;
@@ -401,7 +407,7 @@ namespace OpcUaModbusGateway
 			writeMultipleHoldingRegistersReq->setRegistersValue(idx, holdingRegisters[idx]);
 		}
 		ModbusProt::ModbusPDU::SPtr req = writeMultipleHoldingRegistersReq;
-		modbusTCPClient_.send(0, req,
+		modbusTCPClient_.send(slaveId_, req,
 			[this, &responseCondition, &modbusRes, &modbusError](ModbusProt::ModbusError error, ModbusProt::ModbusPDU::SPtr& req, ModbusProt::ModbusPDU::SPtr& res) {
 				modbusError = error;
 				modbusRes = res;
@@ -448,7 +454,7 @@ namespace OpcUaModbusGateway
 		writeSingleCoilReq->address(startingAddress);
 		writeSingleCoilReq->value(value);
 		ModbusProt::ModbusPDU::SPtr req = writeSingleCoilReq;
-		modbusTCPClient_.send(0, req,
+		modbusTCPClient_.send(slaveId_, req,
 			[this, &responseCondition, &modbusRes, &modbusError](ModbusProt::ModbusError error, ModbusProt::ModbusPDU::SPtr& req, ModbusProt::ModbusPDU::SPtr& res) {
 				modbusError = error;
 				modbusRes = res;
@@ -493,7 +499,7 @@ namespace OpcUaModbusGateway
 		writeSingleHoldingRegisterReq->address(startingAddress);
 		writeSingleHoldingRegisterReq->registerValue(holdingRegister);
 		ModbusProt::ModbusPDU::SPtr req = writeSingleHoldingRegisterReq;
-		modbusTCPClient_.send(0, req,
+		modbusTCPClient_.send(slaveId_, req,
 			[this, &responseCondition, &modbusRes, &modbusError](ModbusProt::ModbusError error, ModbusProt::ModbusPDU::SPtr& req, ModbusProt::ModbusPDU::SPtr& res) {
 				modbusError = error;
 				modbusRes = res;

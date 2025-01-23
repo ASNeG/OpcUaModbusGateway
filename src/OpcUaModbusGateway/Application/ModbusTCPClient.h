@@ -43,6 +43,7 @@ namespace OpcUaModbusGateway
 		void sendTimeout(uint32_t sendTimeout);
 		void recvTimeout(uint32_t recvTimeout);
 		void queryTimeout(uint32_t queryTimeout);
+		void slaveId(uint8_t slaveId);
 		void stateCallback(StateCallback stateCallback);
 
 		bool connect(ModbusTCPClientConfig::SPtr& modbusTCPClientConfig);
