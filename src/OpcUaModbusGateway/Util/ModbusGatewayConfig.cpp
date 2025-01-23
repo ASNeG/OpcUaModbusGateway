@@ -78,7 +78,45 @@ namespace OpcUaModbusGateway
 	bool
 	CoilsConfig::parse(Config& config)
 	{
-		// FIXME: TODO
+		bool rc = true;
+
+		// Get name attribute from configuration
+		rc = config.getConfigParameter("<xmlattr>.Name", name_);
+		if (rc == false) {
+			Log(Error, "attribute not found in coils configuration")
+				.parameter("Attribute", "Name");
+			return false;
+		}
+
+		// Get interval attribute from configuration
+		rc = config.getConfigParameter("Interval", interval_);
+		if (rc == false) {
+			Log(Error, "attribute not found in coils configuration")
+				.parameter("Interval", interval_)
+				.parameter("Attribute", "Interval");
+			return false;
+		}
+
+		// Find coil entries in configuration
+		std::vector<Config> configVec;
+		config.getChilds("Coil", configVec);
+		if (configVec.size() != 0) {
+			// parse coil entries
+			for (auto configEntry: configVec) {
+				auto coilConfig = std::make_shared<CoilConfig>();
+
+				// parse coil entry
+				rc = coilConfig->parse(configEntry);
+				if (rc == false) {
+					Log(Error, "parse coil entry error");
+					return false;
+				}
+
+				// add coils configuration entry to map
+				coilConfigVec_.push_back(coilConfig);
+			}
+		}
+
 		return true;
 	}
 
@@ -510,7 +548,7 @@ namespace OpcUaModbusGateway
 				}
 
 				// add inputs configuration entry to map
-				inputsConfigVec_.push_back(inputsconfig);
+				inputsConfigVec_.push_back(inputsConfig);
 			}
 		}
 
