@@ -104,6 +104,82 @@ namespace OpcUaModbusGateway
 	// ------------------------------------------------------------------------
 	// ------------------------------------------------------------------------
 	//
+	// class InputConfig
+	//
+	// ------------------------------------------------------------------------
+	// ------------------------------------------------------------------------
+	InputConfig::InputConfig(void)
+	{
+	}
+
+	InputConfig::~InputConfig(void)
+	{
+	}
+
+	bool
+	InputConfig::parse(Config& config)
+	{
+		// FIXME: TODO
+		return true;
+	}
+
+	uint16_t
+	InputConfig::address(void)
+	{
+		return address_;
+	}
+
+	std::string
+	InputConfig::name(void)
+	{
+		return name_;
+	}
+
+
+	// ------------------------------------------------------------------------
+	// ------------------------------------------------------------------------
+	//
+	// class InputsConfig
+	//
+	// ------------------------------------------------------------------------
+	// ------------------------------------------------------------------------
+	InputsConfig::InputsConfig(void)
+	{
+	}
+
+	InputsConfig::~InputsConfig(void)
+	{
+	}
+
+	bool
+	InputsConfig::parse(Config& config)
+	{
+		// FIXME: TODO
+		return true;
+	}
+
+	std::string
+	InputsConfig::name(void)
+	{
+		return name_;
+	}
+
+	uint32_t
+	InputsConfig::interval(void)
+	{
+		return interval_;
+	}
+
+	InputConfig::Vec&
+	InputsConfig::inputConfigVec(void)
+	{
+		return inputConfigVec_;
+	}
+
+
+	// ------------------------------------------------------------------------
+	// ------------------------------------------------------------------------
+	//
 	// class ModbusTCPClientConfig
 	//
 	// ------------------------------------------------------------------------
@@ -227,6 +303,12 @@ namespace OpcUaModbusGateway
 	ModbusTCPClientConfig::coilsConfigVec(void)
 	{
 		return coilsConfigVec_;
+	}
+
+	InputsConfig::Vec&
+	ModbusTCPClientConfig::inputsConfigVec(void)
+	{
+		return inputsConfigVec_;
 	}
 
 	uint32_t
