@@ -89,7 +89,7 @@ namespace OpcUaModbusGateway
 		}
 
 		// Get interval attribute from configuration
-		rc = config.getConfigParameter("Interval", interval_);
+		rc = config.getConfigParameter("<xmlattr>.Interval", interval_);
 		if (rc == false) {
 			Log(Error, "attribute not found in coils configuration")
 				.parameter("Interval", interval_)
@@ -192,7 +192,45 @@ namespace OpcUaModbusGateway
 	bool
 	InputsConfig::parse(Config& config)
 	{
-		// FIXME: TODO
+		bool rc = true;
+
+		// Get name attribute from configuration
+		rc = config.getConfigParameter("<xmlattr>.Name", name_);
+		if (rc == false) {
+			Log(Error, "attribute not found in inputs configuration")
+				.parameter("Attribute", "Name");
+			return false;
+		}
+
+		// Get interval attribute from configuration
+		rc = config.getConfigParameter("<xmlattr>.Interval", interval_);
+		if (rc == false) {
+			Log(Error, "attribute not found in inputs configuration")
+				.parameter("Interval", interval_)
+				.parameter("Attribute", "Interval");
+			return false;
+		}
+
+		// Find inputs entries in configuration
+		std::vector<Config> configVec;
+		config.getChilds("Input", configVec);
+		if (configVec.size() != 0) {
+			// parse coil entries
+			for (auto configEntry: configVec) {
+				auto inputConfig = std::make_shared<InputConfig>();
+
+				// parse input entry
+				rc = inputConfig->parse(configEntry);
+				if (rc == false) {
+					Log(Error, "parse input entry error");
+					return false;
+				}
+
+				// add input configuration entry to map
+				inputConfigVec_.push_back(inputConfig);
+			}
+		}
+
 		return true;
 	}
 
@@ -679,10 +717,10 @@ namespace OpcUaModbusGateway
 		for (auto configEntry: configVec) {
 			auto modbusTCPClientConfig = std::make_shared<ModbusTCPClientConfig>();
 
-			// parse file system entry
+			// parse modbus tcp client entry
 			rc = modbusTCPClientConfig->parse(configEntry);
 			if (rc == false) {
-				Log(Error, "parse file system entry error")
+				Log(Error, "parse modbus tcp client entry error")
 					.parameter("ConfigurationFile", fileName)
 					.parameter("Attribute", "OpcUaModbusGateway.ModbusTCPClient");
 				return false;
