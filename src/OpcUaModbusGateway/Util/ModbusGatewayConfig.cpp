@@ -590,6 +590,47 @@ namespace OpcUaModbusGateway
 			}
 		}
 
+		// Find holding registers entries in configuration
+		configVec.clear();
+		config.getChilds("HoldingRegisters", configVec);
+		if (configVec.size() != 0) {
+			// parse modbus client entries
+			for (auto configEntry: configVec) {
+				auto holdingRegistersConfig = std::make_shared<HoldingRegistersConfig>();
+
+				// parse holding registers entry
+				rc = holdingRegistersConfig->parse(configEntry);
+				if (rc == false) {
+					Log(Error, "parse holding registers entry error");
+					return false;
+				}
+
+				// add holding registers configuration entry to map
+				holdingRegistersConfigVec_.push_back(holdingRegistersConfig);
+			}
+		}
+
+
+		// Find input registers entries in configuration
+		configVec.clear();
+		config.getChilds("InputRegisters", configVec);
+		if (configVec.size() != 0) {
+			// parse modbus client entries
+			for (auto configEntry: configVec) {
+				auto inputRegistersConfig = std::make_shared<InputRegistersConfig>();
+
+				// parse input registers entry
+				rc = inputRegistersConfig->parse(configEntry);
+				if (rc == false) {
+					Log(Error, "parse input registers entry error");
+					return false;
+				}
+
+				// add input registers configuration entry to map
+				inputRegistersConfigVec_.push_back(inputRegistersConfig);
+			}
+		}
+
 		return true;
 	}
 
