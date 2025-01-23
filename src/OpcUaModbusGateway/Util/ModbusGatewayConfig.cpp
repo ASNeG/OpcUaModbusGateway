@@ -397,6 +397,7 @@ namespace OpcUaModbusGateway
 	ModbusTCPClientConfig::parse(Config& config)
 	{
 		bool rc = true;
+		std::vector<Config> configVec;
 
 		// Get modbus tcp client name attribute from configuration
 		rc = config.getConfigParameter("<xmlattr>.Name", name_);
@@ -471,6 +472,46 @@ namespace OpcUaModbusGateway
 			Log(Debug, "attribute not found in modbus tcp client configuration, use default")
 				.parameter("QueryTimeout", queryTimeout_)
 				.parameter("Attribute", "queryTimeout");
+		}
+
+		// Find coil entries in configuration
+		configVec.clear();
+		config.getChilds("Coils", configVec);
+		if (configVec.size() != 0) {
+			// parse modbus client entries
+			for (auto configEntry: configVec) {
+				auto coilsConfig = std::make_shared<CoilsConfig>();
+
+				// parse coils entry
+				rc = coilsConfig->parse(configEntry);
+				if (rc == false) {
+					Log(Error, "parse coils entry error");
+					return false;
+				}
+
+				// add coils configuration entry to map
+				coilsConfigVec_.push_back(coilsConfig);
+			}
+		}
+
+		// Find input entries in configuration
+		configVec.clear();
+		config.getChilds("Inputs", configVec);
+		if (configVec.size() != 0) {
+			// parse modbus client entries
+			for (auto configEntry: configVec) {
+				auto inputsConfig = std::make_shared<InputsConfig>();
+
+				// parse inputs entry
+				rc = inputsConfig->parse(configEntry);
+				if (rc == false) {
+					Log(Error, "parse inputs entry error");
+					return false;
+				}
+
+				// add inputs configuration entry to map
+				inputsConfigVec_.push_back(inputsconfig);
+			}
 		}
 
 		return true;
@@ -590,7 +631,7 @@ namespace OpcUaModbusGateway
 		std::vector<Config> configVec;
 		config.getChilds("OpcUaModbusGateway.ModbusTCPClient", configVec);
 		if (configVec.size() == 0) {
-			Log(Error, "file system configuration not found in configuration file")
+			Log(Error, "modbus client configuration not found in configuration file")
 				.parameter("ConfigurationFile", fileName)
 				.parameter("Attribute", "OpcUaModbusGateway.ModbusTCPClient");
 			return false;
