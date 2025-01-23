@@ -271,7 +271,6 @@ namespace OpcUaModbusGateway
 	bool
 	HoldingRegisterConfig::parse(Config& config)
 	{
-		// FIXME: TODO
 		return true;
 	}
 
@@ -330,7 +329,45 @@ namespace OpcUaModbusGateway
 	bool
 	HoldingRegistersConfig::parse(Config& config)
 	{
-		// FIXME: TODO
+		bool rc = true;
+
+		// Get name attribute from configuration
+		rc = config.getConfigParameter("<xmlattr>.Name", name_);
+		if (rc == false) {
+			Log(Error, "attribute not found in holding register configuration")
+				.parameter("Attribute", "Name");
+			return false;
+		}
+
+		// Get interval attribute from configuration
+		rc = config.getConfigParameter("<xmlattr>.Interval", interval_);
+		if (rc == false) {
+			Log(Error, "attribute not found in holding register configuration")
+				.parameter("Interval", interval_)
+				.parameter("Attribute", "Interval");
+			return false;
+		}
+
+		// Find inputs entries in configuration
+		std::vector<Config> configVec;
+		config.getChilds("HoldingRegister", configVec);
+		if (configVec.size() != 0) {
+			// parse holding register entries
+			for (auto configEntry: configVec) {
+				auto holdingRegisterConfig = std::make_shared<HoldingRegisterConfig>();
+
+				// parse holding register entry
+				rc = holdingRegisterConfig->parse(configEntry);
+				if (rc == false) {
+					Log(Error, "parse holding register entry error");
+					return false;
+				}
+
+				// add holding register configuration entry to map
+				holdingRegisterConfigVec_.push_back(holdingRegisterConfig);
+			}
+		}
+
 		return true;
 	}
 
