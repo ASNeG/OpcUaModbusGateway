@@ -4,6 +4,7 @@
   <ModbusTCPClient Name="PythonMmodbusServer">
     <IPAddress>127.0.0.1</IPAddress>
     <Port>5502</Port>
+    <SlaveId>0</SlaveId>
   </ModbusTCPClient>
 
 <!--  

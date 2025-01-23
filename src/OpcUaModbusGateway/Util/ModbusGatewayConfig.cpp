@@ -71,6 +71,15 @@ namespace OpcUaModbusGateway
 			return false;
 		}
 
+		// Get slave id attribute from configuration
+		rc = config.getConfigParameter("SlaveId", slaveId_);
+		if (rc == false) {
+			Log(Error, "attribute not found in modbus tcp client configuration")
+				.parameter("SlaveId", slaveId_)
+				.parameter("Attribute", "SlaveId");
+			return false;
+		}
+
 		// Get connect timeout from configuration
 		rc = config.getConfigParameter("ConnectTimeout", connectTimeout_);
 		if (rc == false) {
@@ -130,6 +139,12 @@ namespace OpcUaModbusGateway
 	ModbusTCPClientConfig::port(void)
 	{
 		return port_;
+	}
+
+	uint8_t
+	ModbusTCPClientConfig::slaveId(void)
+	{
+		return slaveId_;
 	}
 
 	uint32_t
