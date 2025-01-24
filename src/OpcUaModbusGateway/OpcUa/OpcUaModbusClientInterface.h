@@ -25,6 +25,7 @@
 #include "OpcUaModbusGateway/Util/ModbusGatewayConfig.h"
 #include "OpcUaModbusGateway/CustomerObjectType/ModbusClientInterface.h"
 #include "OpcUaModbusGateway/Application/ModbusTCPClient.h"
+#include "OpcUaModbusGateway/OpcUa/OpcUaModbusClientRegister.h"
 
 namespace OpcUaModbusGateway
 {
@@ -92,6 +93,8 @@ namespace OpcUaModbusGateway
         ModbusTCPClient::SPtr modbusTCPClient_ = nullptr;
         ModbusTCPClientConfig::SPtr modbusTCPClientConfig_;
         OpcUaStackServer::ApplicationServiceIf* applicationServiceIf_ = nullptr;
+
+        OpcUaModbusClientRegister modbusClientRegister_;
 
         std::string namespaceName_ = "";
         uint32_t namespaceIndex_ = 0;

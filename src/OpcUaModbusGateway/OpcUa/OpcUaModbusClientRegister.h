@@ -15,30 +15,48 @@
    Autor: Kai Huebl (kai@huebl-sgh.de)
  */
 
-#ifndef __OpcUaModbusGateway_OpcUaAnalogVariable_h__
-#define __OpcUaModbusGateway_OpcUaAnalogVariable_h__
+#ifndef __OpcUaModbusGateway_OpcUaModbusClientRegister_h__
+#define __OpcUaModbusGateway_OpcUaModbusClientRegister_h__
 
 #include <string>
 
 #include "OpcUaStackServer/Application/ApplicationServiceIf.h"
+
 #include "OpcUaModbusGateway/Util/ModbusGatewayConfig.h"
+#include "OpcUaModbusGateway/CustomerVariableType/AnalogValue.h"
 
 namespace OpcUaModbusGateway
 {
 
-	class OpcUaAnalogVariable
+	class OpcUaModbusClientRegister
 	{
 	  public:
-		OpcUaAnalogVariable(void);
-		~OpcUaAnalogVariable(void);
+		OpcUaModbusClientRegister(void);
+		~OpcUaModbusClientRegister(void);
 
 		bool startup(
-			OpcUaStackServer::ApplicationServiceIf* OpcUaAnalogVariableIf
+			const std::string& namespaceName,
+			ModbusTCPClientConfig::SPtr modbusTCPClientConfig,
+			OpcUaStackServer::ApplicationServiceIf* OpcUaModbusClientRegisterIf,
+			OpcUaStackCore::OpcUaNodeId& rootNodeId
 		);
 		bool shutdown(void);
 
 	  private:
+		std::string namespaceName_ = "";
+		ModbusTCPClientConfig::SPtr modbusTCPClientConfig_;
 		OpcUaStackServer::ApplicationServiceIf* applicationServiceIf_ = nullptr;
+		OpcUaStackCore::OpcUaNodeId rootNodeId_;
+
+		AnalogValue::Vec analogValue_;
+
+        OpcUaStackCore::OpcUaNodeId coilsFolderNodeId_;
+        OpcUaStackCore::OpcUaNodeId inputsFolderNodeId_;
+        OpcUaStackCore::OpcUaNodeId holdingRegistersFolderNodeId_;
+        OpcUaStackCore::OpcUaNodeId inputRegistersFolderNodeId_;
+
+        bool getRegisterFolderNodeIds(void);
+
 	};
 
 }

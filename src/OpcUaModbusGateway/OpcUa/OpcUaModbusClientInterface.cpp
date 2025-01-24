@@ -86,7 +86,7 @@ namespace OpcUaModbusGateway
 		bool rc  = true;
 		OpcUaNodeId parentNodeId(parentId, namespaceIndex_);
 
-		// create a new object instance in opc ua information model
+		// create a new modbus tcp client object instance in opc ua information model
 		Object::SPtr obj = shared_from_this();
 		CreateObjectInstance createObjectInstance(
 			namespaceName_,									// namespace name of the object instance
@@ -98,6 +98,20 @@ namespace OpcUaModbusGateway
 		if (!createObjectInstance.query(applicationServiceIf_)) {
 			Log(Error, "create object error")
 				.parameter("DisplayName", modbusTCPClientConfig_->name());
+			return false;
+		}
+
+		// Startup opc ua modbus client register
+		OpcUaNodeId rootNodeId = nodeId();
+		rc = modbusClientRegister_.startup(
+			namespaceName_,
+			modbusTCPClientConfig_,
+			applicationServiceIf_,
+			rootNodeId
+		);
+		if (rc == false) {
+			Log(Error, "create modbus tcp client register error")
+				.parameter("Name", modbusTCPClientConfig_->name());
 			return false;
 		}
 
