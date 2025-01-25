@@ -68,6 +68,7 @@ namespace OpcUaModbusGateway
 			return false;
 		}
 
+#if 0
 		// Create coil nodes
 		for (auto coils: modbusTCPClientConfig_->coilsConfigVec()) {
 			for (auto coil : coils->coilConfigVec()) {
@@ -89,6 +90,7 @@ namespace OpcUaModbusGateway
 				analogValue_.push_back(analogValue);
 			}
 		}
+#endif
 
 		return true;
 	}

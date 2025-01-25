@@ -603,12 +603,12 @@ namespace OpcUaModbusGateway
 	// ------------------------------------------------------------------------
 	// ------------------------------------------------------------------------
 
-	std::map<RegisterGroupType, std::string> RegisterGroupConfig::typeMap_ = {
-		{RegisterGroupType::None, "None"},
-		{RegisterGroupType::Coil, "Coil"},
-		{RegisterGroupType::Input, "Input"},
-		{RegisterGroupType::InputRegister, "InputRegister"},
-		{RegisterGroupType::HoldingRegister, "HoldingRegister"}
+	std::map<RegisterGroupConfig::Type, std::string> RegisterGroupConfig::typeMap_ = {
+		{RegisterGroupConfig::Type::None, "None"},
+		{RegisterGroupConfig::Type::Coil, "Coil"},
+		{RegisterGroupConfig::Type::Input, "Input"},
+		{RegisterGroupConfig::Type::InputRegister, "InputRegister"},
+		{RegisterGroupConfig::Type::HoldingRegister, "HoldingRegister"}
 	};
 
 	RegisterGroupConfig::RegisterGroupConfig(void)
@@ -626,13 +626,19 @@ namespace OpcUaModbusGateway
 		return it == typeMap_.end() ? "Unknown" : it->second;
 	}
 
-	Type
+	RegisterGroupConfig::Type
 	RegisterGroupConfig::toType(const std::string& type)
 	{
 		for (auto it : typeMap_) {
-			if (it->second == type) return it->first;
+			if (it.second == type) return it.first;
 		}
 		return Type::None;
+	}
+
+	RegisterGroupConfig::Type
+	RegisterGroupConfig::type(void)
+	{
+		return type_;
 	}
 
 	bool
@@ -731,6 +737,13 @@ namespace OpcUaModbusGateway
 	{
 	}
 
+	RegisterGroupConfig::Vec&
+	ModbusTCPClientConfig::registerGroupConfigVec(RegisterGroupConfig::Type type)
+	{
+		auto it = registerGroupMap_.find(type);
+		return it->second;
+	}
+
 	bool
 	ModbusTCPClientConfig::parse(Config& config)
 	{
@@ -812,84 +825,24 @@ namespace OpcUaModbusGateway
 				.parameter("Attribute", "queryTimeout");
 		}
 
-		// Find coil entries in configuration
+		// Find register group entries in configuration
 		configVec.clear();
-		config.getChilds("Coils", configVec);
+		config.getChilds("RegisterGroup", configVec);
 		if (configVec.size() != 0) {
-			// parse modbus client entries
-			for (auto configEntry: configVec) {
-				auto coilsConfig = std::make_shared<CoilsConfig>();
 
-				// parse coils entry
-				rc = coilsConfig->parse(configEntry);
-				if (rc == false) {
-					Log(Error, "parse coils entry error");
+			for (auto configEntry : configVec) {
+				// create register group config
+				auto registerGroup = std::make_shared<RegisterGroupConfig>();
+
+				// Parse register group config
+				rc = registerGroup->parse(configEntry);
+				if (!rc) {
+					Log(Error, "parse register group entry");
 					return false;
 				}
 
-				// add coils configuration entry to map
-				coilsConfigVec_.push_back(coilsConfig);
-			}
-		}
-
-		// Find input entries in configuration
-		configVec.clear();
-		config.getChilds("Inputs", configVec);
-		if (configVec.size() != 0) {
-			// parse modbus client entries
-			for (auto configEntry: configVec) {
-				auto inputsConfig = std::make_shared<InputsConfig>();
-
-				// parse inputs entry
-				rc = inputsConfig->parse(configEntry);
-				if (rc == false) {
-					Log(Error, "parse inputs entry error");
-					return false;
-				}
-
-				// add inputs configuration entry to map
-				inputsConfigVec_.push_back(inputsConfig);
-			}
-		}
-
-		// Find holding registers entries in configuration
-		configVec.clear();
-		config.getChilds("HoldingRegisters", configVec);
-		if (configVec.size() != 0) {
-			// parse modbus client entries
-			for (auto configEntry: configVec) {
-				auto holdingRegistersConfig = std::make_shared<HoldingRegistersConfig>();
-
-				// parse holding registers entry
-				rc = holdingRegistersConfig->parse(configEntry);
-				if (rc == false) {
-					Log(Error, "parse holding registers entry error");
-					return false;
-				}
-
-				// add holding registers configuration entry to map
-				holdingRegistersConfigVec_.push_back(holdingRegistersConfig);
-			}
-		}
-
-
-		// Find input registers entries in configuration
-		configVec.clear();
-		config.getChilds("InputRegisters", configVec);
-		if (configVec.size() != 0) {
-			// parse modbus client entries
-			for (auto configEntry: configVec) {
-				auto inputRegistersConfig = std::make_shared<InputRegistersConfig>();
-
-				// parse input registers entry
-				rc = inputRegistersConfig->parse(configEntry);
-				if (rc == false) {
-					Log(Error, "parse input registers entry error");
-					return false;
-				}
-
-				// add input registers configuration entry to map
-				inputRegistersConfigVec_.push_back(inputRegistersConfig);
+				// Add new register group to map
+				registerGroupConfigVec(registerGroup->type()).push_back(registerGroup);
 			}
 		}
 
@@ -918,30 +871,6 @@ namespace OpcUaModbusGateway
 	ModbusTCPClientConfig::slaveId(void)
 	{
 		return slaveId_;
-	}
-
-	CoilsConfig::Vec&
-	ModbusTCPClientConfig::coilsConfigVec(void)
-	{
-		return coilsConfigVec_;
-	}
-
-	InputsConfig::Vec&
-	ModbusTCPClientConfig::inputsConfigVec(void)
-	{
-		return inputsConfigVec_;
-	}
-
-	HoldingRegistersConfig::Vec&
-	ModbusTCPClientConfig::holdingRegistersConfigVec(void)
-	{
-		return holdingRegistersConfigVec_;
-	}
-
-	InputRegistersConfig::Vec&
-	ModbusTCPClientConfig::inputRegistersConfigVec(void)
-	{
-		return inputRegistersConfigVec_;
 	}
 
 	uint32_t

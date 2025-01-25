@@ -211,16 +211,17 @@ namespace OpcUaModbusGateway
 		RegisterGroupConfig(void);
 		~RegisterGroupConfig(void);
 
+		static std::map<Type, std::string> typeMap_;
 		static std::string toString(Type type);
 		static Type toType(const std::string& type);
 
+		Type type(void);
 		bool parse(OpcUaStackCore::Config& config);
 		std::string groupName(void);
 		uint32_t interval(void);
 		RegisterConfig::Vec& registerConfigVec(void);
 
 	  private:
-		std::map<RegisterValueType, std::string> typeMap_;
 		Type type_ = Type::None;
 		std::string groupName_ = "";
 		uint32_t interval_ = 1000;
@@ -241,10 +242,7 @@ namespace OpcUaModbusGateway
 		std::string ipAddress(void);
 		uint32_t port(void);
 		uint8_t slaveId(void);
-		CoilsConfig::Vec& coilsConfigVec(void);
-		InputsConfig::Vec& inputsConfigVec(void);
-		HoldingRegistersConfig::Vec& holdingRegistersConfigVec(void);
-		InputRegistersConfig::Vec& inputRegistersConfigVec(void);
+		RegisterGroupConfig::Vec& registerGroupConfigVec(RegisterGroupConfig::Type type);
 
 		uint32_t connectTimeout(void);
 		uint32_t reconnectTimeout(void);
@@ -258,10 +256,7 @@ namespace OpcUaModbusGateway
 		std::string ipAddress_ = "127.0.0.1";
 		uint32_t port_ = 123;
 		uint8_t slaveId_ = 0;
-		CoilsConfig::Vec coilsConfigVec_;
-		InputsConfig::Vec inputsConfigVec_;
-		HoldingRegistersConfig::Vec holdingRegistersConfigVec_;
-		InputRegistersConfig::Vec inputRegistersConfigVec_;
+		std::map<RegisterGroupConfig::Type, RegisterGroupConfig::Vec> registerGroupMap_;
 
 		// Optional attributes
 		uint32_t connectTimeout_ = 1000; 		/* 1000 milliseconds */
