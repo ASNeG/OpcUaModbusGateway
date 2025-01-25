@@ -28,6 +28,25 @@ namespace OpcUaModbusGateway
 	// ------------------------------------------------------------------------
 	// ------------------------------------------------------------------------
 	//
+	// enum functions
+	//
+	// ------------------------------------------------------------------------
+	// ------------------------------------------------------------------------
+	std::string toString(RegisterValueType registerValueType)
+	{
+		std::map<RegisterValueType, std::string> map = {
+			{RegisterValueType::Bool, "Bool"},
+			{RegisterValueType::UInt16, "UInt16"}
+		};
+		auto it = map.find(registerValueType);
+		return it == map.end() ? "Unknown" : it->second;
+
+	}
+
+
+	// ------------------------------------------------------------------------
+	// ------------------------------------------------------------------------
+	//
 	// class CoilConfig
 	//
 	// ------------------------------------------------------------------------
@@ -98,7 +117,7 @@ namespace OpcUaModbusGateway
 		bool rc = true;
 
 		// Get name attribute from configuration
-		rc = config.getConfigParameter("<xmlattr>.Name", name_);
+		rc = config.getConfigParameter("<xmlattr>.GroupName", groupName_);
 		if (rc == false) {
 			Log(Error, "attribute not found in coils configuration")
 				.parameter("Attribute", "Name");
@@ -138,9 +157,9 @@ namespace OpcUaModbusGateway
 	}
 
 	std::string
-	CoilsConfig::name(void)
+	CoilsConfig::groupName(void)
 	{
-		return name_;
+		return groupName_;
 	}
 
 	uint32_t
@@ -229,7 +248,7 @@ namespace OpcUaModbusGateway
 		bool rc = true;
 
 		// Get name attribute from configuration
-		rc = config.getConfigParameter("<xmlattr>.Name", name_);
+		rc = config.getConfigParameter("<xmlattr>.GroupName", groupName_);
 		if (rc == false) {
 			Log(Error, "attribute not found in inputs configuration")
 				.parameter("Attribute", "Name");
@@ -269,9 +288,9 @@ namespace OpcUaModbusGateway
 	}
 
 	std::string
-	InputsConfig::name(void)
+	InputsConfig::groupName(void)
 	{
-		return name_;
+		return groupName_;
 	}
 
 	uint32_t
@@ -412,7 +431,7 @@ namespace OpcUaModbusGateway
 		bool rc = true;
 
 		// Get name attribute from configuration
-		rc = config.getConfigParameter("<xmlattr>.Name", name_);
+		rc = config.getConfigParameter("<xmlattr>.GroupName", groupName_);
 		if (rc == false) {
 			Log(Error, "attribute not found in holding register configuration")
 				.parameter("Attribute", "Name");
@@ -452,9 +471,9 @@ namespace OpcUaModbusGateway
 	}
 
 	std::string
-	HoldingRegistersConfig::name(void)
+	HoldingRegistersConfig::groupName(void)
 	{
-		return name_;
+		return groupName_;
 	}
 
 	uint32_t
@@ -473,27 +492,27 @@ namespace OpcUaModbusGateway
 	// ------------------------------------------------------------------------
 	// ------------------------------------------------------------------------
 	//
-	// class InputRegisterConfig
+	// class RegisterConfig
 	//
 	// ------------------------------------------------------------------------
 	// ------------------------------------------------------------------------
-	InputRegisterConfig::InputRegisterConfig(void)
+	RegisterConfig::RegisterConfig(void)
 	{
 	}
 
-	InputRegisterConfig::~InputRegisterConfig(void)
+	RegisterConfig::~RegisterConfig(void)
 	{
 	}
 
 	bool
-	InputRegisterConfig::parse(Config& config)
+	RegisterConfig::parse(Config& config)
 	{
 		bool rc = true;
 
 		// Get name attribute from configuration
 		rc = config.getConfigParameter("<xmlattr>.Name", name_);
 		if (rc == false) {
-			Log(Error, "attribute not found in input register configuration")
+			Log(Error, "attribute not found in register configuration")
 				.parameter("Attribute", "Name");
 			return false;
 		}
@@ -501,8 +520,9 @@ namespace OpcUaModbusGateway
 		// Get address attribute from configuration
 		rc = config.getConfigParameter("<xmlattr>.Address", address_);
 		if (rc == false) {
-			Log(Error, "attribute not found in input register configuration")
-				.parameter("Attribute", "Address");
+			Log(Error, "attribute not found in register configuration")
+				.parameter("Attribute", "Address")
+				.parameter("Register", name_);
 			return false;
 		}
 
@@ -517,8 +537,9 @@ namespace OpcUaModbusGateway
 		// Get type attribute from configuration
 		rc = config.getConfigParameter("<xmlattr>.Type", type_);
 		if (rc == false) {
-			Log(Error, "attribute not found in input register configuration")
-				.parameter("Attribute", "Type");
+			Log(Error, "attribute not found in register configuration")
+				.parameter("Attribute", "Type")
+				.parameter("Register", name_);
 			return false;
 		}
 
@@ -538,37 +559,37 @@ namespace OpcUaModbusGateway
 	}
 
 	uint16_t
-	InputRegisterConfig::address(void)
+	RegisterConfig::address(void)
 	{
 		return address_;
 	}
 
 	std::string
-	InputRegisterConfig::name(void)
+	RegisterConfig::name(void)
 	{
 		return name_;
 	}
 
 	std::string
-	InputRegisterConfig::unit(void)
+	RegisterConfig::unit(void)
 	{
 		return unit_;
 	}
 
 	std::string
-	InputRegisterConfig::type(void)
+	RegisterConfig::type(void)
 	{
 		return type_;
 	}
 
 	double
-	InputRegisterConfig::a(void)
+	RegisterConfig::a(void)
 	{
 		return a_;
 	}
 
 	double
-	InputRegisterConfig::b(void)
+	RegisterConfig::b(void)
 	{
 		return b_;
 	}
@@ -577,27 +598,68 @@ namespace OpcUaModbusGateway
 	// ------------------------------------------------------------------------
 	// ------------------------------------------------------------------------
 	//
-	// class InputRegistersConfig
+	// class RegisterGroupConfig
 	//
 	// ------------------------------------------------------------------------
 	// ------------------------------------------------------------------------
-	InputRegistersConfig::InputRegistersConfig(void)
+
+	std::map<RegisterGroupType, std::string> RegisterGroupConfig::typeMap_ = {
+		{RegisterGroupType::None, "None"},
+		{RegisterGroupType::Coil, "Coil"},
+		{RegisterGroupType::Input, "Input"},
+		{RegisterGroupType::InputRegister, "InputRegister"},
+		{RegisterGroupType::HoldingRegister, "HoldingRegister"}
+	};
+
+	RegisterGroupConfig::RegisterGroupConfig(void)
 	{
 	}
 
-	InputRegistersConfig::~InputRegistersConfig(void)
+	RegisterGroupConfig::~RegisterGroupConfig(void)
 	{
+	}
+
+	std::string
+	RegisterGroupConfig::toString(Type type)
+	{
+		auto it = typeMap_.find(type);
+		return it == typeMap_.end() ? "Unknown" : it->second;
+	}
+
+	Type
+	RegisterGroupConfig::toType(const std::string& type)
+	{
+		for (auto it : typeMap_) {
+			if (it->second == type) return it->first;
+		}
+		return Type::None;
 	}
 
 	bool
-	InputRegistersConfig::parse(Config& config)
+	RegisterGroupConfig::parse(Config& config)
 	{
 		bool rc = true;
 
-		// Get name attribute from configuration
-		rc = config.getConfigParameter("<xmlattr>.Name", name_);
+		// Get register group from configuration
+		std::string group = "";
+		rc = config.getConfigParameter("<xmlattr>.Group", group);
 		if (rc == false) {
-			Log(Error, "attribute not found in input register configuration")
+			Log(Error, "attribute not found in register group configuration")
+				.parameter("Attribute", "Group");
+			return false;
+		}
+		type_ = toType(group);
+		if (type_ == Type::None) {
+			Log(Error, "invalid group type in register group configuration")
+				.parameter("Attribute", "Group")
+				.parameter("GroupType", group);
+			return false;
+		}
+
+		// Get name attribute from configuration
+		rc = config.getConfigParameter("<xmlattr>.GroupName", groupName_);
+		if (rc == false) {
+			Log(Error, "attribute not found in register group configuration")
 				.parameter("Attribute", "Name");
 			return false;
 		}
@@ -605,7 +667,7 @@ namespace OpcUaModbusGateway
 		// Get interval attribute from configuration
 		rc = config.getConfigParameter("<xmlattr>.Interval", interval_);
 		if (rc == false) {
-			Log(Error, "attribute not found in input register configuration")
+			Log(Error, "attribute not found in register group configuration")
 				.parameter("Interval", interval_)
 				.parameter("Attribute", "Interval");
 			return false;
@@ -613,21 +675,21 @@ namespace OpcUaModbusGateway
 
 		// Find input register entries in configuration
 		std::vector<Config> configVec;
-		config.getChilds("InputRegister", configVec);
+		config.getChilds("Register", configVec);
 		if (configVec.size() != 0) {
 			// parse input register entries
 			for (auto configEntry: configVec) {
-				auto inputRegisterConfig = std::make_shared<InputRegisterConfig>();
+				auto registerConfig = std::make_shared<RegisterConfig>();
 
-				// parse input register entry
-				rc = inputRegisterConfig->parse(configEntry);
+				// parse register entry
+				rc = registerConfig->parse(configEntry);
 				if (rc == false) {
-					Log(Error, "parse input register entry error");
+					Log(Error, "parse register group entry error");
 					return false;
 				}
 
-				// add input register configuration entry to map
-				inputRegisterConfigVec_.push_back(inputRegisterConfig);
+				// add register configuration entry to map
+				registerConfigVec_.push_back(registerConfig);
 			}
 		}
 
@@ -635,21 +697,21 @@ namespace OpcUaModbusGateway
 	}
 
 	std::string
-	InputRegistersConfig::name(void)
+	RegisterGroupConfig::groupName(void)
 	{
-		return name_;
+		return groupName_;
 	}
 
 	uint32_t
-	InputRegistersConfig::interval(void)
+	RegisterGroupConfig::interval(void)
 	{
 		return interval_;
 	}
 
-	InputRegisterConfig::Vec&
-	InputRegistersConfig::inputRegisterConfigVec(void)
+	RegisterConfig::Vec&
+	RegisterGroupConfig::registerConfigVec(void)
 	{
-		return inputRegisterConfigVec_;
+		return registerConfigVec_;
 	}
 
 

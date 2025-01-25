@@ -26,6 +26,24 @@
 namespace OpcUaModbusGateway
 {
 
+	enum class RegisterValueType
+	{
+		Bool,
+		UInt16
+	};
+
+	std::string toString(RegisterValueType registerValueType);
+
+	enum class RegisterGroupType
+	{
+		Coil,
+		Input,
+		InputRegister,
+		HoldingRegister
+	};
+
+	std::string toString(RegisterGroupType registerGroupType);
+
 	class CoilConfig
 	{
 	  public:
@@ -54,12 +72,12 @@ namespace OpcUaModbusGateway
 		~CoilsConfig(void);
 
 		bool parse(OpcUaStackCore::Config& config);
-		std::string name(void);
+		std::string groupName(void);
 		uint32_t interval(void);
 		CoilConfig::Vec& coilConfigVec(void);
 
 	  private:
-		std::string name_ = "";
+		std::string groupName_ = "";
 		uint32_t interval_ = 1000;
 		CoilConfig::Vec coilConfigVec_;
 	};
@@ -92,12 +110,12 @@ namespace OpcUaModbusGateway
 		~InputsConfig(void);
 
 		bool parse(OpcUaStackCore::Config& config);
-		std::string name(void);
+		std::string groupName(void);
 		uint32_t interval(void);
 		InputConfig::Vec& inputConfigVec(void);
 
 	  private:
-		std::string name_ = "";
+		std::string groupName_ = "";
 		uint32_t interval_ = 1000;
 		InputConfig::Vec inputConfigVec_;
 	};
@@ -139,25 +157,24 @@ namespace OpcUaModbusGateway
 		~HoldingRegistersConfig(void);
 
 		bool parse(OpcUaStackCore::Config& config);
-		std::string name(void);
+		std::string groupName(void);
 		uint32_t interval(void);
 		HoldingRegisterConfig::Vec& holdingRegisterConfigVec(void);
 
 	  private:
-		std::string name_ = "";
+		std::string groupName_ = "";
 		uint32_t interval_ = 1000;
 		HoldingRegisterConfig::Vec holdingRegisterConfigVec_;
 	};
 
-
-	class InputRegisterConfig
+	class RegisterConfig
 	{
 	  public:
-		using SPtr = std::shared_ptr<InputRegisterConfig>;
-		using Vec = std::vector<InputRegisterConfig::SPtr>;
+		using SPtr = std::shared_ptr<RegisterConfig>;
+		using Vec = std::vector<RegisterConfig::SPtr>;
 
-		InputRegisterConfig(void);
-		~InputRegisterConfig(void);
+		RegisterConfig(void);
+		~RegisterConfig(void);
 
 		bool parse(OpcUaStackCore::Config& config);
 		uint16_t address(void);
@@ -177,23 +194,37 @@ namespace OpcUaModbusGateway
 	};
 
 
-	class InputRegistersConfig {
+	class RegisterGroupConfig {
 	  public:
-		using SPtr = std::shared_ptr<InputRegistersConfig>;
-		using Vec = std::vector<InputRegistersConfig::SPtr>;
+		using SPtr = std::shared_ptr<RegisterGroupConfig>;
+		using Vec = std::vector<RegisterGroupConfig::SPtr>;
 
-		InputRegistersConfig(void);
-		~InputRegistersConfig(void);
+		enum class Type
+		{
+			None,
+			Coil,
+			Input,
+			InputRegister,
+			HoldingRegister
+		};
+
+		RegisterGroupConfig(void);
+		~RegisterGroupConfig(void);
+
+		static std::string toString(Type type);
+		static Type toType(const std::string& type);
 
 		bool parse(OpcUaStackCore::Config& config);
-		std::string name(void);
+		std::string groupName(void);
 		uint32_t interval(void);
-		InputRegisterConfig::Vec& inputRegisterConfigVec(void);
+		RegisterConfig::Vec& registerConfigVec(void);
 
 	  private:
-		std::string name_ = "";
+		std::map<RegisterValueType, std::string> typeMap_;
+		Type type_ = Type::None;
+		std::string groupName_ = "";
 		uint32_t interval_ = 1000;
-		InputRegisterConfig::Vec inputRegisterConfigVec_;
+		RegisterConfig::Vec registerConfigVec_;
 	};
 
 	class ModbusTCPClientConfig
