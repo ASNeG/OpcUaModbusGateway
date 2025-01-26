@@ -741,7 +741,22 @@ namespace OpcUaModbusGateway
 	ModbusTCPClientConfig::registerGroupConfigVec(RegisterGroupConfig::Type type)
 	{
 		auto it = registerGroupMap_.find(type);
+		if (it == registerGroupMap_.end()) {
+			registerGroupMap_.insert(std::make_pair(type, RegisterGroupConfig::Vec()));
+			auto it = registerGroupMap_.find(type);
+			return it->second;
+		}
 		return it->second;
+	}
+
+	std::vector<RegisterGroupConfig::Type>
+	ModbusTCPClientConfig::registerGroupTypes(void)
+	{
+		std::vector<RegisterGroupConfig::Type> vec;
+		for (auto it : registerGroupMap_) {
+			vec.push_back(it.first);
+		}
+		return vec;
 	}
 
 	bool

@@ -21,6 +21,7 @@
 #include "OpcUaStackServer/ServiceSetApplication/BrowsePathToNodeId.h"
 #include "OpcUaStackServer/ServiceSetApplication/CreateVariableInstance.h"
 #include "OpcUaStackServer/ServiceSetApplication/DeleteNodeInstance.h"
+#include "OpcUaStackServer/ServiceSetApplication/CreateNodeInstance.h"
 
 #include "OpcUaModbusGateway/OpcUa/OpcUaModbusClientRegister.h"
 
@@ -62,12 +63,62 @@ namespace OpcUaModbusGateway
 		rootNodeId_ = rootNodeId;
 		applicationServiceIf_ = applicationServiceIf;
 
+#if 0
 		// Get register folder nodes
 		rc = getRegisterFolderNodeIds();
 		if (!rc) {
 			return false;
 		}
+#endif
 
+		// Create register type folder
+		for (auto registerGroupType : modbusTCPClientConfig->registerGroupTypes()) {
+			// Get root type node id from opc ua information model
+			auto displayName = RegisterGroupConfig::toString(registerGroupType)  + "s";
+   			BrowsePathToNodeId browsePathToNodeId({
+   				BrowseName(rootNodeId_, OpcUaQualifiedName(displayName, rootNodeId_.namespaceIndex()))
+   			});
+   			if (!browsePathToNodeId.query(applicationServiceIf_, true)) {
+   				Log(Error, "call browse path to node id service error")
+   					.parameter("DisplayName", displayName);
+   				return false;
+   			}
+   			auto typeNodeId = browsePathToNodeId.nodes()[0];
+
+   			// Get a list of all register group configurations for actual register type
+   			// and create a group instance
+   			auto registerGroupConfigs = modbusTCPClientConfig->registerGroupConfigVec(registerGroupType);
+   			for (auto registerGroupConfig : registerGroupConfigs) {
+   				auto clientGroup = std::make_shared<OpcUaModbusClientGroup>();
+   			}
+
+
+#if 0
+			CreateNodeInstance createNodeInstance(
+				registerGroupType->groupName(),					// name
+				NodeClass::Object,								// node class
+				coilsFolderNodeId_,								// parent node id (Objects)
+				nodeId,											// node id
+				OpcUaLocalizedText("en", registerGroupType->groupName()),// dispplay name
+				OpcUaQualifiedName(registerGroupType->groupName(), 1),	 // browse name
+				OpcUaNodeId(47),								// reference type id
+				OpcUaNodeId(62)									// type node id
+			);
+
+			if (!createNodeInstance.query(applicationServiceIf_)) {
+				Log(Error, "create register group node instance error")
+					.parameter("DisplayName", registerGroupType);
+				return false;
+			}
+#endif
+
+			// Create register group instances
+		}
+#if 0
+		RegisterGroupConfig::Vec& registerGroupConfigVec(RegisterGroupConfig::Type type);
+		std::vector<RegisterGroupConfig::Type>
+			ModbusTCPClientConfig::registerGroupTypes(void)
+#endif
 #if 0
 		// Create coil nodes
 		for (auto coils: modbusTCPClientConfig_->coilsConfigVec()) {

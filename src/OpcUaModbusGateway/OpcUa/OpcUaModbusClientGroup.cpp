@@ -50,7 +50,7 @@ namespace OpcUaModbusGateway
 	bool
 	OpcUaModbusClientGroup::startup(
 		const std::string& namespaceName,
-		ModbusTCPClientConfig::SPtr modbusTCPClientConfig,
+		RegisterGroupConfig::SPtr registerGroupConfig,
 		OpcUaStackServer::ApplicationServiceIf* applicationServiceIf,
 		OpcUaStackCore::OpcUaNodeId& rootNodeId
 	)
@@ -58,7 +58,7 @@ namespace OpcUaModbusGateway
 		bool rc = true;
 
 		namespaceName_ = namespaceName;
-		modbusTCPClientConfig_ = modbusTCPClientConfig;
+		registerGroupConfig_ = registerGroupConfig;
 		rootNodeId_ = rootNodeId;
 		applicationServiceIf_ = applicationServiceIf;
 

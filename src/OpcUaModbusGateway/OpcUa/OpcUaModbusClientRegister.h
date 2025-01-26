@@ -24,6 +24,7 @@
 
 #include "OpcUaModbusGateway/Util/ModbusGatewayConfig.h"
 #include "OpcUaModbusGateway/CustomerVariableType/AnalogValue.h"
+#include "OpcUaModbusGateway/OpcUa/OpcUaModbusClientGroup.h"
 
 namespace OpcUaModbusGateway
 {

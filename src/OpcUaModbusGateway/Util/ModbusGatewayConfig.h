@@ -233,6 +233,7 @@ namespace OpcUaModbusGateway
 	  public:
 		using SPtr = std::shared_ptr<ModbusTCPClientConfig>;
 		using Vec = std::vector<SPtr>;
+		using RegisterGroupMap = std::map<RegisterGroupConfig::Type, RegisterGroupConfig::Vec>;
 
 		ModbusTCPClientConfig(void);
 		~ModbusTCPClientConfig(void);
@@ -243,6 +244,7 @@ namespace OpcUaModbusGateway
 		uint32_t port(void);
 		uint8_t slaveId(void);
 		RegisterGroupConfig::Vec& registerGroupConfigVec(RegisterGroupConfig::Type type);
+		std::vector<RegisterGroupConfig::Type> registerGroupTypes(void);
 
 		uint32_t connectTimeout(void);
 		uint32_t reconnectTimeout(void);
@@ -256,7 +258,7 @@ namespace OpcUaModbusGateway
 		std::string ipAddress_ = "127.0.0.1";
 		uint32_t port_ = 123;
 		uint8_t slaveId_ = 0;
-		std::map<RegisterGroupConfig::Type, RegisterGroupConfig::Vec> registerGroupMap_;
+		RegisterGroupMap registerGroupMap_;
 
 		// Optional attributes
 		uint32_t connectTimeout_ = 1000; 		/* 1000 milliseconds */
