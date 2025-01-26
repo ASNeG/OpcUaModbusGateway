@@ -62,12 +62,6 @@ namespace OpcUaModbusGateway
 		rootNodeId_ = rootNodeId;
 		applicationServiceIf_ = applicationServiceIf;
 
-		// Get register folder nodes
-		rc = getRegisterFolderNodeIds();
-		if (!rc) {
-			return false;
-		}
-
 #if 0
 		// Create coil nodes
 		for (auto coils: modbusTCPClientConfig_->coilsConfigVec()) {

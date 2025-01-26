@@ -90,6 +90,14 @@ namespace OpcUaModbusGateway
    			auto registerGroupConfigs = modbusTCPClientConfig->registerGroupConfigVec(registerGroupType);
    			for (auto registerGroupConfig : registerGroupConfigs) {
    				auto clientGroup = std::make_shared<OpcUaModbusClientGroup>();
+   				auto rc =  clientGroup->startup(
+   					namespaceName, registerGroupConfig, applicationServiceIf_, typeNodeId
+   				);
+   				if (!rc) {
+   					Log(Error, "create opc ua register group error")
+   						.parameter("GroupName", registerGroupConfig->groupName());
+   					return true;
+   				}
    			}
 
 
@@ -151,61 +159,6 @@ namespace OpcUaModbusGateway
 	{
 		return true;
 	}
-
-  	bool
-	OpcUaModbusClientRegister::getRegisterFolderNodeIds(void)
-   	{
-
-   		// Find coils folder nodeid
-   		{
-   			BrowsePathToNodeId browsePathToNodeId({
-   				BrowseName(rootNodeId_, OpcUaQualifiedName(NodeName::coilsFolder_, rootNodeId_.namespaceIndex()))
-   			});
-   			if (!browsePathToNodeId.query(applicationServiceIf_, true)) {
-   				Log(Error, "call browse path to node id service error (Coils)");
-   				return false;
-   			}
-   			coilsFolderNodeId_ = browsePathToNodeId.nodes()[0];
-   		}
-
-		// Find inputs folder nodeid
-   		{
-   			BrowsePathToNodeId browsePathToNodeId({
-   				BrowseName(rootNodeId_, OpcUaQualifiedName(NodeName::inputsFolder_, rootNodeId_.namespaceIndex()))
-   			});
-   			if (!browsePathToNodeId.query(applicationServiceIf_, true)) {
-   				Log(Error, "call browse path to node id service error (Inputs)");
-   				return false;
-   			}
-   			inputsFolderNodeId_ = browsePathToNodeId.nodes()[0];
-   		}
-
-		// Find holding registers folder nodeid
-   		{
-   			BrowsePathToNodeId browsePathToNodeId({
-   				BrowseName(rootNodeId_, OpcUaQualifiedName(NodeName::holdingRegistersFolder_, rootNodeId_.namespaceIndex()))
-   			});
-   			if (!browsePathToNodeId.query(applicationServiceIf_, true)) {
-   				Log(Error, "call browse path to node id service error (HoldingRegisters)");
-   				return false;
-   			}
-   			holdingRegistersFolderNodeId_ = browsePathToNodeId.nodes()[0];
-   		}
-
-		// Find input registers folder nodeid
-   		{
-   			BrowsePathToNodeId browsePathToNodeId({
-   				BrowseName(rootNodeId_, OpcUaQualifiedName(NodeName::inputRegistersFolder_, rootNodeId_.namespaceIndex()))
-   			});
-   			if (!browsePathToNodeId.query(applicationServiceIf_, true)) {
-   				Log(Error, "call browse path to node id service error (InputRegisters)");
-   				return false;
-   			}
-   			inputRegistersFolderNodeId_ = browsePathToNodeId.nodes()[0];
-   		}
-
-   		return true;
-   	}
 
 }
 

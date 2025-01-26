@@ -51,13 +51,6 @@ namespace OpcUaModbusGateway
 
 		AnalogValue::Vec analogValue_;
 
-        OpcUaStackCore::OpcUaNodeId coilsFolderNodeId_;
-        OpcUaStackCore::OpcUaNodeId inputsFolderNodeId_;
-        OpcUaStackCore::OpcUaNodeId holdingRegistersFolderNodeId_;
-        OpcUaStackCore::OpcUaNodeId inputRegistersFolderNodeId_;
-
-        bool getRegisterFolderNodeIds(void);
-
 	};
 
 }
