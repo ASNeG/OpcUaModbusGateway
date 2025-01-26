@@ -47,451 +47,6 @@ namespace OpcUaModbusGateway
 	// ------------------------------------------------------------------------
 	// ------------------------------------------------------------------------
 	//
-	// class CoilConfig
-	//
-	// ------------------------------------------------------------------------
-	// ------------------------------------------------------------------------
-	CoilConfig::CoilConfig(void)
-	{
-	}
-
-	CoilConfig::~CoilConfig(void)
-	{
-	}
-
-	bool
-	CoilConfig::parse(Config& config)
-	{
-		bool rc = true;
-
-		// Get name attribute from configuration
-		rc = config.getConfigParameter("<xmlattr>.Name", name_);
-		if (rc == false) {
-			Log(Error, "attribute not found in coil configuration")
-				.parameter("Attribute", "Name");
-			return false;
-		}
-
-		// Get address attribute from configuration
-		rc = config.getConfigParameter("<xmlattr>.Address", address_);
-		if (rc == false) {
-			Log(Error, "attribute not found in coil configuration")
-				.parameter("Attribute", "Address");
-			return false;
-		}
-
-		return true;
-	}
-
-	uint16_t
-	CoilConfig::address(void)
-	{
-		return address_;
-	}
-
-	std::string
-	CoilConfig::name(void)
-	{
-		return name_;
-	}
-
-
-	// ------------------------------------------------------------------------
-	// ------------------------------------------------------------------------
-	//
-	// class CoilsConfig
-	//
-	// ------------------------------------------------------------------------
-	// ------------------------------------------------------------------------
-	CoilsConfig::CoilsConfig(void)
-	{
-	}
-
-	CoilsConfig::~CoilsConfig(void)
-	{
-	}
-
-	bool
-	CoilsConfig::parse(Config& config)
-	{
-		bool rc = true;
-
-		// Get name attribute from configuration
-		rc = config.getConfigParameter("<xmlattr>.GroupName", groupName_);
-		if (rc == false) {
-			Log(Error, "attribute not found in coils configuration")
-				.parameter("Attribute", "Name");
-			return false;
-		}
-
-		// Get interval attribute from configuration
-		rc = config.getConfigParameter("<xmlattr>.Interval", interval_);
-		if (rc == false) {
-			Log(Error, "attribute not found in coils configuration")
-				.parameter("Interval", interval_)
-				.parameter("Attribute", "Interval");
-			return false;
-		}
-
-		// Find coil entries in configuration
-		std::vector<Config> configVec;
-		config.getChilds("Coil", configVec);
-		if (configVec.size() != 0) {
-			// parse coil entries
-			for (auto configEntry: configVec) {
-				auto coilConfig = std::make_shared<CoilConfig>();
-
-				// parse coil entry
-				rc = coilConfig->parse(configEntry);
-				if (rc == false) {
-					Log(Error, "parse coil entry error");
-					return false;
-				}
-
-				// add coils configuration entry to map
-				coilConfigVec_.push_back(coilConfig);
-			}
-		}
-
-		return true;
-	}
-
-	std::string
-	CoilsConfig::groupName(void)
-	{
-		return groupName_;
-	}
-
-	uint32_t
-	CoilsConfig::interval(void)
-	{
-		return interval_;
-	}
-
-	CoilConfig::Vec&
-	CoilsConfig::coilConfigVec(void)
-	{
-		return coilConfigVec_;
-	}
-
-
-	// ------------------------------------------------------------------------
-	// ------------------------------------------------------------------------
-	//
-	// class InputConfig
-	//
-	// ------------------------------------------------------------------------
-	// ------------------------------------------------------------------------
-	InputConfig::InputConfig(void)
-	{
-	}
-
-	InputConfig::~InputConfig(void)
-	{
-	}
-
-	bool
-	InputConfig::parse(Config& config)
-	{
-		bool rc = true;
-
-		// Get name attribute from configuration
-		rc = config.getConfigParameter("<xmlattr>.Name", name_);
-		if (rc == false) {
-			Log(Error, "attribute not found in coil configuration")
-				.parameter("Attribute", "Name");
-			return false;
-		}
-
-		// Get address attribute from configuration
-		rc = config.getConfigParameter("<xmlattr>.Address", address_);
-		if (rc == false) {
-			Log(Error, "attribute not found in coil configuration")
-				.parameter("Attribute", "Address");
-			return false;
-		}
-
-		return true;
-	}
-
-	uint16_t
-	InputConfig::address(void)
-	{
-		return address_;
-	}
-
-	std::string
-	InputConfig::name(void)
-	{
-		return name_;
-	}
-
-
-	// ------------------------------------------------------------------------
-	// ------------------------------------------------------------------------
-	//
-	// class InputsConfig
-	//
-	// ------------------------------------------------------------------------
-	// ------------------------------------------------------------------------
-	InputsConfig::InputsConfig(void)
-	{
-	}
-
-	InputsConfig::~InputsConfig(void)
-	{
-	}
-
-	bool
-	InputsConfig::parse(Config& config)
-	{
-		bool rc = true;
-
-		// Get name attribute from configuration
-		rc = config.getConfigParameter("<xmlattr>.GroupName", groupName_);
-		if (rc == false) {
-			Log(Error, "attribute not found in inputs configuration")
-				.parameter("Attribute", "Name");
-			return false;
-		}
-
-		// Get interval attribute from configuration
-		rc = config.getConfigParameter("<xmlattr>.Interval", interval_);
-		if (rc == false) {
-			Log(Error, "attribute not found in inputs configuration")
-				.parameter("Interval", interval_)
-				.parameter("Attribute", "Interval");
-			return false;
-		}
-
-		// Find inputs entries in configuration
-		std::vector<Config> configVec;
-		config.getChilds("Input", configVec);
-		if (configVec.size() != 0) {
-			// parse coil entries
-			for (auto configEntry: configVec) {
-				auto inputConfig = std::make_shared<InputConfig>();
-
-				// parse input entry
-				rc = inputConfig->parse(configEntry);
-				if (rc == false) {
-					Log(Error, "parse input entry error");
-					return false;
-				}
-
-				// add input configuration entry to map
-				inputConfigVec_.push_back(inputConfig);
-			}
-		}
-
-		return true;
-	}
-
-	std::string
-	InputsConfig::groupName(void)
-	{
-		return groupName_;
-	}
-
-	uint32_t
-	InputsConfig::interval(void)
-	{
-		return interval_;
-	}
-
-	InputConfig::Vec&
-	InputsConfig::inputConfigVec(void)
-	{
-		return inputConfigVec_;
-	}
-
-
-	// ------------------------------------------------------------------------
-	// ------------------------------------------------------------------------
-	//
-	// class HoldingRegisterConfig
-	//
-	// ------------------------------------------------------------------------
-	// ------------------------------------------------------------------------
-	HoldingRegisterConfig::HoldingRegisterConfig(void)
-	{
-	}
-
-	HoldingRegisterConfig::~HoldingRegisterConfig(void)
-	{
-	}
-
-	bool
-	HoldingRegisterConfig::parse(Config& config)
-	{
-		bool rc = true;
-
-		// Get name attribute from configuration
-		rc = config.getConfigParameter("<xmlattr>.Name", name_);
-		if (rc == false) {
-			Log(Error, "attribute not found in holding register configuration")
-				.parameter("Attribute", "Name");
-			return false;
-		}
-
-		// Get address attribute from configuration
-		rc = config.getConfigParameter("<xmlattr>.Address", address_);
-		if (rc == false) {
-			Log(Error, "attribute not found in holding register configuration")
-				.parameter("Attribute", "Address");
-			return false;
-		}
-
-		// Get unit attribute from configuration
-		rc = config.getConfigParameter("<xmlattr>.Unit", unit_);
-		if (rc == false) {
-			Log(Error, "attribute not found in holding register configuration")
-				.parameter("Attribute", "Name");
-			return false;
-		}
-
-		// Get type attribute from configuration
-		rc = config.getConfigParameter("<xmlattr>.Type", type_);
-		if (rc == false) {
-			Log(Error, "attribute not found in holding register configuration")
-				.parameter("Attribute", "Type");
-			return false;
-		}
-
-		// Get a_ attribute from configuration
-		rc = config.getConfigParameter("<xmlattr>.Type", a_);
-		if (rc == false) {
-		    a_ = 0.0;
-		}
-
-		// Get b_ attribute from configuration
-		rc = config.getConfigParameter("<xmlattr>.Type", b_);
-		if (rc == false) {
-		    b_ = 1.0;
-		}
-
-		return true;
-	}
-
-	uint16_t
-	HoldingRegisterConfig::address(void)
-	{
-		return address_;
-	}
-
-	std::string
-	HoldingRegisterConfig::name(void)
-	{
-		return name_;
-	}
-
-	std::string
-	HoldingRegisterConfig::unit(void)
-	{
-		return unit_;
-	}
-
-	std::string
-	HoldingRegisterConfig::type(void)
-	{
-		return type_;
-	}
-
-	double
-	HoldingRegisterConfig::a(void)
-	{
-		return a_;
-	}
-
-	double
-	HoldingRegisterConfig::b(void)
-	{
-		return b_;
-	}
-
-
-	// ------------------------------------------------------------------------
-	// ------------------------------------------------------------------------
-	//
-	// class HoldingRegistersConfig
-	//
-	// ------------------------------------------------------------------------
-	// ------------------------------------------------------------------------
-	HoldingRegistersConfig::HoldingRegistersConfig(void)
-	{
-	}
-
-	HoldingRegistersConfig::~HoldingRegistersConfig(void)
-	{
-	}
-
-	bool
-	HoldingRegistersConfig::parse(Config& config)
-	{
-		bool rc = true;
-
-		// Get name attribute from configuration
-		rc = config.getConfigParameter("<xmlattr>.GroupName", groupName_);
-		if (rc == false) {
-			Log(Error, "attribute not found in holding register configuration")
-				.parameter("Attribute", "Name");
-			return false;
-		}
-
-		// Get interval attribute from configuration
-		rc = config.getConfigParameter("<xmlattr>.Interval", interval_);
-		if (rc == false) {
-			Log(Error, "attribute not found in holding register configuration")
-				.parameter("Interval", interval_)
-				.parameter("Attribute", "Interval");
-			return false;
-		}
-
-		// Find inputs entries in configuration
-		std::vector<Config> configVec;
-		config.getChilds("HoldingRegister", configVec);
-		if (configVec.size() != 0) {
-			// parse holding register entries
-			for (auto configEntry: configVec) {
-				auto holdingRegisterConfig = std::make_shared<HoldingRegisterConfig>();
-
-				// parse holding register entry
-				rc = holdingRegisterConfig->parse(configEntry);
-				if (rc == false) {
-					Log(Error, "parse holding register entry error");
-					return false;
-				}
-
-				// add holding register configuration entry to map
-				holdingRegisterConfigVec_.push_back(holdingRegisterConfig);
-			}
-		}
-
-		return true;
-	}
-
-	std::string
-	HoldingRegistersConfig::groupName(void)
-	{
-		return groupName_;
-	}
-
-	uint32_t
-	HoldingRegistersConfig::interval(void)
-	{
-		return interval_;
-	}
-
-	HoldingRegisterConfig::Vec&
-	HoldingRegistersConfig::holdingRegisterConfigVec(void)
-	{
-		return holdingRegisterConfigVec_;
-	}
-
-
-	// ------------------------------------------------------------------------
-	// ------------------------------------------------------------------------
-	//
 	// class RegisterConfig
 	//
 	// ------------------------------------------------------------------------
@@ -526,11 +81,12 @@ namespace OpcUaModbusGateway
 			return false;
 		}
 
+#if 0
 		// Get unit attribute from configuration
 		rc = config.getConfigParameter("<xmlattr>.Unit", unit_);
 		if (rc == false) {
-			Log(Error, "attribute not found in input register configuration")
-				.parameter("Attribute", "Name");
+			Log(Error, "attribute not found in register configuration")
+				.parameter("Attribute", "Unit");
 			return false;
 		}
 
@@ -542,15 +98,16 @@ namespace OpcUaModbusGateway
 				.parameter("Register", name_);
 			return false;
 		}
+#endif
 
 		// Get a_ attribute from configuration
-		rc = config.getConfigParameter("<xmlattr>.Type", a_);
+		rc = config.getConfigParameter("<xmlattr>.A", a_);
 		if (rc == false) {
 		    a_ = 0.0;
 		}
 
 		// Get b_ attribute from configuration
-		rc = config.getConfigParameter("<xmlattr>.Type", b_);
+		rc = config.getConfigParameter("<xmlattr>.B", b_);
 		if (rc == false) {
 		    b_ = 1.0;
 		}
@@ -674,8 +231,8 @@ namespace OpcUaModbusGateway
 		rc = config.getConfigParameter("<xmlattr>.Interval", interval_);
 		if (rc == false) {
 			Log(Error, "attribute not found in register group configuration")
-				.parameter("Interval", interval_)
-				.parameter("Attribute", "Interval");
+				.parameter("Attribute", "Interval")
+				.parameter("GroupName", groupName_);
 			return false;
 		}
 
@@ -690,7 +247,8 @@ namespace OpcUaModbusGateway
 				// parse register entry
 				rc = registerConfig->parse(configEntry);
 				if (rc == false) {
-					Log(Error, "parse register group entry error");
+					Log(Error, "parse register entry error")
+						.parameter("GroupName", groupName_);
 					return false;
 				}
 
@@ -852,7 +410,7 @@ namespace OpcUaModbusGateway
 				// Parse register group config
 				rc = registerGroup->parse(configEntry);
 				if (!rc) {
-					Log(Error, "parse register group entry");
+					Log(Error, "parse register group entry error");
 					return false;
 				}
 

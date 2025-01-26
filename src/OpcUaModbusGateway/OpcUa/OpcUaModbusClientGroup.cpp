@@ -21,6 +21,7 @@
 #include "OpcUaStackServer/ServiceSetApplication/BrowsePathToNodeId.h"
 #include "OpcUaStackServer/ServiceSetApplication/CreateVariableInstance.h"
 #include "OpcUaStackServer/ServiceSetApplication/DeleteNodeInstance.h"
+#include "OpcUaStackServer/ServiceSetApplication/CreateNodeInstance.h"
 
 #include "OpcUaModbusGateway/OpcUa/OpcUaModbusClientGroup.h"
 
@@ -38,6 +39,7 @@ namespace OpcUaModbusGateway
 		const std::string inputRegistersFolder_ = "InputRegisters";
 	}
 
+	uint32_t OpcUaModbusClientGroup::id_ = 10000;
 
 	OpcUaModbusClientGroup::OpcUaModbusClientGroup(void)
 	{
@@ -50,6 +52,7 @@ namespace OpcUaModbusGateway
 	bool
 	OpcUaModbusClientGroup::startup(
 		const std::string& namespaceName,
+		uint32_t namespaceIndex,
 		RegisterGroupConfig::SPtr registerGroupConfig,
 		OpcUaStackServer::ApplicationServiceIf* applicationServiceIf,
 		OpcUaStackCore::OpcUaNodeId& rootNodeId
@@ -58,9 +61,35 @@ namespace OpcUaModbusGateway
 		bool rc = true;
 
 		namespaceName_ = namespaceName;
+		namespaceIndex_ = namespaceIndex;
 		registerGroupConfig_ = registerGroupConfig;
 		rootNodeId_ = rootNodeId;
 		applicationServiceIf_ = applicationServiceIf;
+
+		std::cout << "ADD NODE TO " << rootNodeId << std::endl;
+
+		// Create group folder instance
+		id_++;
+		OpcUaNodeId nodeId((uint32_t)id_, namespaceIndex_);
+		CreateNodeInstance createNodeInstance(
+			registerGroupConfig_->groupName(),				// name
+			NodeClass::EnumObject,							// node class
+			rootNodeId,										// parent node id
+			nodeId,											// node id
+			OpcUaLocalizedText("en", registerGroupConfig_->groupName()),// display name
+			OpcUaQualifiedName(registerGroupConfig_->groupName(), 1),	// browse name
+			OpcUaNodeId((uint32_t)OpcUaId_Organizes),		// reference type id
+			OpcUaNodeId((uint32_t)OpcUaId_BaseObjectType)   // type node id
+		);
+
+		if (!createNodeInstance.query(applicationServiceIf_)) {
+			Log(Error, "create register group node instance error")
+				.parameter("DisplayName", registerGroupConfig_->groupName());
+			return false;
+		}
+
+			// Create register group instances
+
 
 #if 0
 		// Create coil nodes

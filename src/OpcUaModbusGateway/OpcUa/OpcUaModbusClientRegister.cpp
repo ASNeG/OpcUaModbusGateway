@@ -21,7 +21,6 @@
 #include "OpcUaStackServer/ServiceSetApplication/BrowsePathToNodeId.h"
 #include "OpcUaStackServer/ServiceSetApplication/CreateVariableInstance.h"
 #include "OpcUaStackServer/ServiceSetApplication/DeleteNodeInstance.h"
-#include "OpcUaStackServer/ServiceSetApplication/CreateNodeInstance.h"
 
 #include "OpcUaModbusGateway/OpcUa/OpcUaModbusClientRegister.h"
 
@@ -91,7 +90,7 @@ namespace OpcUaModbusGateway
    			for (auto registerGroupConfig : registerGroupConfigs) {
    				auto clientGroup = std::make_shared<OpcUaModbusClientGroup>();
    				auto rc =  clientGroup->startup(
-   					namespaceName, registerGroupConfig, applicationServiceIf_, typeNodeId
+   					namespaceName, rootNodeId_.namespaceIndex(), registerGroupConfig, applicationServiceIf_, typeNodeId
    				);
    				if (!rc) {
    					Log(Error, "create opc ua register group error")
@@ -99,28 +98,6 @@ namespace OpcUaModbusGateway
    					return true;
    				}
    			}
-
-
-#if 0
-			CreateNodeInstance createNodeInstance(
-				registerGroupType->groupName(),					// name
-				NodeClass::Object,								// node class
-				coilsFolderNodeId_,								// parent node id (Objects)
-				nodeId,											// node id
-				OpcUaLocalizedText("en", registerGroupType->groupName()),// dispplay name
-				OpcUaQualifiedName(registerGroupType->groupName(), 1),	 // browse name
-				OpcUaNodeId(47),								// reference type id
-				OpcUaNodeId(62)									// type node id
-			);
-
-			if (!createNodeInstance.query(applicationServiceIf_)) {
-				Log(Error, "create register group node instance error")
-					.parameter("DisplayName", registerGroupType);
-				return false;
-			}
-#endif
-
-			// Create register group instances
 		}
 #if 0
 		RegisterGroupConfig::Vec& registerGroupConfigVec(RegisterGroupConfig::Type type);

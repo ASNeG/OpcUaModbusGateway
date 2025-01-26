@@ -36,6 +36,7 @@ namespace OpcUaModbusGateway
 
 		bool startup(
 			const std::string& namespaceName,
+			uint32_t namespaceIndex,
 			RegisterGroupConfig::SPtr registerGroupConfig,
 			OpcUaStackServer::ApplicationServiceIf* applicationServiceIf_,
 			OpcUaStackCore::OpcUaNodeId& rootNodeId
@@ -43,7 +44,9 @@ namespace OpcUaModbusGateway
 		bool shutdown(void);
 
 	  private:
+		static uint32_t id_;
 		std::string namespaceName_ = "";
+		uint32_t namespaceIndex_ = 0;
 		RegisterGroupConfig::SPtr registerGroupConfig_;
 		OpcUaStackServer::ApplicationServiceIf* applicationServiceIf_ = nullptr;
 		OpcUaStackCore::OpcUaNodeId rootNodeId_;
