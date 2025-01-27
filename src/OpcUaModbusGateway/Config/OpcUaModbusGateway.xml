@@ -49,22 +49,31 @@
   <ModbusTCPServer Name="ExampleModbusServer">
       <IPAddress>127.0.0.1</IPAddress>
       <Port>5502</Port>
-    
-      <Coils Name="Name1" Interval="1000">
-          <Coil Address="0" Name="Val1">
-          <Coil Address="1" Name="Val1">
-      </Coils>
-      <Inputs Name="Name1" Interval="1000">
-          <Input Address="0" Name="Val1">
-          <Input Address="1" Name="Val1">
-      </Inputs>
-      <HoldingRegisters Name="Name1" Interval="1000">
-          <HoldingRegister Address="0" Name="Val1" Unit="V" Type="FLOAT" A="0" B="1">
-          <HoldingRegister Address="1" Name="Val2" Unit="A" Type="FLOAT" A="0" B="1">
-      </HoldingRegisters>
-      <InputRegisters Name="Name1" Interval="1000">
-          <InputRegister Address="0" Name="Val1" Type="UINT16">
-      </InputRegisters>
+   
+      <RegisterGroup Group="Coil" GroupName="Name1" Interval="1000">
+          <Register Address="0" Name="Val1"/>
+          <Register Address="1" Name="Val2"/>
+      </RegisterGroup>
+      <RegisterGroup Group="Coil" GroupName="Name2" Interval="1000">
+          <Register Address="0" Name="Val1"/>
+          <Register Address="1" Name="Val2"/>
+      </RegisterGroup>
+      <RegisterGroup Group="Input" GroupName="Name3" Interval="1000">
+          <Register Address="0" Name="Val1"/>
+          <Register Address="1" Name="Val2"/>
+      </RegisterGroup>
+      <RegisterGroup Group="HoldingRegister" GroupName="Name4" Interval="1000">
+          <Register Address="0" Name="Val1" Unit="V" Type="FLOAT" A="0" B="1"/>
+          <Register Address="1" Name="Val2" Unit="A" Type="FLOAT" A="0" B="1"/>
+      </RegisterGroup>
+      <RegisterGroup Group="InputRegister" GroupName="Name5" Interval="1000">
+          <Register Address="0" Name="Val1" Unit="X" Type="UINT16"/>
+          <Register Address="1" Name="Val2" Unit="Y" Type="FLOAT" A="0" B="1"/>
+      </RegisterGroup>
+     <RegisterGroup Group="InputRegister" GroupName="Name6" Interval="1000">
+          <Register Address="10" Name="Val1" Unit="X" Type="UINT16"/>
+          <Register Address="11" Name="Val2" Unit="Y" Type="FLOAT" A="0" B="1"/>
+      </RegisterGroup>
     
   </ModbusTCPServer>
   -->
