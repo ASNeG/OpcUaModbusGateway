@@ -49,8 +49,7 @@ namespace OpcUaModbusGateway
 		OpcUaStackServer::ApplicationServiceIf* applicationServiceIf_ = nullptr;
 		OpcUaStackCore::OpcUaNodeId rootNodeId_;
 
-		AnalogValue::Vec analogValue_;
-
+		OpcUaModbusClientGroup::Vec modbusClientGroupVec_;
 	};
 
 }

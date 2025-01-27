@@ -32,6 +32,9 @@ namespace OpcUaModbusGateway
 	class OpcUaModbusClientGroup
 	{
 	  public:
+		using SPtr = std::shared_ptr<OpcUaModbusClientGroup>;
+		using Vec = std::vector<SPtr>;
+
 		OpcUaModbusClientGroup(void);
 		~OpcUaModbusClientGroup(void);
 

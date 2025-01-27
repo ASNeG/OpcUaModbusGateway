@@ -140,6 +140,13 @@ namespace OpcUaModbusGateway
 		modbusTCPClient_->disconnect();
 		modbusTCPClient_ = nullptr;
 
+		// Delete modbus client register instances from opc ua model
+		auto rc = modbusClientRegister_.shutdown();
+		if (!rc) {
+			Log(Error, "delete client register node instance error");
+			return false;
+		}
+
 		// remove object from opc ua model
 		DeleteNodeInstance deleteNodeInstance;
 		deleteNodeInstance.node(nodeId());

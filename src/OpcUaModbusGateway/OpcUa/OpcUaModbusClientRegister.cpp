@@ -62,14 +62,6 @@ namespace OpcUaModbusGateway
 		rootNodeId_ = rootNodeId;
 		applicationServiceIf_ = applicationServiceIf;
 
-#if 0
-		// Get register folder nodes
-		rc = getRegisterFolderNodeIds();
-		if (!rc) {
-			return false;
-		}
-#endif
-
 		// Create register type folder
 		for (auto registerGroupType : modbusTCPClientConfig->registerGroupTypes()) {
 			// Get root type node id from opc ua information model
@@ -97,36 +89,10 @@ namespace OpcUaModbusGateway
    						.parameter("GroupName", registerGroupConfig->groupName());
    					return true;
    				}
+
+   				modbusClientGroupVec_.push_back(clientGroup);
    			}
 		}
-#if 0
-		RegisterGroupConfig::Vec& registerGroupConfigVec(RegisterGroupConfig::Type type);
-		std::vector<RegisterGroupConfig::Type>
-			ModbusTCPClientConfig::registerGroupTypes(void)
-#endif
-#if 0
-		// Create coil nodes
-		for (auto coils: modbusTCPClientConfig_->coilsConfigVec()) {
-			for (auto coil : coils->coilConfigVec()) {
-				auto analogValue = boost::make_shared<AnalogValue>();
-				Object::SPtr obj = analogValue;
-				CreateVariableInstance createVariableInstance(
-					namespaceName_,									// namespace name of the object instance
-					OpcUaLocalizedText("", coil->name()),			// display name of the object instance
-					coilsFolderNodeId_,								// parent node of the object instance
-					OpcUaNodeId((uint32_t)OpcUaId_Organizes),		// reference type between object and variable instance
-					obj
-				);
-				if (!createVariableInstance.query(applicationServiceIf_)) {
-					Log(Error, "create variable error")
-						.parameter("DisplayName", coil->name());
-					return false;
-				}
-
-				analogValue_.push_back(analogValue);
-			}
-		}
-#endif
 
 		return true;
 	}
@@ -134,6 +100,15 @@ namespace OpcUaModbusGateway
 	bool
 	OpcUaModbusClientRegister::shutdown(void)
 	{
+		// Shutdown modbus client groups
+		for (auto clientGroup : modbusClientGroupVec_) {
+			auto rc = clientGroup->shutdown();
+			if (!rc) {
+				Log(Error, "delete client group node instance error");
+				return false;
+			}
+		}
+
 		return true;
 	}
 
