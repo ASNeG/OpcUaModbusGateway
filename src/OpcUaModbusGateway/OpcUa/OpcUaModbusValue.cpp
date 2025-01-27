@@ -15,18 +15,69 @@
    Autor: Kai Huebl (kai@huebl-sgh.de)
  */
 
+#include "OpcUaStackCore/BuildInTypes/OpcUaIdentifier.h"
+#include "OpcUaStackServer/ServiceSetApplication/CreateVariableInstance.h"
+#include "OpcUaStackServer/ServiceSetApplication/DeleteNodeInstance.h"
+
 #include "OpcUaModbusGateway/OpcUa/OpcUaModbusValue.h"
+
+using namespace OpcUaStackCore;
+using namespace OpcUaStackServer;
 
 namespace OpcUaModbusGateway
 {
 
+	uint32_t OpcUaModbusValue::id_ = 10000;
+
 	OpcUaModbusValue::OpcUaModbusValue(void)
-	: AnalogValue()
 	{
 	}
 
 	OpcUaModbusValue::~OpcUaModbusValue(void)
 	{
+	}
+
+	bool
+	OpcUaModbusValue::startup(
+		const std::string& namespaceName,
+		uint32_t namespaceIndex,
+		RegisterConfig::SPtr registerConfig,
+		OpcUaStackServer::ApplicationServiceIf* applicationServiceIf,
+		OpcUaStackCore::OpcUaNodeId& rootNodeId
+	)
+	{
+		// Set parameter
+		namespaceName_ = namespaceName;
+		namespaceIndex_ = namespaceIndex;
+		registerConfig_ = registerConfig;
+		applicationServiceIf_ = applicationServiceIf;
+		rootNodeId_ = rootNodeId;
+
+		// create a new modbus value object instance in opc ua information model
+		auto analogValue = boost::make_shared<AnalogValue>();
+		std::cout << "xxxxx " << namespaceName << std::endl;
+		Object::SPtr obj = analogValue;
+		CreateVariableInstance createVariableInstance(
+			namespaceName_,									// namespace name of the object instance
+			OpcUaLocalizedText("", registerConfig->name()), // display name of the object instance
+			rootNodeId,										// parent node of the object instance
+			OpcUaNodeId((uint32_t)OpcUaId_HasComponent),	// reference type between object and variable instance
+			obj
+		);
+		if (!createVariableInstance.query(applicationServiceIf_)) {
+			Log(Error, "create register value object error")
+				.parameter("DisplayName", registerConfig->name());
+			return false;
+		}
+		analogValueVec_.push_back(analogValue);
+
+		return true;
+	}
+
+	bool
+	OpcUaModbusValue::shutdown(void)
+	{
+		return true;
 	}
 
 	void

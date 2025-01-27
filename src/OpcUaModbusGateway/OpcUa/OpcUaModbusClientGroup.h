@@ -50,16 +50,6 @@ namespace OpcUaModbusGateway
 		RegisterGroupConfig::SPtr registerGroupConfig_;
 		OpcUaStackServer::ApplicationServiceIf* applicationServiceIf_ = nullptr;
 		OpcUaStackCore::OpcUaNodeId rootNodeId_;
-
-		AnalogValue::Vec analogValue_;
-
-        OpcUaStackCore::OpcUaNodeId coilsFolderNodeId_;
-        OpcUaStackCore::OpcUaNodeId inputsFolderNodeId_;
-        OpcUaStackCore::OpcUaNodeId holdingRegistersFolderNodeId_;
-        OpcUaStackCore::OpcUaNodeId inputRegistersFolderNodeId_;
-
-        bool getRegisterFolderNodeIds(void);
-
 	};
 
 }
