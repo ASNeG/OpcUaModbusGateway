@@ -27,7 +27,7 @@ using namespace OpcUaStackServer;
 namespace OpcUaModbusGateway
 {
 
-	uint32_t OpcUaModbusValue::id_ = 10000;
+	uint32_t OpcUaModbusValue::id_ = 11000;
 
 	OpcUaModbusValue::OpcUaModbusValue(void)
 	{
@@ -55,7 +55,6 @@ namespace OpcUaModbusGateway
 
 		// create a new modbus value object instance in opc ua information model
 		auto analogValue = boost::make_shared<AnalogValue>();
-		std::cout << "xxxxx " << namespaceName << std::endl;
 		Object::SPtr obj = analogValue;
 		CreateVariableInstance createVariableInstance(
 			namespaceName_,									// namespace name of the object instance
@@ -64,6 +63,8 @@ namespace OpcUaModbusGateway
 			OpcUaNodeId((uint32_t)OpcUaId_HasComponent),	// reference type between object and variable instance
 			obj
 		);
+		id_++;
+		createVariableInstance.addNodeId("Variable", OpcUaNodeId((uint32_t)id_, namespaceIndex_));
 		if (!createVariableInstance.query(applicationServiceIf_)) {
 			Log(Error, "create register value object error")
 				.parameter("DisplayName", registerConfig->name());
@@ -77,6 +78,20 @@ namespace OpcUaModbusGateway
 	bool
 	OpcUaModbusValue::shutdown(void)
 	{
+		// Remove all value nodes from opc ua model
+		for (auto analogValue : analogValueVec_) {
+#if 0
+			// remove object from opc ua model
+			DeleteNodeInstance deleteNodeInstance;
+			deleteNodeInstance.node(analogValue->nodeId());
+
+			if (!deleteNodeInstance.query(applicationServiceIf_)) {
+				Log(Error, "delete value node instance error")
+					.parameter("ValueNodeId", analogValue->nodeId());
+				return false;
+			}
+#endif
+		}
 		return true;
 	}
 
