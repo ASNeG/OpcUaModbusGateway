@@ -24,7 +24,6 @@
 #include "OpcUaStackServer/ServiceSetApplication/CreateNodeInstance.h"
 
 #include "OpcUaModbusGateway/OpcUa/OpcUaModbusClientGroup.h"
-#include "OpcUaModbusGateway/OpcUa/OpcUaModbusValue.h"
 
 using namespace OpcUaStackCore;
 using namespace OpcUaStackServer;
@@ -61,12 +60,12 @@ namespace OpcUaModbusGateway
 
 		// Create group folder instance
 		id_++;
-		OpcUaNodeId nodeId((uint32_t)id_, namespaceIndex_);
+		groupNodeId_.set((uint32_t)id_, namespaceIndex_);
 		CreateNodeInstance createNodeInstance(
 			registerGroupConfig_->groupName(),				// name
 			NodeClass::EnumObject,							// node class
 			rootNodeId,										// parent node id
-			nodeId,											// node id
+			groupNodeId_,										// node id
 			OpcUaLocalizedText("en", registerGroupConfig_->groupName()),// display name
 			OpcUaQualifiedName(registerGroupConfig_->groupName(), 1),	// browse name
 			OpcUaNodeId((uint32_t)OpcUaId_Organizes),		// reference type id
@@ -83,39 +82,17 @@ namespace OpcUaModbusGateway
 		for (auto registerConfig : registerGroupConfig_->registerConfigVec()) {
 			auto value = std::make_shared<OpcUaModbusValue>();
 			auto rc =  value->startup(
-			   		namespaceName, rootNodeId_.namespaceIndex(), registerConfig, applicationServiceIf_, nodeId
+			   	namespaceName, rootNodeId_.namespaceIndex(), registerConfig, applicationServiceIf_, groupNodeId_
 			);
 			if (!rc) {
 			   	Log(Error, "create opc ua register value error")
 			   		.parameter("Name", registerConfig->name());
 			   	return true;
 			}
+
+			modbusValueVec_.push_back(value);
 		}
 
-
-#if 0
-		// Create coil nodes
-		for (auto coils: modbusTCPClientConfig_->coilsConfigVec()) {
-			for (auto coil : coils->coilConfigVec()) {
-				auto analogValue = boost::make_shared<AnalogValue>();
-				Object::SPtr obj = analogValue;
-				CreateVariableInstance createVariableInstance(
-					namespaceName_,									// namespace name of the object instance
-					OpcUaLocalizedText("", coil->name()),			// display name of the object instance
-					coilsFolderNodeId_,								// parent node of the object instance
-					OpcUaNodeId((uint32_t)OpcUaId_Organizes),		// reference type between object and variable instance
-					obj
-				);
-				if (!createVariableInstance.query(applicationServiceIf_)) {
-					Log(Error, "create variable error")
-						.parameter("DisplayName", coil->name());
-					return false;
-				}
-
-				analogValue_.push_back(analogValue);
-			}
-		}
-#endif
 
 		return true;
 	}
@@ -123,6 +100,26 @@ namespace OpcUaModbusGateway
 	bool
 	OpcUaModbusClientGroup::shutdown(void)
 	{
+		// Shutdown modbus values
+		for (auto modbusValue : modbusValueVec_) {
+			auto rc = modbusValue->shutdown();
+			if (!rc) {
+				Log(Error, "delete value node instance error");
+				return false;
+			}
+		}
+
+		// Remove object from opc ua model
+		DeleteNodeInstance deleteNodeInstance;
+		deleteNodeInstance.node(groupNodeId_);
+
+		if (!deleteNodeInstance.query(applicationServiceIf_)) {
+			Log(Error, "delete group node instance error")
+				.parameter("GroupNodeId", groupNodeId_)
+				.parameter("Name", registerGroupConfig_->groupName());
+			return false;
+		}
+
 		return true;
 	}
 

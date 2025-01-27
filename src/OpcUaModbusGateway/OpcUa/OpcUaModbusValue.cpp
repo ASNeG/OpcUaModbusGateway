@@ -64,7 +64,8 @@ namespace OpcUaModbusGateway
 			obj
 		);
 		id_++;
-		createVariableInstance.addNodeId("Variable", OpcUaNodeId((uint32_t)id_, namespaceIndex_));
+		valueNodeId_.set((uint32_t)id_, namespaceIndex_);
+		createVariableInstance.addNodeId("Variable", valueNodeId_);
 		if (!createVariableInstance.query(applicationServiceIf_)) {
 			Log(Error, "create register value object error")
 				.parameter("DisplayName", registerConfig->name());
@@ -78,20 +79,17 @@ namespace OpcUaModbusGateway
 	bool
 	OpcUaModbusValue::shutdown(void)
 	{
-		// Remove all value nodes from opc ua model
-		for (auto analogValue : analogValueVec_) {
-#if 0
-			// remove object from opc ua model
-			DeleteNodeInstance deleteNodeInstance;
-			deleteNodeInstance.node(analogValue->nodeId());
+		// remove object from opc ua model
+		DeleteNodeInstance deleteNodeInstance;
+		deleteNodeInstance.node(valueNodeId_);
 
-			if (!deleteNodeInstance.query(applicationServiceIf_)) {
-				Log(Error, "delete value node instance error")
-					.parameter("ValueNodeId", analogValue->nodeId());
-				return false;
-			}
-#endif
+		if (!deleteNodeInstance.query(applicationServiceIf_)) {
+			Log(Error, "delete value node instance error")
+				.parameter("ValueNodeId", valueNodeId_)
+				.parameter("ValueName", registerConfig_->name());
+			return false;
 		}
+
 		return true;
 	}
 

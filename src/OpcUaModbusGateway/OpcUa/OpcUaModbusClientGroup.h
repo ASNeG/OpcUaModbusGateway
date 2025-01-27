@@ -23,6 +23,7 @@
 #include "OpcUaStackServer/Application/ApplicationServiceIf.h"
 
 #include "OpcUaModbusGateway/Util/ModbusGatewayConfig.h"
+#include "OpcUaModbusGateway/OpcUa/OpcUaModbusValue.h"
 #include "OpcUaModbusGateway/CustomerVariableType/AnalogValue.h"
 
 namespace OpcUaModbusGateway
@@ -49,7 +50,10 @@ namespace OpcUaModbusGateway
 		uint32_t namespaceIndex_ = 0;
 		RegisterGroupConfig::SPtr registerGroupConfig_;
 		OpcUaStackServer::ApplicationServiceIf* applicationServiceIf_ = nullptr;
+		OpcUaStackCore::OpcUaNodeId groupNodeId_;
 		OpcUaStackCore::OpcUaNodeId rootNodeId_;
+
+		OpcUaModbusValue::Vec modbusValueVec_;
 	};
 
 }

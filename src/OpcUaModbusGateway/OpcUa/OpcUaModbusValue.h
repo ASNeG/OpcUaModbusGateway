@@ -30,6 +30,9 @@ namespace OpcUaModbusGateway
 	class OpcUaModbusValue
 	{
 	  public:
+		using SPtr = std::shared_ptr<OpcUaModbusValue>;
+		using Vec = std::vector<SPtr>;
+
 		OpcUaModbusValue(void);
 		~OpcUaModbusValue(void);
 
@@ -50,6 +53,8 @@ namespace OpcUaModbusGateway
 		uint32_t namespaceIndex_ = 0;
 		RegisterConfig::SPtr registerConfig_;
 		OpcUaStackServer::ApplicationServiceIf* applicationServiceIf_ = nullptr;
+
+		OpcUaStackCore::OpcUaNodeId valueNodeId_;
 		OpcUaStackCore::OpcUaNodeId rootNodeId_;
 
 		AnalogValue::Vec analogValueVec_;
