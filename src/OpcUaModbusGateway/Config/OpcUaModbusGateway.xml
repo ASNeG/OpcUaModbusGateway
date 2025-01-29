@@ -45,7 +45,6 @@
   </ModbusTCPClient>
 -->
 
-  <!-- FIXME: TODO
   <ModbusTCPServer Name="ExampleModbusServer">
       <IPAddress>127.0.0.1</IPAddress>
       <Port>5502</Port>
@@ -76,7 +75,5 @@
       </RegisterGroup>
     
   </ModbusTCPServer>
-  -->
-
 
 </OpcUaModbusGateway>
