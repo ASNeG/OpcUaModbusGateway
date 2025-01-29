@@ -54,8 +54,8 @@ namespace OpcUaModbusGateway
 		rootNodeId_ = rootNodeId;
 
 		// create a new modbus value object instance in opc ua information model
-		auto analogValue = boost::make_shared<AnalogValue>();
-		Object::SPtr obj = analogValue;
+		modbusValue_ = boost::make_shared<ModbusValue>();
+		Object::SPtr obj = modbusValue_;
 		CreateVariableInstance createVariableInstance(
 			namespaceName_,									// namespace name of the object instance
 			OpcUaLocalizedText("", registerConfig->name()), // display name of the object instance
@@ -71,7 +71,6 @@ namespace OpcUaModbusGateway
 				.parameter("DisplayName", registerConfig->name());
 			return false;
 		}
-		analogValueVec_.push_back(analogValue);
 
 		return true;
 	}

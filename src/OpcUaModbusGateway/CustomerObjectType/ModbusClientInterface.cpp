@@ -10,25 +10,29 @@
 */
 
 #include "OpcUaModbusGateway/CustomerObjectType/ModbusClientInterface.h"
+
 using namespace OpcUaStackCore;
+using namespace OpcUaStackServer;
 
 namespace OpcUaModbusGateway
 {
     
     ModbusClientInterface::ModbusClientInterface(void)
     : ObjectBase()
-    , modbusConnectionState_Variable_(boost::make_shared<OpcUaStackServer::ServerVariable>("ModbusConnectionState_Variable"))
-    , readCoils_Method_(boost::make_shared<OpcUaStackServer::ServerMethod>("ReadCoils_Method"))
-    , readDiscreteInputs_Method_(boost::make_shared<OpcUaStackServer::ServerMethod>("ReadDiscreteInputs_Method"))
-    , readInputRegisters_Method_(boost::make_shared<OpcUaStackServer::ServerMethod>("ReadInputRegisters_Method"))
-    , readMultiHoldingRegisters_Method_(boost::make_shared<OpcUaStackServer::ServerMethod>("ReadMultiHoldingRegisters_Method"))
-    , writeMultipleCoils_Method_(boost::make_shared<OpcUaStackServer::ServerMethod>("WriteMultipleCoils_Method"))
-    , writeMultipleHoldingRegisters_Method_(boost::make_shared<OpcUaStackServer::ServerMethod>("WriteMultipleHoldingRegisters_Method"))
-    , writeSingleCoil_Method_(boost::make_shared<OpcUaStackServer::ServerMethod>("WriteSingleCoil_Method"))
-    , writeSingleHoldingRegister_Method_(boost::make_shared<OpcUaStackServer::ServerMethod>("WriteSingleHoldingRegister_Method"))
+    , address_Variable_(boost::make_shared<ServerVariable>("Address_Variable"))
+    , modbusConnectionState_Variable_(boost::make_shared<ServerVariable>("ModbusConnectionState_Variable"))
+    , readCoils_Method_(boost::make_shared<ServerMethod>("ReadCoils_Method"))
+    , readDiscreteInputs_Method_(boost::make_shared<ServerMethod>("ReadDiscreteInputs_Method"))
+    , readInputRegisters_Method_(boost::make_shared<ServerMethod>("ReadInputRegisters_Method"))
+    , readMultiHoldingRegisters_Method_(boost::make_shared<ServerMethod>("ReadMultiHoldingRegisters_Method"))
+    , writeMultipleCoils_Method_(boost::make_shared<ServerMethod>("WriteMultipleCoils_Method"))
+    , writeMultipleHoldingRegisters_Method_(boost::make_shared<ServerMethod>("WriteMultipleHoldingRegisters_Method"))
+    , writeSingleCoil_Method_(boost::make_shared<ServerMethod>("WriteSingleCoil_Method"))
+    , writeSingleHoldingRegister_Method_(boost::make_shared<ServerMethod>("WriteSingleHoldingRegister_Method"))
     {
         objectTypeNamespaceName("http://ASNEG.de/OpcUaModbusGateway/");
         objectTypeNodeId((OpcUaUInt32)1003);
+        setServerVariable(address_Variable_);
         setServerVariable(modbusConnectionState_Variable_);
         setServerMethod(readCoils_Method_);
         setServerMethod(readDiscreteInputs_Method_);
@@ -50,18 +54,20 @@ namespace OpcUaModbusGateway
     
     ModbusClientInterface::ModbusClientInterface(const ModbusClientInterface& value)
     : ObjectBase()
-    , modbusConnectionState_Variable_(boost::make_shared<OpcUaStackServer::ServerVariable>("ModbusConnectionState_Variable"))
-    , readCoils_Method_(boost::make_shared<OpcUaStackServer::ServerMethod>("ReadCoils_Method"))
-    , readDiscreteInputs_Method_(boost::make_shared<OpcUaStackServer::ServerMethod>("ReadDiscreteInputs_Method"))
-    , readInputRegisters_Method_(boost::make_shared<OpcUaStackServer::ServerMethod>("ReadInputRegisters_Method"))
-    , readMultiHoldingRegisters_Method_(boost::make_shared<OpcUaStackServer::ServerMethod>("ReadMultiHoldingRegisters_Method"))
-    , writeMultipleCoils_Method_(boost::make_shared<OpcUaStackServer::ServerMethod>("WriteMultipleCoils_Method"))
-    , writeMultipleHoldingRegisters_Method_(boost::make_shared<OpcUaStackServer::ServerMethod>("WriteMultipleHoldingRegisters_Method"))
-    , writeSingleCoil_Method_(boost::make_shared<OpcUaStackServer::ServerMethod>("WriteSingleCoil_Method"))
-    , writeSingleHoldingRegister_Method_(boost::make_shared<OpcUaStackServer::ServerMethod>("WriteSingleHoldingRegister_Method"))
+    , address_Variable_(boost::make_shared<ServerVariable>("Address_Variable"))
+    , modbusConnectionState_Variable_(boost::make_shared<ServerVariable>("ModbusConnectionState_Variable"))
+    , readCoils_Method_(boost::make_shared<ServerMethod>("ReadCoils_Method"))
+    , readDiscreteInputs_Method_(boost::make_shared<ServerMethod>("ReadDiscreteInputs_Method"))
+    , readInputRegisters_Method_(boost::make_shared<ServerMethod>("ReadInputRegisters_Method"))
+    , readMultiHoldingRegisters_Method_(boost::make_shared<ServerMethod>("ReadMultiHoldingRegisters_Method"))
+    , writeMultipleCoils_Method_(boost::make_shared<ServerMethod>("WriteMultipleCoils_Method"))
+    , writeMultipleHoldingRegisters_Method_(boost::make_shared<ServerMethod>("WriteMultipleHoldingRegisters_Method"))
+    , writeSingleCoil_Method_(boost::make_shared<ServerMethod>("WriteSingleCoil_Method"))
+    , writeSingleHoldingRegister_Method_(boost::make_shared<ServerMethod>("WriteSingleHoldingRegister_Method"))
     {
         objectTypeNamespaceName("http://ASNEG.de/OpcUaModbusGateway/");
         objectTypeNodeId((OpcUaUInt32)1003);
+        setServerVariable(address_Variable_);
         setServerVariable(modbusConnectionState_Variable_);
         setServerMethod(readCoils_Method_);
         setServerMethod(readDiscreteInputs_Method_);
@@ -85,22 +91,46 @@ namespace OpcUaModbusGateway
     {
     }
 
-    OpcUaStackServer::ServerVariable::SPtr&
+    ServerVariable::SPtr&
+    ModbusClientInterface::address_Variable(void)
+    {
+        return address_Variable_;
+    }
+
+    ServerVariable::SPtr&
     ModbusClientInterface::modbusConnectionState_Variable(void)
     {
         return modbusConnectionState_Variable_;
     }
 
     void
-    ModbusClientInterface::modbusConnectionState_Variable(OpcUaStackServer::ServerVariable::SPtr& serverVariable)
+    ModbusClientInterface::address_Variable(ServerVariable::SPtr& serverVariable)
+    {
+        address_Variable_ = serverVariable;
+    }
+
+    void
+    ModbusClientInterface::modbusConnectionState_Variable(ServerVariable::SPtr& serverVariable)
     {
         modbusConnectionState_Variable_ = serverVariable;
+    }
+
+    bool
+    ModbusClientInterface::get_Address_Variable(OpcUaDataValue& dataValue)
+    {
+        return address_Variable_->getDataValue(dataValue);
     }
 
     bool
     ModbusClientInterface::get_ModbusConnectionState_Variable(OpcUaDataValue& dataValue)
     {
         return modbusConnectionState_Variable_->getDataValue(dataValue);
+    }
+
+    bool
+    ModbusClientInterface::set_Address_Variable(const OpcUaDataValue& dataValue)
+    {
+        return address_Variable_->setDataValue(dataValue);
     }
 
     bool

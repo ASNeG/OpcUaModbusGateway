@@ -18,7 +18,7 @@
 namespace OpcUaModbusGateway
 {
    
-   class DLLEXPORT ModbusClientInterface
+   class ModbusClientInterface
    : public OpcUaStackServer::ObjectBase
    {
      public:
@@ -28,6 +28,14 @@ namespace OpcUaModbusGateway
        ModbusClientInterface(void);
        ModbusClientInterface(const ModbusClientInterface& value);
        virtual ~ModbusClientInterface(void);
+
+        //
+        // String
+        //
+        void address_Variable(OpcUaStackServer::ServerVariable::SPtr& serverVariable);
+        OpcUaStackServer::ServerVariable::SPtr& address_Variable(void);
+        bool get_Address_Variable(OpcUaStackCore::OpcUaDataValue& dataValue);
+        bool set_Address_Variable(const OpcUaStackCore::OpcUaDataValue& dataValue);
 
         //
         // String
@@ -54,6 +62,7 @@ namespace OpcUaModbusGateway
         virtual void call_WriteSingleHoldingRegister_Method(OpcUaStackCore::ApplicationMethodContext* applicationMethodContext);
     
       private:
+        OpcUaStackServer::ServerVariable::SPtr address_Variable_;
         OpcUaStackServer::ServerVariable::SPtr modbusConnectionState_Variable_;
         OpcUaStackServer::ServerMethod::SPtr readCoils_Method_;
         OpcUaStackServer::ServerMethod::SPtr readDiscreteInputs_Method_;

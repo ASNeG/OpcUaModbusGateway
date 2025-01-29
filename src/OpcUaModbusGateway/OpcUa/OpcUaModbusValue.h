@@ -22,7 +22,7 @@
 
 #include "OpcUaModbusGateway/Util/ModbusGatewayConfig.h"
 
-#include "OpcUaModbusGateway/CustomerVariableType/AnalogValue.h"
+#include "OpcUaModbusGateway/CustomerVariableType/ModbusValue.h"
 
 namespace OpcUaModbusGateway
 {
@@ -57,7 +57,7 @@ namespace OpcUaModbusGateway
 		OpcUaStackCore::OpcUaNodeId valueNodeId_;
 		OpcUaStackCore::OpcUaNodeId rootNodeId_;
 
-		AnalogValue::Vec analogValueVec_;
+		ModbusValue::SPtr modbusValue_;
 		OpcUaStackCore::OpcUaDataValue writeDataValue_;
 	};
 
