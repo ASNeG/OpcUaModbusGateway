@@ -135,6 +135,31 @@ namespace OpcUaModbusGateway
 		uint32_t queryTimeout_ = 3000;			/* 3000 milliseconds */
 	};
 
+	class ModbusTCPServerConfig
+	{
+	  public:
+		using SPtr = std::shared_ptr<ModbusTCPServerConfig>;
+		using Vec = std::vector<SPtr>;
+		using RegisterGroupMap = std::map<RegisterGroupConfig::Type, RegisterGroupConfig::Vec>;
+
+		ModbusTCPServerConfig(void);
+		~ModbusTCPServerConfig(void);
+
+		bool parse(OpcUaStackCore::Config& config);
+		std::string name(void);
+		std::string ipAddress(void);
+		uint32_t port(void);
+		RegisterGroupConfig::Vec& registerGroupConfigVec(RegisterGroupConfig::Type type);
+		std::vector<RegisterGroupConfig::Type> registerGroupTypes(void);
+
+	  private:
+		// Mandatory attributes
+		std::string name_ = "";
+		std::string ipAddress_ = "127.0.0.1";
+		uint32_t port_ = 123;
+		RegisterGroupMap registerGroupMap_;
+	};
+
 
 	class ModbusGatewayConfig
 	{
@@ -144,9 +169,11 @@ namespace OpcUaModbusGateway
 
 		bool parse(const std::string& fileName);
 		ModbusTCPClientConfig::Vec& modbusTCPClientConfig(void);
+		ModbusTCPServerConfig::Vec& modbusTCPServerConfig(void);
 
 	  private:
 		ModbusTCPClientConfig::Vec modbusTCPClientConfigVec_;
+		ModbusTCPServerConfig::Vec modbusTCPServerConfigVec_;
 	};
 
 }

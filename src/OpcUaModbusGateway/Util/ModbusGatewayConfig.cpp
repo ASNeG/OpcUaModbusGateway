@@ -478,6 +478,118 @@ namespace OpcUaModbusGateway
 
 
 	// ------------------------------------------------------------------------
+	// ------------------------------------------------------------------------
+	//
+	// class ModbusTCPServerConfig
+	//
+	// ------------------------------------------------------------------------
+	// ------------------------------------------------------------------------
+	ModbusTCPServerConfig::ModbusTCPServerConfig(void)
+	{
+	}
+
+	ModbusTCPServerConfig::~ModbusTCPServerConfig(void)
+	{
+	}
+
+	RegisterGroupConfig::Vec&
+	ModbusTCPServerConfig::registerGroupConfigVec(RegisterGroupConfig::Type type)
+	{
+		auto it = registerGroupMap_.find(type);
+		if (it == registerGroupMap_.end()) {
+			registerGroupMap_.insert(std::make_pair(type, RegisterGroupConfig::Vec()));
+			auto it = registerGroupMap_.find(type);
+			return it->second;
+		}
+		return it->second;
+	}
+
+	std::vector<RegisterGroupConfig::Type>
+	ModbusTCPServerConfig::registerGroupTypes(void)
+	{
+		std::vector<RegisterGroupConfig::Type> vec;
+		for (auto it : registerGroupMap_) {
+			vec.push_back(it.first);
+		}
+		return vec;
+	}
+
+	bool
+	ModbusTCPServerConfig::parse(Config& config)
+	{
+		bool rc = true;
+		std::vector<Config> configVec;
+
+		// Get modbus tcp server name attribute from configuration
+		rc = config.getConfigParameter("<xmlattr>.Name", name_);
+		if (rc == false) {
+			Log(Error, "attribute not found in modbus tcp server configuration")
+				.parameter("Attribute", "Name");
+			return false;
+		}
+
+		// Get ip address attribute from configuration
+		rc = config.getConfigParameter("IPAddress", ipAddress_);
+		if (rc == false) {
+			Log(Error, "attribute not found in modbus tcp server configuration")
+				.parameter("IPAddress", ipAddress_)
+				.parameter("Attribute", "IPAddress");
+			return false;
+		}
+
+		// Get port attribute from configuration
+		rc = config.getConfigParameter("Port", port_);
+		if (rc == false) {
+			Log(Error, "attribute not found in modbus tcp server configuration")
+				.parameter("Port", port_)
+				.parameter("Attribute", "Port");
+			return false;
+		}
+
+		// Find register group entries in configuration
+		configVec.clear();
+		config.getChilds("RegisterGroup", configVec);
+		if (configVec.size() != 0) {
+
+			for (auto configEntry : configVec) {
+				// create register group config
+				auto registerGroup = std::make_shared<RegisterGroupConfig>();
+
+				// Parse register group config
+				rc = registerGroup->parse(configEntry);
+				if (!rc) {
+					Log(Error, "parse register group entry error");
+					return false;
+				}
+
+				// Add new register group to map
+				registerGroupConfigVec(registerGroup->type()).push_back(registerGroup);
+			}
+		}
+
+		return true;
+	}
+
+	std::string
+	ModbusTCPServerConfig::name(void)
+	{
+		return name_;
+	}
+
+	std::string
+	ModbusTCPServerConfig::ipAddress(void)
+	{
+		return ipAddress_;
+	}
+
+	uint32_t
+	ModbusTCPServerConfig::port(void)
+	{
+		return port_;
+	}
+
+
+	// ------------------------------------------------------------------------
     // ------------------------------------------------------------------------
     //
     // class ModbusGatewayConfig
@@ -535,6 +647,33 @@ namespace OpcUaModbusGateway
 			modbusTCPClientConfigVec_.push_back(modbusTCPClientConfig);
 		}
 
+		// Find modbus tcp server entries in configuration
+		configVec.clear();
+		config.getChilds("OpcUaModbusGateway.ModbusTCPServer", configVec);
+		if (configVec.size() == 0) {
+			Log(Error, "modbus server configuration not found in configuration file")
+				.parameter("ConfigurationFile", fileName)
+				.parameter("Attribute", "OpcUaModbusGateway.ModbusTCPServer");
+			return false;
+		}
+
+		// parse modbus server entries
+		for (auto configEntry: configVec) {
+			auto modbusTCPServerConfig = std::make_shared<ModbusTCPServerConfig>();
+
+			// parse modbus tcp server entry
+			rc = modbusTCPServerConfig->parse(configEntry);
+			if (rc == false) {
+				Log(Error, "parse modbus tcp server entry error")
+					.parameter("ConfigurationFile", fileName)
+					.parameter("Attribute", "OpcUaModbusGateway.ModbusTCPServer");
+				return false;
+			}
+
+			// add file system entry to file system entry vector
+			modbusTCPServerConfigVec_.push_back(modbusTCPServerConfig);
+		}
+
 		return true;
 	}
 
@@ -542,6 +681,12 @@ namespace OpcUaModbusGateway
 	ModbusGatewayConfig::modbusTCPClientConfig(void)
 	{
 		return modbusTCPClientConfigVec_;
+	}
+
+	ModbusTCPServerConfig::Vec&
+	ModbusGatewayConfig::modbusTCPServerConfig(void)
+	{
+		return modbusTCPServerConfigVec_;
 	}
 
 }
