@@ -19,6 +19,7 @@
 #include "OpcUaStackCore/Base/ConfigXml.h"
 
 #include "OpcUaModbusGateway/Util/ModbusGatewayConfig.h"
+#include "OpcUaModbusGateway/Util/TypeConverter.h"
 
 using namespace OpcUaStackCore;
 
@@ -119,6 +120,14 @@ namespace OpcUaModbusGateway
 		rc = config.getConfigParameter("<xmlattr>.Type", type_);
 		if (rc == false) {
 			type_ = "Boolean";
+			if (modbusType_ == RegisterConfig::ModbusType::UInt16) type_ = "UInt16";
+		}
+		// Check if type exist in opc ua model
+		rc = TypeConverter::checkType(type_);
+		if (rc == false) {
+			Log(Error, "unknown type found in register configuration")
+				.parameter("TypeName", type_);
+			return false;
 		}
 
 		// Get a_ attribute from configuration
