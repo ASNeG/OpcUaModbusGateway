@@ -32,18 +32,18 @@ namespace OpcUaModbusGateway
 		using SPtr = std::shared_ptr<RegisterConfig>;
 		using Vec = std::vector<RegisterConfig::SPtr>;
 
-		enum class Type {
+		enum class ModbusType {
 			None,
 			Bool,
 			UInt16
 		};
 
-		RegisterConfig(void);
+		RegisterConfig(ModbusType modbusType);
 		~RegisterConfig(void);
 
-		static std::map<Type, std::string> typeMap_;
-		static std::string toString(Type type);
-		static Type toType(const std::string& type);
+		static std::map<ModbusType, std::string> modbusTypeMap_;
+		static std::string toString(ModbusType type);
+		static ModbusType toType(const std::string& type);
 
 		bool parse(OpcUaStackCore::Config& config);
 		uint16_t address(void);
@@ -52,8 +52,10 @@ namespace OpcUaModbusGateway
 		std::string type(void);
 		double a(void);
 		double b(void);
+		ModbusType modbusType(void);
 
 	  private:
+		ModbusType modbusType_ = ModbusType::None;
 		uint16_t address_ = 0;
 		std::string name_ = "";
 		std::string unit_ = "";
@@ -68,7 +70,7 @@ namespace OpcUaModbusGateway
 		using SPtr = std::shared_ptr<RegisterGroupConfig>;
 		using Vec = std::vector<RegisterGroupConfig::SPtr>;
 
-		enum class Type
+		enum class ModbusGroupType
 		{
 			None,
 			Coil,
@@ -80,18 +82,18 @@ namespace OpcUaModbusGateway
 		RegisterGroupConfig(void);
 		~RegisterGroupConfig(void);
 
-		static std::map<Type, std::string> typeMap_;
-		static std::string toString(Type type);
-		static Type toType(const std::string& type);
+		static std::map<ModbusGroupType, std::string> modbusGroupTypeMap_;
+		static std::string toString(ModbusGroupType type);
+		static ModbusGroupType toType(const std::string& type);
 
-		Type type(void);
+		ModbusGroupType type(void);
 		bool parse(OpcUaStackCore::Config& config);
 		std::string groupName(void);
 		uint32_t interval(void);
 		RegisterConfig::Vec& registerConfigVec(void);
 
 	  private:
-		Type type_ = Type::None;
+		ModbusGroupType modbusGroupType_ = ModbusGroupType::None;
 		std::string groupName_ = "";
 		uint32_t interval_ = 1000;
 		RegisterConfig::Vec registerConfigVec_;
@@ -102,7 +104,7 @@ namespace OpcUaModbusGateway
 	  public:
 		using SPtr = std::shared_ptr<ModbusTCPClientConfig>;
 		using Vec = std::vector<SPtr>;
-		using RegisterGroupMap = std::map<RegisterGroupConfig::Type, RegisterGroupConfig::Vec>;
+		using RegisterGroupMap = std::map<RegisterGroupConfig::ModbusGroupType, RegisterGroupConfig::Vec>;
 
 		ModbusTCPClientConfig(void);
 		~ModbusTCPClientConfig(void);
@@ -112,8 +114,8 @@ namespace OpcUaModbusGateway
 		std::string ipAddress(void);
 		uint32_t port(void);
 		uint8_t slaveId(void);
-		RegisterGroupConfig::Vec& registerGroupConfigVec(RegisterGroupConfig::Type type);
-		std::vector<RegisterGroupConfig::Type> registerGroupTypes(void);
+		RegisterGroupConfig::Vec& registerGroupConfigVec(RegisterGroupConfig::ModbusGroupType mosbusGroupType);
+		std::vector<RegisterGroupConfig::ModbusGroupType> registerGroupTypes(void);
 
 		uint32_t connectTimeout(void);
 		uint32_t reconnectTimeout(void);
@@ -142,7 +144,7 @@ namespace OpcUaModbusGateway
 	  public:
 		using SPtr = std::shared_ptr<ModbusTCPServerConfig>;
 		using Vec = std::vector<SPtr>;
-		using RegisterGroupMap = std::map<RegisterGroupConfig::Type, RegisterGroupConfig::Vec>;
+		using RegisterGroupMap = std::map<RegisterGroupConfig::ModbusGroupType, RegisterGroupConfig::Vec>;
 
 		ModbusTCPServerConfig(void);
 		~ModbusTCPServerConfig(void);
@@ -151,8 +153,8 @@ namespace OpcUaModbusGateway
 		std::string name(void);
 		std::string ipAddress(void);
 		uint32_t port(void);
-		RegisterGroupConfig::Vec& registerGroupConfigVec(RegisterGroupConfig::Type type);
-		std::vector<RegisterGroupConfig::Type> registerGroupTypes(void);
+		RegisterGroupConfig::Vec& registerGroupConfigVec(RegisterGroupConfig::ModbusGroupType modbusGroupType);
+		std::vector<RegisterGroupConfig::ModbusGroupType> registerGroupTypes(void);
 
 	  private:
 		// Mandatory attributes

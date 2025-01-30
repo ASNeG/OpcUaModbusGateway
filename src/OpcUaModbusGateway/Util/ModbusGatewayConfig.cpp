@@ -33,14 +33,15 @@ namespace OpcUaModbusGateway
 	// ------------------------------------------------------------------------
 	// ------------------------------------------------------------------------
 
-	std::map<RegisterConfig::Type, std::string> RegisterConfig::typeMap_ = {
-		{RegisterConfig::Type::None, "None"},
-		{RegisterConfig::Type::Bool, "Bool"},
-		{RegisterConfig::Type::UInt16, "UInt16"}
+	std::map<RegisterConfig::ModbusType, std::string> RegisterConfig::modbusTypeMap_ = {
+		{RegisterConfig::ModbusType::None, "None"},
+		{RegisterConfig::ModbusType::Bool, "Bool"},
+		{RegisterConfig::ModbusType::UInt16, "UInt16"}
 	};
 
 
-	RegisterConfig::RegisterConfig(void)
+	RegisterConfig::RegisterConfig(ModbusType modbusType)
+	: modbusType_(modbusType)
 	{
 	}
 
@@ -49,19 +50,19 @@ namespace OpcUaModbusGateway
 	}
 
 	std::string
-	RegisterConfig::toString(Type type)
+	RegisterConfig::toString(ModbusType type)
 	{
-		auto it = typeMap_.find(type);
-		return it == typeMap_.end() ? "Unknown" : it->second;
+		auto it = modbusTypeMap_.find(type);
+		return it == modbusTypeMap_.end() ? "Unknown" : it->second;
 	}
 
-	RegisterConfig::Type
-	RegisterConfig::toType(const std::string& type)
+	RegisterConfig::ModbusType
+	RegisterConfig::toType(const std::string& modbusType)
 	{
-		for (auto it : typeMap_) {
-			if (it.second == type) return it.first;
+		for (auto it : modbusTypeMap_) {
+			if (it.second == modbusType) return it.first;
 		}
-		return Type::None;
+		return ModbusType::None;
 	}
 
 	bool
@@ -158,12 +159,12 @@ namespace OpcUaModbusGateway
 	// ------------------------------------------------------------------------
 	// ------------------------------------------------------------------------
 
-	std::map<RegisterGroupConfig::Type, std::string> RegisterGroupConfig::typeMap_ = {
-		{RegisterGroupConfig::Type::None, "None"},
-		{RegisterGroupConfig::Type::Coil, "Coil"},
-		{RegisterGroupConfig::Type::Input, "Input"},
-		{RegisterGroupConfig::Type::InputRegister, "InputRegister"},
-		{RegisterGroupConfig::Type::HoldingRegister, "HoldingRegister"}
+	std::map<RegisterGroupConfig::ModbusGroupType, std::string> RegisterGroupConfig::modbusGroupTypeMap_ = {
+		{RegisterGroupConfig::ModbusGroupType::None, "None"},
+		{RegisterGroupConfig::ModbusGroupType::Coil, "Coil"},
+		{RegisterGroupConfig::ModbusGroupType::Input, "Input"},
+		{RegisterGroupConfig::ModbusGroupType::InputRegister, "InputRegister"},
+		{RegisterGroupConfig::ModbusGroupType::HoldingRegister, "HoldingRegister"}
 	};
 
 	RegisterGroupConfig::RegisterGroupConfig(void)
@@ -175,25 +176,25 @@ namespace OpcUaModbusGateway
 	}
 
 	std::string
-	RegisterGroupConfig::toString(Type type)
+	RegisterGroupConfig::toString(ModbusGroupType modbusGroupType)
 	{
-		auto it = typeMap_.find(type);
-		return it == typeMap_.end() ? "Unknown" : it->second;
+		auto it = modbusGroupTypeMap_.find(modbusGroupType);
+		return it == modbusGroupTypeMap_.end() ? "Unknown" : it->second;
 	}
 
-	RegisterGroupConfig::Type
+	RegisterGroupConfig::ModbusGroupType
 	RegisterGroupConfig::toType(const std::string& type)
 	{
-		for (auto it : typeMap_) {
+		for (auto it : modbusGroupTypeMap_) {
 			if (it.second == type) return it.first;
 		}
-		return Type::None;
+		return ModbusGroupType::None;
 	}
 
-	RegisterGroupConfig::Type
+	RegisterGroupConfig::ModbusGroupType
 	RegisterGroupConfig::type(void)
 	{
-		return type_;
+		return modbusGroupType_;
 	}
 
 	bool
@@ -209,13 +210,16 @@ namespace OpcUaModbusGateway
 				.parameter("Attribute", "Group");
 			return false;
 		}
-		type_ = toType(group);
-		if (type_ == Type::None) {
+		modbusGroupType_ = toType(group);
+		if (modbusGroupType_ == ModbusGroupType::None) {
 			Log(Error, "invalid group type in register group configuration")
 				.parameter("Attribute", "Group")
 				.parameter("GroupType", group);
 			return false;
 		}
+		auto modbusType = RegisterConfig::ModbusType::Bool;
+		if (modbusGroupType_ == ModbusGroupType::InputRegister) auto modbusType = RegisterConfig::ModbusType::UInt16;
+		if (modbusGroupType_ == ModbusGroupType::HoldingRegister) auto modbusType = RegisterConfig::ModbusType::UInt16;
 
 		// Get name attribute from configuration
 		rc = config.getConfigParameter("<xmlattr>.GroupName", groupName_);
@@ -240,7 +244,7 @@ namespace OpcUaModbusGateway
 		if (configVec.size() != 0) {
 			// parse input register entries
 			for (auto configEntry: configVec) {
-				auto registerConfig = std::make_shared<RegisterConfig>();
+				auto registerConfig = std::make_shared<RegisterConfig>(modbusType);
 
 				// parse register entry
 				rc = registerConfig->parse(configEntry);
@@ -294,21 +298,21 @@ namespace OpcUaModbusGateway
 	}
 
 	RegisterGroupConfig::Vec&
-	ModbusTCPClientConfig::registerGroupConfigVec(RegisterGroupConfig::Type type)
+	ModbusTCPClientConfig::registerGroupConfigVec(RegisterGroupConfig::ModbusGroupType modbusGroupType)
 	{
-		auto it = registerGroupMap_.find(type);
+		auto it = registerGroupMap_.find(modbusGroupType);
 		if (it == registerGroupMap_.end()) {
-			registerGroupMap_.insert(std::make_pair(type, RegisterGroupConfig::Vec()));
-			auto it = registerGroupMap_.find(type);
+			registerGroupMap_.insert(std::make_pair(modbusGroupType, RegisterGroupConfig::Vec()));
+			auto it = registerGroupMap_.find(modbusGroupType);
 			return it->second;
 		}
 		return it->second;
 	}
 
-	std::vector<RegisterGroupConfig::Type>
+	std::vector<RegisterGroupConfig::ModbusGroupType>
 	ModbusTCPClientConfig::registerGroupTypes(void)
 	{
-		std::vector<RegisterGroupConfig::Type> vec;
+		std::vector<RegisterGroupConfig::ModbusGroupType> vec;
 		for (auto it : registerGroupMap_) {
 			vec.push_back(it.first);
 		}
@@ -491,21 +495,21 @@ namespace OpcUaModbusGateway
 	}
 
 	RegisterGroupConfig::Vec&
-	ModbusTCPServerConfig::registerGroupConfigVec(RegisterGroupConfig::Type type)
+	ModbusTCPServerConfig::registerGroupConfigVec(RegisterGroupConfig::ModbusGroupType modbusGroupType)
 	{
-		auto it = registerGroupMap_.find(type);
+		auto it = registerGroupMap_.find(modbusGroupType);
 		if (it == registerGroupMap_.end()) {
-			registerGroupMap_.insert(std::make_pair(type, RegisterGroupConfig::Vec()));
-			auto it = registerGroupMap_.find(type);
+			registerGroupMap_.insert(std::make_pair(modbusGroupType, RegisterGroupConfig::Vec()));
+			auto it = registerGroupMap_.find(modbusGroupType);
 			return it->second;
 		}
 		return it->second;
 	}
 
-	std::vector<RegisterGroupConfig::Type>
+	std::vector<RegisterGroupConfig::ModbusGroupType>
 	ModbusTCPServerConfig::registerGroupTypes(void)
 	{
-		std::vector<RegisterGroupConfig::Type> vec;
+		std::vector<RegisterGroupConfig::ModbusGroupType> vec;
 		for (auto it : registerGroupMap_) {
 			vec.push_back(it.first);
 		}
