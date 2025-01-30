@@ -129,21 +129,21 @@ namespace OpcUaModbusGateway
 				.parameter("TypeName", type_);
 			return false;
 		}
-		auto modbusType = modbusType_ == RegisterConfig::ModbusType::UInt16 ? "UInt16" : "Boolean";
-		auto opcUaType = type_;
+		modbusTypeString_ = modbusType_ == RegisterConfig::ModbusType::UInt16 ? "UInt16" : "Boolean";
+		opcUaTypeString_ = type_;
 		// Check conversion support
-		rc = TypeConverter::canConversion(modbusType, opcUaType);
+		rc = TypeConverter::canConversion(modbusTypeString_, opcUaTypeString_);
 		if (!rc) {
 			Log(Error, "cannot convert modbus variable type to opc ua variable type")
-				.parameter("ModbusType", modbusType)
-				.parameter("OpcUaType", opcUaType);
+				.parameter("ModbusType", modbusTypeString_)
+				.parameter("OpcUaType", opcUaTypeString_);
 			return false;
 		}
-		rc = TypeConverter::canConversion(opcUaType, modbusType);
+		rc = TypeConverter::canConversion(opcUaTypeString_, modbusTypeString_);
 		if (!rc) {
 			Log(Error, "cannot convert opc ua variable type to modbus variable type")
-				.parameter("OpcUaType", opcUaType)
-				.parameter("ModbusType", modbusType);
+				.parameter("OpcUaType", opcUaTypeString_)
+				.parameter("ModbusType", modbusTypeString_);
 			return false;
 		}
 

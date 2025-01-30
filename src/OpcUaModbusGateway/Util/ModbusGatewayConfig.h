@@ -66,6 +66,8 @@ namespace OpcUaModbusGateway
 		ModbusType modbusType(void);
 
 	  private:
+		std::string modbusTypeString_ = "Unknown";
+		std::string opcUaTypeString_ = "Unknown";
 		ModbusType modbusType_ = ModbusType::None;
 		uint16_t address_ = 0;
 		std::string name_ = "";
