@@ -93,9 +93,62 @@ namespace OpcUaModbusGateway
 	}
 
 	void
-	OpcUaModbusValue::getWriteDataValue(OpcUaStackCore::OpcUaDataValue& writeDataValue)
+	OpcUaModbusValue::getDataValue(uint16_t& value)
 	{
-		writeDataValue = writeDataValue_;
+		// Server: ReadInputRegisters
+		// Server: ReadMultipleHoldingRegisters
+	}
+
+	void
+	OpcUaModbusValue::getDataValue(bool& value)
+	{
+		// Server: ReadCoils
+		// Server: ReadDiscreteInputRegisters
+		// FIXME: TODO
+	}
+
+	void
+	OpcUaModbusValue::setDataValue(uint16_t value)
+	{
+		// Server: WriteSingleHoldingRegister
+		// Server: WriteMultipleHoldingRegisters
+		// Client: ReadInputRegisters
+		// Client: ReadMultipleHoldingRegisters
+		// FIXME: TODO
+	}
+
+	void
+	OpcUaModbusValue::setDataValue(bool value)
+	{
+		// Server: WriteSingleCoil
+		// Server: WriteMultipleCoils
+		// Client: ReadCoils
+		// Client: ReadDiscreteInputRegisters
+		// FIXME: TODO
+	}
+
+	bool
+	OpcUaModbusValue::useWriteDataValue(void)
+	{
+		// Client: register write callback method
+		// FIXME: TODO
+		return true;
+	}
+
+	void
+	OpcUaModbusValue::getWriteDataValue(uint16_t& value)
+	{
+		// Client: WriteSingleHoldingRegister
+		// Client: WriteMultipleHoldingRegisters
+		// FIXME: TODO
+	}
+
+	void
+	OpcUaModbusValue::getWriteDataValue(bool& value)
+	{
+		// Client: WriteSingleCoil
+		// Client: WriteMultipleCoils
+		// FIXME: TODO
 	}
 
 

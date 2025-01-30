@@ -45,7 +45,14 @@ namespace OpcUaModbusGateway
 		);
 		bool shutdown(void);
 
-		void getWriteDataValue(OpcUaStackCore::OpcUaDataValue& writeDataValue);
+		void getDataValue(uint16_t& value); 		// Server
+		void getDataValue(bool& value);				// Server
+		void setDataValue(uint16_t value); 			// Client and Server
+		void setDataValue(bool value);				// Client and Server
+
+		bool useWriteDataValue(void);				// Client
+		void getWriteDataValue(uint16_t& value); 	// Client
+		void getWriteDataValue(bool& value);		// Client
 
 	  private:
 		static uint32_t id_;
