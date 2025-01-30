@@ -38,12 +38,23 @@ namespace OpcUaModbusGateway
 			UInt16
 		};
 
+		enum class ModbusAccess {
+			None,
+			Read,
+			Write,
+			ReadWrite
+		};
+
 		RegisterConfig(ModbusType modbusType);
 		~RegisterConfig(void);
 
 		static std::map<ModbusType, std::string> modbusTypeMap_;
 		static std::string toString(ModbusType type);
 		static ModbusType toType(const std::string& type);
+
+		static std::map<ModbusAccess, std::string> modbusAccessMap_;
+		static std::string toString(ModbusAccess access);
+		static ModbusAccess toAccess(const std::string& access);
 
 		bool parse(OpcUaStackCore::Config& config);
 		uint16_t address(void);

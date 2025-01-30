@@ -39,6 +39,12 @@ namespace OpcUaModbusGateway
 		{RegisterConfig::ModbusType::UInt16, "UInt16"}
 	};
 
+	std::map<RegisterConfig::ModbusAccess, std::string> RegisterConfig::modbusAccessMap_ = {
+		{RegisterConfig::ModbusAccess::Read, "Read"},
+		{RegisterConfig::ModbusAccess::Write, "Write"},
+		{RegisterConfig::ModbusAccess::ReadWrite, "ReadWrite"}
+	};
+
 
 	RegisterConfig::RegisterConfig(ModbusType modbusType)
 	: modbusType_(modbusType)
@@ -63,6 +69,22 @@ namespace OpcUaModbusGateway
 			if (it.second == modbusType) return it.first;
 		}
 		return ModbusType::None;
+	}
+
+	std::string
+	RegisterConfig::toString(ModbusAccess access)
+	{
+		auto it = modbusAccessMap_.find(access);
+		return it == modbusAccessMap_.end() ? "Unknown" : it->second;
+	}
+
+	RegisterConfig::ModbusAccess
+	RegisterConfig::toAccess(const std::string& modbusAccess)
+	{
+		for (auto it : modbusAccessMap_) {
+			if (it.second == modbusAccess) return it.first;
+		}
+		return ModbusAccess::None;
 	}
 
 	bool
