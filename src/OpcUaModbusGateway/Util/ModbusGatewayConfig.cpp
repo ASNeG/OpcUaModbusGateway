@@ -81,24 +81,17 @@ namespace OpcUaModbusGateway
 			return false;
 		}
 
-#if 0
 		// Get unit attribute from configuration
 		rc = config.getConfigParameter("<xmlattr>.Unit", unit_);
 		if (rc == false) {
-			Log(Error, "attribute not found in register configuration")
-				.parameter("Attribute", "Unit");
-			return false;
+			unit_ = "Digit";
 		}
 
 		// Get type attribute from configuration
 		rc = config.getConfigParameter("<xmlattr>.Type", type_);
 		if (rc == false) {
-			Log(Error, "attribute not found in register configuration")
-				.parameter("Attribute", "Type")
-				.parameter("Register", name_);
-			return false;
+			type_ = "Boolean";
 		}
-#endif
 
 		// Get a_ attribute from configuration
 		rc = config.getConfigParameter("<xmlattr>.A", a_);
