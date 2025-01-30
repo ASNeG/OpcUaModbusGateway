@@ -32,6 +32,7 @@ namespace OpcUaModbusGateway
 
 	// Node Ids
 	namespace NodeId {
+		const uint32_t modbusServerFolder_ = 5004;
 		const uint32_t modbusClientFolder_ = 5006;
 	};
 
@@ -95,6 +96,39 @@ namespace OpcUaModbusGateway
 			opcuaModbusClients_.push_back(opcuaModbusClientInterface);
 		}
 
+		// modbus tcp server object and opc ua model
+		for (auto modbusTCPServerConfig : modbusGatewayConfig_.modbusTCPServerConfig()) {
+			Log(Debug, "create modbus tcp server")
+				.parameter("Name", modbusTCPServerConfig->name())
+				.parameter("IPAddress", modbusTCPServerConfig->ipAddress())
+				.parameter("Port", modbusTCPServerConfig->port());
+
+			// Create opc ua instance
+			auto opcuaModbusServerInterface = boost::make_shared<OpcUaModbusServerInterface>();
+			rc = opcuaModbusServerInterface->init(
+					modbusTCPServerConfig,
+					&applicationIf->service(),
+					"http://ASNEG.de/OpcUaModbusGateway/"
+			);
+			if (rc == false) {
+				Log(Error, "init modbus server interface error")
+					.parameter("Name", modbusTCPServerConfig->name());
+				return false;
+			}
+
+			// Add new modbus server object instance to opc ua model
+			rc  = opcuaModbusServerInterface->addToOpcUaModel(
+				NodeId::modbusServerFolder_,
+				OpcUaNodeId((uint32_t)OpcUaId_HasComponent)
+			);
+			if (rc == false) {
+				Log(Error, "add modbus tcp server to opc ua model error")
+					.parameter("Name", modbusTCPServerConfig->name());
+				return false;
+			}
+
+			opcuaModbusServers_.push_back(opcuaModbusServerInterface);
+		}
 
 		return true;
 	}

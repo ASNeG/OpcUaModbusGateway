@@ -24,8 +24,8 @@
 
 #include "OpcUaModbusGateway/Util/ModbusGatewayConfig.h"
 #include "OpcUaModbusGateway/CustomerObjectType/ModbusServerInterface.h"
-#if 0
 #include "OpcUaModbusGateway/Application/ModbusTCPServer.h"
+#if 0
 #include "OpcUaModbusGateway/OpcUa/OpcUaModbusServerRegister.h"
 #endif
 
@@ -56,7 +56,7 @@ namespace OpcUaModbusGateway
     	bool deleteFromOpcUaModel(void);
 
       private:
-        //ModbusTCPServer::SPtr modbusTCPServer_ = nullptr;
+        ModbusTCPServer::SPtr modbusTCPServer_ = nullptr;
         ModbusTCPServerConfig::SPtr modbusTCPServerConfig_;
         OpcUaStackServer::ApplicationServiceIf* applicationServiceIf_ = nullptr;
 

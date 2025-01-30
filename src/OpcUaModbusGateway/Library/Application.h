@@ -22,6 +22,7 @@
 
 #include "OpcUaStackServer/Application/ApplicationIf.h"
 #include "OpcUaModbusGateway/OpcUa/OpcUaModbusClientInterface.h"
+#include "OpcUaModbusGateway/OpcUa/OpcUaModbusServerInterface.h"
 #include "OpcUaModbusGateway/Util/ModbusGatewayConfig.h"
 
 namespace OpcUaModbusGateway
@@ -44,6 +45,7 @@ namespace OpcUaModbusGateway
 		ModbusGatewayConfig modbusGatewayConfig_;
 
 		OpcUaModbusClientInterface::Vec opcuaModbusClients_;
+		OpcUaModbusServerInterface::Vec opcuaModbusServers_;
 	};
 
 }

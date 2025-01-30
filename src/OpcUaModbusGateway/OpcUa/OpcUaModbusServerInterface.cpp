@@ -66,15 +66,8 @@ namespace OpcUaModbusGateway
 		}
 
 		// Create modbus tcp server
-#if 0
-		modbusTCPClient_ = std::make_shared<ModbusTCPClient>();
-		modbusTCPClient_->connectTimeout(modbusTCPClientConfig->connectTimeout());
-		modbusTCPClient_->reconnectTimeout(modbusTCPClientConfig->reconnectTimeout());
-		modbusTCPClient_->sendTimeout(modbusTCPClientConfig->sendTimeout());
-		modbusTCPClient_->recvTimeout(modbusTCPClientConfig->recvTimeout());
-		modbusTCPClient_->queryTimeout(modbusTCPClientConfig->queryTimeout());
-		modbusTCPClient_->slaveId(modbusTCPClientConfig->slaveId());
-#endif
+		modbusTCPServer_ = std::make_shared<ModbusTCPServer>();
+
 		return true;
 	}
 
@@ -87,22 +80,22 @@ namespace OpcUaModbusGateway
 		bool rc  = true;
 		OpcUaNodeId parentNodeId(parentId, namespaceIndex_);
 
-#if 0
-		// create a new modbus tcp client object instance in opc ua information model
+		// create a new modbus tcp server object instance in opc ua information model
 		Object::SPtr obj = shared_from_this();
 		CreateObjectInstance createObjectInstance(
 			namespaceName_,									// namespace name of the object instance
-			OpcUaLocalizedText("", modbusTCPClientConfig_->name()),// display name of the object instance
+			OpcUaLocalizedText("", modbusTCPServerConfig_->name()),// display name of the object instance
 			parentNodeId,									// parent node of the object instance
 			referenceTypeNodeId,							// reference type between object and variable instance
 			obj
 		);
 		if (!createObjectInstance.query(applicationServiceIf_)) {
 			Log(Error, "create object error")
-				.parameter("DisplayName", modbusTCPClientConfig_->name());
+				.parameter("DisplayName", modbusTCPServerConfig_->name());
 			return false;
 		}
 
+#if 0
 		// Startup opc ua modbus client register
 		OpcUaNodeId rootNodeId = nodeId();
 		rc = modbusClientRegister_.startup(
