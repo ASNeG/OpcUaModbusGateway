@@ -26,22 +26,24 @@
 namespace OpcUaModbusGateway
 {
 
-	enum class RegisterValueType
-	{
-		Bool,
-		UInt16
-	};
-
-	std::string toString(RegisterValueType registerValueType);
-
 	class RegisterConfig
 	{
 	  public:
 		using SPtr = std::shared_ptr<RegisterConfig>;
 		using Vec = std::vector<RegisterConfig::SPtr>;
 
+		enum class Type {
+			None,
+			Bool,
+			UInt16
+		};
+
 		RegisterConfig(void);
 		~RegisterConfig(void);
+
+		static std::map<Type, std::string> typeMap_;
+		static std::string toString(Type type);
+		static Type toType(const std::string& type);
 
 		bool parse(OpcUaStackCore::Config& config);
 		uint16_t address(void);

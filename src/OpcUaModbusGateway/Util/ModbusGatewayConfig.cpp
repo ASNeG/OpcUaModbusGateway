@@ -28,35 +28,40 @@ namespace OpcUaModbusGateway
 	// ------------------------------------------------------------------------
 	// ------------------------------------------------------------------------
 	//
-	// enum functions
-	//
-	// ------------------------------------------------------------------------
-	// ------------------------------------------------------------------------
-	std::string toString(RegisterValueType registerValueType)
-	{
-		std::map<RegisterValueType, std::string> map = {
-			{RegisterValueType::Bool, "Bool"},
-			{RegisterValueType::UInt16, "UInt16"}
-		};
-		auto it = map.find(registerValueType);
-		return it == map.end() ? "Unknown" : it->second;
-
-	}
-
-
-	// ------------------------------------------------------------------------
-	// ------------------------------------------------------------------------
-	//
 	// class RegisterConfig
 	//
 	// ------------------------------------------------------------------------
 	// ------------------------------------------------------------------------
+
+	std::map<RegisterConfig::Type, std::string> RegisterConfig::typeMap_ = {
+		{RegisterConfig::Type::None, "None"},
+		{RegisterConfig::Type::Bool, "Bool"},
+		{RegisterConfig::Type::UInt16, "UInt16"}
+	};
+
+
 	RegisterConfig::RegisterConfig(void)
 	{
 	}
 
 	RegisterConfig::~RegisterConfig(void)
 	{
+	}
+
+	std::string
+	RegisterConfig::toString(Type type)
+	{
+		auto it = typeMap_.find(type);
+		return it == typeMap_.end() ? "Unknown" : it->second;
+	}
+
+	RegisterConfig::Type
+	RegisterConfig::toType(const std::string& type)
+	{
+		for (auto it : typeMap_) {
+			if (it.second == type) return it.first;
+		}
+		return Type::None;
 	}
 
 	bool
