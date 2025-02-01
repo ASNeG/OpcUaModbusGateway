@@ -45,7 +45,17 @@ namespace OpcUaModbusGateway
 			ReadWrite
 		};
 
-		RegisterConfig(ModbusType modbusType);
+		enum class ModbusAppl {
+			None,
+			Slave,
+			Master
+		};
+
+		RegisterConfig(
+			ModbusType modbusType,
+			ModbusAccess modbusAccess,
+			ModbusAppl modbusAppl
+		);
 		~RegisterConfig(void);
 
 		static std::map<ModbusType, std::string> modbusTypeMap_;
@@ -56,6 +66,11 @@ namespace OpcUaModbusGateway
 		static std::string toString(ModbusAccess access);
 		static ModbusAccess toAccess(const std::string& access);
 
+		static std::map<ModbusAppl, std::string> modbusApplMap_;
+		static std::string toString(ModbusAppl modbusAppl);
+		static ModbusAppl toAppl(const std::string& appl);
+
+
 		bool parse(OpcUaStackCore::Config& config);
 		uint16_t address(void);
 		std::string name(void);
@@ -64,11 +79,15 @@ namespace OpcUaModbusGateway
 		double a(void);
 		double b(void);
 		ModbusType modbusType(void);
+		ModbusAccess modbusAccess(void);
+		ModbusAppl modbusAppl(void);
 
 	  private:
 		std::string modbusTypeString_ = "Unknown";
 		std::string opcUaTypeString_ = "Unknown";
 		ModbusType modbusType_ = ModbusType::None;
+		ModbusAccess modbusAccess_ = ModbusAccess::None;
+		ModbusAppl modbusAppl_ = ModbusAppl::None;
 		uint16_t address_ = 0;
 		std::string name_ = "";
 		std::string unit_ = "";
@@ -92,7 +111,7 @@ namespace OpcUaModbusGateway
 			HoldingRegister
 		};
 
-		RegisterGroupConfig(void);
+		RegisterGroupConfig(RegisterConfig::ModbusAppl modbusAppl);
 		~RegisterGroupConfig(void);
 
 		static std::map<ModbusGroupType, std::string> modbusGroupTypeMap_;
@@ -107,6 +126,7 @@ namespace OpcUaModbusGateway
 
 	  private:
 		ModbusGroupType modbusGroupType_ = ModbusGroupType::None;
+		RegisterConfig::ModbusAppl modbusAppl_ = RegisterConfig::ModbusAppl::None;
 		std::string groupName_ = "";
 		uint32_t interval_ = 1000;
 		RegisterConfig::Vec registerConfigVec_;

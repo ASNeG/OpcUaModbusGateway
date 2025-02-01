@@ -41,14 +41,27 @@ namespace OpcUaModbusGateway
 	};
 
 	std::map<RegisterConfig::ModbusAccess, std::string> RegisterConfig::modbusAccessMap_ = {
+		{RegisterConfig::ModbusAccess::None, "None"},
 		{RegisterConfig::ModbusAccess::Read, "Read"},
 		{RegisterConfig::ModbusAccess::Write, "Write"},
 		{RegisterConfig::ModbusAccess::ReadWrite, "ReadWrite"}
 	};
 
+	std::map<RegisterConfig::ModbusAppl, std::string> RegisterConfig::modbusApplMap_ = {
+		{RegisterConfig::ModbusAppl::None, "None"},
+		{RegisterConfig::ModbusAppl::Slave, "Slave"},
+		{RegisterConfig::ModbusAppl::Master, "Master"}
+	};
 
-	RegisterConfig::RegisterConfig(ModbusType modbusType)
+
+	RegisterConfig::RegisterConfig(
+		ModbusType modbusType,
+		ModbusAccess modbusAccess,
+		ModbusAppl modbusAppl
+	)
 	: modbusType_(modbusType)
+	, modbusAccess_(modbusAccess)
+	, modbusAppl_(modbusAppl)
 	{
 	}
 
@@ -86,6 +99,22 @@ namespace OpcUaModbusGateway
 			if (it.second == modbusAccess) return it.first;
 		}
 		return ModbusAccess::None;
+	}
+
+	std::string
+	RegisterConfig::toString(ModbusAppl appl)
+	{
+		auto it = modbusApplMap_.find(appl);
+		return it == modbusApplMap_.end() ? "Unknown" : it->second;
+	}
+
+	RegisterConfig::ModbusAppl
+	RegisterConfig::toAppl(const std::string& modbusAppl)
+	{
+		for (auto it : modbusApplMap_) {
+			if (it.second == modbusAppl) return it.first;
+		}
+		return ModbusAppl::None;
 	}
 
 	bool
@@ -198,6 +227,23 @@ namespace OpcUaModbusGateway
 		return b_;
 	}
 
+	RegisterConfig::ModbusType
+	RegisterConfig::modbusType(void)
+	{
+		return modbusType_;
+	}
+
+	RegisterConfig::ModbusAccess
+	RegisterConfig::modbusAccess(void)
+	{
+		return modbusAccess_;
+	}
+
+	RegisterConfig::ModbusAppl
+	RegisterConfig::modbusAppl(void)
+	{
+		return modbusAppl_;
+	}
 
 	// ------------------------------------------------------------------------
 	// ------------------------------------------------------------------------
@@ -215,7 +261,11 @@ namespace OpcUaModbusGateway
 		{RegisterGroupConfig::ModbusGroupType::HoldingRegister, "HoldingRegister"}
 	};
 
-	RegisterGroupConfig::RegisterGroupConfig(void)
+
+	RegisterGroupConfig::RegisterGroupConfig(
+		RegisterConfig::ModbusAppl modbusAppl
+	)
+	: modbusAppl_(modbusAppl)
 	{
 	}
 
@@ -269,6 +319,11 @@ namespace OpcUaModbusGateway
 		if (modbusGroupType_ == ModbusGroupType::InputRegister) auto modbusType = RegisterConfig::ModbusType::UInt16;
 		if (modbusGroupType_ == ModbusGroupType::HoldingRegister) auto modbusType = RegisterConfig::ModbusType::UInt16;
 
+		auto modbusAccess = RegisterConfig::ModbusAccess::ReadWrite; // FIXME: TODO
+
+		auto modbusAppl = RegisterConfig::ModbusAppl::Slave; // FIXME: TODO
+
+
 		// Get name attribute from configuration
 		rc = config.getConfigParameter("<xmlattr>.GroupName", groupName_);
 		if (rc == false) {
@@ -292,7 +347,7 @@ namespace OpcUaModbusGateway
 		if (configVec.size() != 0) {
 			// parse input register entries
 			for (auto configEntry: configVec) {
-				auto registerConfig = std::make_shared<RegisterConfig>(modbusType);
+				auto registerConfig = std::make_shared<RegisterConfig>(modbusType, modbusAccess, modbusAppl);
 
 				// parse register entry
 				rc = registerConfig->parse(configEntry);
@@ -327,7 +382,6 @@ namespace OpcUaModbusGateway
 	{
 		return registerConfigVec_;
 	}
-
 
 
 	// ------------------------------------------------------------------------
@@ -455,7 +509,7 @@ namespace OpcUaModbusGateway
 
 			for (auto configEntry : configVec) {
 				// create register group config
-				auto registerGroup = std::make_shared<RegisterGroupConfig>();
+				auto registerGroup = std::make_shared<RegisterGroupConfig>(RegisterConfig::ModbusAppl::Master);
 
 				// Parse register group config
 				rc = registerGroup->parse(configEntry);
@@ -603,7 +657,7 @@ namespace OpcUaModbusGateway
 
 			for (auto configEntry : configVec) {
 				// create register group config
-				auto registerGroup = std::make_shared<RegisterGroupConfig>();
+				auto registerGroup = std::make_shared<RegisterGroupConfig>(RegisterConfig::ModbusAppl::Slave);
 
 				// Parse register group config
 				rc = registerGroup->parse(configEntry);
