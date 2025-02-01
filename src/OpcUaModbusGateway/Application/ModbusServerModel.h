@@ -21,6 +21,8 @@
 #include <memory>
 #include <map>
 
+#include "ModbusProt/ModbusModelInterface.h"
+
 namespace OpcUaModbusGateway
 {
 
@@ -42,6 +44,7 @@ namespace OpcUaModbusGateway
 	};
 
 	class ModbusServerModel
+	: public ModbusProt::ModbusModelInterface
 	{
 	  public:
 		using SPtr = std::shared_ptr<ModbusServerModel>;
@@ -68,6 +71,11 @@ namespace OpcUaModbusGateway
 			uint16_t id,
 			RegisterEntry::GetUInt16Callback getUInt16Callback
 		);
+
+		bool checkType(ModbusProt::MemoryType memoryType) override;
+		bool checkAddress(ModbusProt::MemoryType memoryType, uint16_t startAddress, uint16_t numValues) override;
+		bool setValue(ModbusProt::MemoryType memoryType, uint16_t startAddress, uint8_t* values, uint16_t numValues) override;
+		bool getValue(ModbusProt::MemoryType memoryType, uint16_t startAddress, uint8_t* values, uint16_t numValues) override;
 
 	  private:
 		RegisterEntry::Map coilsMap_;

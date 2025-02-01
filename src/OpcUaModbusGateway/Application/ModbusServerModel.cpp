@@ -23,6 +23,7 @@ namespace OpcUaModbusGateway
 {
 
 	ModbusServerModel::ModbusServerModel(void)
+	: ModbusProt::ModbusModelInterface()
 	{
 	}
 
@@ -77,6 +78,31 @@ namespace OpcUaModbusGateway
 		registerEntry->getUInt16Callback_ = getUInt16Callback;
 		return inputRegistersMap_.insert_or_assign(id, registerEntry).second;
 	}
+
+	bool
+	ModbusServerModel::checkType(ModbusProt::MemoryType memoryType)
+	{
+		return false;
+	}
+
+	bool
+	ModbusServerModel::checkAddress(ModbusProt::MemoryType memoryType, uint16_t startAddress, uint16_t numValues)
+	{
+		return false;
+	}
+
+	bool
+	ModbusServerModel::setValue(ModbusProt::MemoryType memoryType, uint16_t startAddress, uint8_t* values, uint16_t numValues)
+	{
+		return false;
+	}
+
+	bool
+	ModbusServerModel::getValue(ModbusProt::MemoryType memoryType, uint16_t startAddress, uint8_t* values, uint16_t numValues)
+	{
+		return false;
+	}
+
 
 }
 
