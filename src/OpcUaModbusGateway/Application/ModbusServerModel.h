@@ -19,7 +19,7 @@
 #define __OpcUaModbusGateway_ModbusServerModel_h__
 
 #include <memory>
-#include <vector>
+#include <map>
 
 namespace OpcUaModbusGateway
 {
@@ -27,6 +27,9 @@ namespace OpcUaModbusGateway
 	class RegisterEntry
 	{
 	  public:
+		using SPtr = std::shared_ptr<RegisterEntry>;
+		using Map = std::map<uint16_t, SPtr>;
+
 		using SetBoolCallback = std::function<void (bool value)>;
 		using GetBoolCallback = std::function<void (bool& value)>;
 		using SetUInt16Callback = std::function<void (uint16_t value)>;
@@ -67,6 +70,10 @@ namespace OpcUaModbusGateway
 		);
 
 	  private:
+		RegisterEntry::Map coilsMap_;
+		RegisterEntry::Map inputsMap_;
+		RegisterEntry::Map holdingRegistersMap_;
+		RegisterEntry::Map inputRegistersMap_;
 	};
 
 }

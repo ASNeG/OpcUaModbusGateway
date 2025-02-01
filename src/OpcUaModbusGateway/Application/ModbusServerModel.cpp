@@ -37,7 +37,10 @@ namespace OpcUaModbusGateway
 		RegisterEntry::GetBoolCallback getBoolCallback
 	)
 	{
-		return true;
+		auto registerEntry = std::make_shared<RegisterEntry>();
+		registerEntry->setBoolCallback_ = setBoolCallback;
+		registerEntry->getBoolCallback_ = getBoolCallback;
+		return coilsMap_.insert_or_assign(id, registerEntry).second;
 	}
 
 	bool
@@ -46,7 +49,9 @@ namespace OpcUaModbusGateway
 		RegisterEntry::GetBoolCallback getBoolCallback
 	)
 	{
-		return true;
+		auto registerEntry = std::make_shared<RegisterEntry>();
+		registerEntry->getBoolCallback_ = getBoolCallback;
+		return inputsMap_.insert_or_assign(id, registerEntry).second;
 	}
 
 	bool
@@ -56,7 +61,10 @@ namespace OpcUaModbusGateway
 		RegisterEntry::GetUInt16Callback getUInt16Callback
 	)
 	{
-		return true;
+		auto registerEntry = std::make_shared<RegisterEntry>();
+		registerEntry->setUInt16Callback_ = setUInt16Callback;
+		registerEntry->getUInt16Callback_ = getUInt16Callback;
+		return holdingRegistersMap_.insert_or_assign(id, registerEntry).second;
 	}
 
 	bool
@@ -65,7 +73,9 @@ namespace OpcUaModbusGateway
 		RegisterEntry::GetUInt16Callback getUInt16Callback
 	)
 	{
-		return true;
+		auto registerEntry = std::make_shared<RegisterEntry>();
+		registerEntry->getUInt16Callback_ = getUInt16Callback;
+		return inputRegistersMap_.insert_or_assign(id, registerEntry).second;
 	}
 
 }
