@@ -15,6 +15,8 @@
    Autor: Kai Huebl (kai@huebl-sgh.de)
  */
 
+#include <functional>
+
 #include "OpcUaModbusGateway/Application/ModbusServerModel.h"
 
 namespace OpcUaModbusGateway
@@ -26,6 +28,44 @@ namespace OpcUaModbusGateway
 
 	ModbusServerModel::~ModbusServerModel(void)
 	{
+	}
+
+	bool
+	ModbusServerModel::registerCoils(
+		uint16_t id,
+		RegisterEntry::SetBoolCallback setBoolCallback,
+		RegisterEntry::GetBoolCallback getBoolCallback
+	)
+	{
+		return true;
+	}
+
+	bool
+	ModbusServerModel::registerInputs(
+		uint16_t id,
+		RegisterEntry::GetBoolCallback getBoolCallback
+	)
+	{
+		return true;
+	}
+
+	bool
+	ModbusServerModel::registerHoldingRegisters(
+		uint16_t id,
+		RegisterEntry::SetUInt16Callback setUInt16Callback,
+		RegisterEntry::GetUInt16Callback getUInt16Callback
+	)
+	{
+		return true;
+	}
+
+	bool
+	ModbusServerModel::registerInputTegisters(
+		uint16_t id,
+		RegisterEntry::GetUInt16Callback getUInt16Callback
+	)
+	{
+		return true;
 	}
 
 }
