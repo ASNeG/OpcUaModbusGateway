@@ -45,7 +45,7 @@ namespace OpcUaModbusGateway
 		);
 		bool shutdown(void);
 
-		void getDataValue(uint16_t& value); 		// Server
+		bool getDataValue(uint16_t& value); 		// Server
 		void getDataValue(bool& value);				// Server
 		void setDataValue(uint16_t value); 			// Client and Server
 		void setDataValue(bool value);				// Client and Server

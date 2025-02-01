@@ -233,6 +233,12 @@ namespace OpcUaModbusGateway
 		return modbusType_;
 	}
 
+	std::string&
+	RegisterConfig::opcUaTypeString(void)
+	{
+		return opcUaTypeString_;
+	}
+
 	RegisterConfig::ModbusAccess
 	RegisterConfig::modbusAccess(void)
 	{
@@ -315,14 +321,16 @@ namespace OpcUaModbusGateway
 				.parameter("GroupType", group);
 			return false;
 		}
+
 		auto modbusType = RegisterConfig::ModbusType::Bool;
 		if (modbusGroupType_ == ModbusGroupType::InputRegister) auto modbusType = RegisterConfig::ModbusType::UInt16;
 		if (modbusGroupType_ == ModbusGroupType::HoldingRegister) auto modbusType = RegisterConfig::ModbusType::UInt16;
 
-		auto modbusAccess = RegisterConfig::ModbusAccess::ReadWrite; // FIXME: TODO
-
-		auto modbusAppl = RegisterConfig::ModbusAppl::Slave; // FIXME: TODO
-
+		auto modbusAccess = RegisterConfig::ModbusAccess::ReadWrite;
+		if (modbusAppl_ == RegisterConfig::ModbusAppl::Master) {
+			if (modbusGroupType_ == ModbusGroupType::InputRegister) modbusAccess = RegisterConfig::ModbusAccess::Read;
+			if (modbusGroupType_ == ModbusGroupType::Input) modbusAccess = RegisterConfig::ModbusAccess::Read;
+		}
 
 		// Get name attribute from configuration
 		rc = config.getConfigParameter("<xmlattr>.GroupName", groupName_);
@@ -347,7 +355,7 @@ namespace OpcUaModbusGateway
 		if (configVec.size() != 0) {
 			// parse input register entries
 			for (auto configEntry: configVec) {
-				auto registerConfig = std::make_shared<RegisterConfig>(modbusType, modbusAccess, modbusAppl);
+				auto registerConfig = std::make_shared<RegisterConfig>(modbusType, modbusAccess, modbusAppl_);
 
 				// parse register entry
 				rc = registerConfig->parse(configEntry);

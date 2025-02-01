@@ -46,6 +46,10 @@ namespace OpcUaModbusGateway
 		OpcUaStackCore::OpcUaNodeId& rootNodeId
 	)
 	{
+		OpcUaNodeId nodeId;
+		OpcUaDataValue dataValue;
+		OpcUaDateTime now(boost::posix_time::microsec_clock::universal_time());
+
 		// Set parameter
 		namespaceName_ = namespaceName;
 		namespaceIndex_ = namespaceIndex;
@@ -72,6 +76,35 @@ namespace OpcUaModbusGateway
 			return false;
 		}
 
+		// Get base class access
+		auto sv = modbusValue_->variable(); 		// Get server variable
+		auto bnwp = sv->baseNode();					// Get base node weak pointer
+		auto bn = bnwp.lock();						// Get base node smart pointer
+		if (bn.get() == nullptr) {
+			Log(Error, "variable access error")
+				.parameter("DisplayName", registerConfig->name());
+			return false;
+		}
+
+		// Set data type
+		auto type = OpcUaBuildInTypeMap::string2BuildInType(registerConfig->opcUaTypeString());
+		nodeId.set(type, 0);
+		bn->setDataType(nodeId);
+
+		// Set access rights
+		uint8_t accessLevel = 0x03;
+		if (registerConfig->modbusAccess() == RegisterConfig::ModbusAccess::Read) accessLevel = 0x01;
+		bn->setAccessLevel(accessLevel);
+
+		// Set default variable
+		OpcUaStatusCode statusCode = Success;
+		if (registerConfig->modbusAppl() == RegisterConfig::ModbusAppl::Master) statusCode = BadCommunicationError;
+		dataValue.serverTimestamp(now);
+		dataValue.sourceTimestamp(now);
+		dataValue.statusCode(statusCode);
+		dataValue.variant()->fromString(type, false, "0");
+		modbusValue_->set_Variable(dataValue);
+
 		return true;
 	}
 
@@ -92,11 +125,17 @@ namespace OpcUaModbusGateway
 		return true;
 	}
 
-	void
+	bool
 	OpcUaModbusValue::getDataValue(uint16_t& value)
 	{
 		// Server: ReadInputRegisters
 		// Server: ReadMultipleHoldingRegisters
+
+		// Read modbus variable
+		OpcUaDataValue dataValue;
+		if (!modbusValue_->get_Variable(dataValue)) return false;
+
+		return true;
 	}
 
 	void

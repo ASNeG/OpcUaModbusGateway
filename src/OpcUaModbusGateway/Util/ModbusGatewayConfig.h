@@ -79,6 +79,7 @@ namespace OpcUaModbusGateway
 		double a(void);
 		double b(void);
 		ModbusType modbusType(void);
+		std::string& opcUaTypeString(void);
 		ModbusAccess modbusAccess(void);
 		ModbusAppl modbusAppl(void);
 
