@@ -82,11 +82,47 @@ namespace OpcUaModbusGateway
 	bool
 	ModbusServerModel::checkType(ModbusProt::MemoryType memoryType)
 	{
+		switch (memoryType)
+		{
+			case ModbusProt::MemoryType::Coils: return coilsMap_.size() != 0;
+			case ModbusProt::MemoryType::Inputs: return inputsMap_.size() != 0;
+			case ModbusProt::MemoryType::HoldingRegisters: return holdingRegistersMap_.size() != 0;
+			case ModbusProt::MemoryType::InputRegisters: return inputRegistersMap_.size() != 0;
+		}
 		return false;
 	}
 
 	bool
+	ModbusServerModel::checkAddress(RegisterEntry::Map& registerMap, uint16_t startAddress, uint16_t numValues)
+	{
+		for (uint16_t idx = 0; idx < numValues; idx++) {
+			auto it = registerMap.find(startAddress + idx);
+			if (it == registerMap.end()) return false;
+		}
+		return true;
+	}
+
+	bool
 	ModbusServerModel::checkAddress(ModbusProt::MemoryType memoryType, uint16_t startAddress, uint16_t numValues)
+	{
+		switch (memoryType)
+		{
+			case ModbusProt::MemoryType::Coils: return checkAddress(coilsMap_, startAddress, numValues);
+			case ModbusProt::MemoryType::Inputs: return checkAddress(inputsMap_, startAddress, numValues);
+			case ModbusProt::MemoryType::HoldingRegisters: return checkAddress(holdingRegistersMap_, startAddress, numValues);
+			case ModbusProt::MemoryType::InputRegisters: return checkAddress(inputRegistersMap_, startAddress, numValues);
+		}
+		return false;
+	}
+
+	bool
+	ModbusServerModel::setValueBoolean(RegisterEntry::Map& registerMap, uint16_t startAddress, uint8_t* values, uint16_t numValues)
+	{
+		return false;
+	}
+
+	bool
+	ModbusServerModel::setValueUInt16(RegisterEntry::Map& registerMap, uint16_t startAddress, uint8_t* values, uint16_t numValues)
 	{
 		return false;
 	}
@@ -94,12 +130,38 @@ namespace OpcUaModbusGateway
 	bool
 	ModbusServerModel::setValue(ModbusProt::MemoryType memoryType, uint16_t startAddress, uint8_t* values, uint16_t numValues)
 	{
+		switch (memoryType)
+		{
+			case ModbusProt::MemoryType::Coils: return setValueBoolean(coilsMap_, startAddress, values, numValues);
+			case ModbusProt::MemoryType::Inputs: return setValueBoolean(inputsMap_, startAddress, values, numValues);
+			case ModbusProt::MemoryType::HoldingRegisters: return setValueUInt16(holdingRegistersMap_, startAddress, values, numValues);
+			case ModbusProt::MemoryType::InputRegisters: return setValueUInt16(inputRegistersMap_, startAddress, values, numValues);
+		}
+		return false;
+	}
+
+	bool
+	ModbusServerModel::getValueBoolean(RegisterEntry::Map& registerMap, uint16_t startAddress, uint8_t* values, uint16_t numValues)
+	{
+		return false;
+	}
+
+	bool
+	ModbusServerModel::getValueUInt16(RegisterEntry::Map& registerMap, uint16_t startAddress, uint8_t* values, uint16_t numValues)
+	{
 		return false;
 	}
 
 	bool
 	ModbusServerModel::getValue(ModbusProt::MemoryType memoryType, uint16_t startAddress, uint8_t* values, uint16_t numValues)
 	{
+		switch (memoryType)
+		{
+			case ModbusProt::MemoryType::Coils: return getValueBoolean(coilsMap_, startAddress, values, numValues);
+			case ModbusProt::MemoryType::Inputs: return getValueBoolean(inputsMap_, startAddress, values, numValues);
+			case ModbusProt::MemoryType::HoldingRegisters: return getValueUInt16(holdingRegistersMap_, startAddress, values, numValues);
+			case ModbusProt::MemoryType::InputRegisters: return getValueUInt16(inputRegistersMap_, startAddress, values, numValues);
+		}
 		return false;
 	}
 

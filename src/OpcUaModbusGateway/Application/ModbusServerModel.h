@@ -77,6 +77,12 @@ namespace OpcUaModbusGateway
 		bool setValue(ModbusProt::MemoryType memoryType, uint16_t startAddress, uint8_t* values, uint16_t numValues) override;
 		bool getValue(ModbusProt::MemoryType memoryType, uint16_t startAddress, uint8_t* values, uint16_t numValues) override;
 
+		bool checkAddress(RegisterEntry::Map& registerMap, uint16_t startAddress, uint16_t numValues);
+		bool setValueBoolean(RegisterEntry::Map& registerMap, uint16_t startAddress, uint8_t* values, uint16_t numValues);
+		bool setValueUInt16(RegisterEntry::Map& registerMap, uint16_t startAddress, uint8_t* values, uint16_t numValues);
+		bool getValueBoolean(RegisterEntry::Map& registerMap, uint16_t startAddress, uint8_t* values, uint16_t numValues);
+		bool getValueUInt16(RegisterEntry::Map& registerMap, uint16_t startAddress, uint8_t* values, uint16_t numValues);
+
 	  private:
 		RegisterEntry::Map coilsMap_;
 		RegisterEntry::Map inputsMap_;
