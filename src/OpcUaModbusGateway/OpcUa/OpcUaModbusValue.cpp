@@ -19,6 +19,7 @@
 #include "OpcUaStackServer/ServiceSetApplication/CreateVariableInstance.h"
 #include "OpcUaStackServer/ServiceSetApplication/DeleteNodeInstance.h"
 
+#include "OpcUaModbusGateway/Util/TypeConverter.h"
 #include "OpcUaModbusGateway/OpcUa/OpcUaModbusValue.h"
 
 using namespace OpcUaStackCore;
@@ -130,11 +131,28 @@ namespace OpcUaModbusGateway
 	{
 		// Server: ReadInputRegisters
 		// Server: ReadMultipleHoldingRegisters
+		auto rc = true;
 
 		// Read modbus variable
 		OpcUaDataValue dataValue;
-		if (!modbusValue_->get_Variable(dataValue)) return false;
+		if (!modbusValue_->get_Variable(dataValue)) {
+			return false;
+		}
 
+		// Convert modbus variable to uint16
+		OpcUaVariant targetVariant;
+		rc = TypeConverter::conversion(*dataValue.variant(), OpcUaBuildInType::OpcUaBuildInType_OpcUaInt16, targetVariant);
+		if (!rc) {
+			Log(Error, "value conversion error")
+				.parameter("ValueNodeId", valueNodeId_)
+				.parameter("ValueName", registerConfig_->name())
+				.parameter("SourceType", dataValue.variant()->variantType())
+				.parameter("TargetType", OpcUaBuildInType::OpcUaBuildInType_OpcUaInt16);
+			return false;
+		}
+
+		// Get variable from variant
+		value = targetVariant.get<uint16_t>();
 		return true;
 	}
 
@@ -143,8 +161,28 @@ namespace OpcUaModbusGateway
 	{
 		// Server: ReadCoils
 		// Server: ReadDiscreteInputRegisters
-		// FIXME: TODO
+		auto rc = true;
 
+		// Read modbus variable
+		OpcUaDataValue dataValue;
+		if (!modbusValue_->get_Variable(dataValue)) {
+			return false;
+		}
+
+		// Convert modbus variable to uint16
+		OpcUaVariant targetVariant;
+		rc = TypeConverter::conversion(*dataValue.variant(), OpcUaBuildInType::OpcUaBuildInType_OpcUaBoolean, targetVariant);
+		if (!rc) {
+			Log(Error, "value conversion error")
+				.parameter("ValueNodeId", valueNodeId_)
+				.parameter("ValueName", registerConfig_->name())
+				.parameter("SourceType", dataValue.variant()->variantType())
+				.parameter("TargetType", OpcUaBuildInType::OpcUaBuildInType_OpcUaBoolean);
+			return false;
+		}
+
+		// Get variable from variant
+		value = targetVariant.get<bool>();
 		return true;
 	}
 
