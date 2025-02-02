@@ -169,7 +169,7 @@ namespace OpcUaModbusGateway
 			return false;
 		}
 
-		// Convert modbus variable to uint16
+		// Convert modbus variable to bool
 		OpcUaVariant targetVariant;
 		rc = TypeConverter::conversion(*dataValue.variant(), OpcUaBuildInType::OpcUaBuildInType_OpcUaBoolean, targetVariant);
 		if (!rc) {
@@ -193,9 +193,31 @@ namespace OpcUaModbusGateway
 		// Server: WriteMultipleHoldingRegisters
 		// Client: ReadInputRegisters
 		// Client: ReadMultipleHoldingRegisters
-		// FIXME: TODO
+		bool rc = true;
 
-		return  true;
+		// Convert variable to target data value type
+		auto targetType = OpcUaBuildInTypeMap::string2BuildInType(registerConfig_->opcUaTypeString());
+		OpcUaVariant sourceVariant(value);
+		OpcUaVariant targetVariant;
+		rc = TypeConverter::conversion(sourceVariant, targetType, targetVariant);
+		if (!rc) {
+			Log(Error, "value conversion error")
+				.parameter("ValueNodeId", valueNodeId_)
+				.parameter("ValueName", registerConfig_->name())
+				.parameter("SourceType", OpcUaBuildInType::OpcUaBuildInType_OpcUaUInt16)
+				.parameter("TargetType", targetType);
+			return false;
+		}
+
+		// Set data value
+		OpcUaDateTime now(boost::posix_time::microsec_clock::universal_time());
+		OpcUaDataValue dataValue;
+		dataValue.serverTimestamp(now);
+		dataValue.sourceTimestamp(now);
+		dataValue.statusCode(Success);
+		dataValue.variant()->copyFrom(targetVariant);
+		modbusValue_->set_Variable(dataValue);
+		return true;
 	}
 
 	bool
@@ -205,8 +227,30 @@ namespace OpcUaModbusGateway
 		// Server: WriteMultipleCoils
 		// Client: ReadCoils
 		// Client: ReadDiscreteInputRegisters
-		// FIXME: TODO
+		bool rc = true;
 
+		// Convert variable to target data value type
+		auto targetType = OpcUaBuildInTypeMap::string2BuildInType(registerConfig_->opcUaTypeString());
+		OpcUaVariant sourceVariant(value);
+		OpcUaVariant targetVariant;
+		rc = TypeConverter::conversion(sourceVariant, targetType, targetVariant);
+		if (!rc) {
+			Log(Error, "value conversion error")
+				.parameter("ValueNodeId", valueNodeId_)
+				.parameter("ValueName", registerConfig_->name())
+				.parameter("SourceType", OpcUaBuildInType::OpcUaBuildInType_OpcUaBoolean)
+				.parameter("TargetType", targetType);
+			return false;
+		}
+
+		// Set data value
+		OpcUaDateTime now(boost::posix_time::microsec_clock::universal_time());
+		OpcUaDataValue dataValue;
+		dataValue.serverTimestamp(now);
+		dataValue.sourceTimestamp(now);
+		dataValue.statusCode(Success);
+		dataValue.variant()->copyFrom(targetVariant);
+		modbusValue_->set_Variable(dataValue);
 		return true;
 	}
 
