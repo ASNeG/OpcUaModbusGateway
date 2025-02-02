@@ -15,11 +15,15 @@
    Autor: Kai Huebl (kai@huebl-sgh.de)
  */
 
+#include "OpcUaStackCore/Base/Log.h"
+
 #include "ModbusTCP/TCPServerModel.h"
 #include "ModbusTCP/TCPServerHandler.h"
 
 #include "OpcUaModbusGateway/Application/ModbusTCPServerImpl.h"
 #include "OpcUaModbusGateway/Application/LogDefault.h"
+
+using namespace OpcUaStackCore;
 
 namespace OpcUaModbusGateway
 {
@@ -71,7 +75,12 @@ namespace OpcUaModbusGateway
 				[this](asio::io_context& ctx, asio::ip::tcp::socket& client) {
 					ModbusTCP::TCPServerModel::SPtr tcpServerModel = nullptr;
 
+					Log(Debug, "tcp modbus server receives connection request")
+					    .parameter("Client", client.remote_endpoint());
+
 					if (modbusServerModel_ == nullptr) {
+						Log(Error, "tcp modbus server error, because modbus server model empty")
+							.parameter("Client", client.remote_endpoint());
 						return tcpServerModel;
 					}
 
@@ -83,6 +92,8 @@ namespace OpcUaModbusGateway
 
 					tcpServerModel = std::make_shared<ModbusTCP::TCPServerModel>(ctx);
 					tcpServerModel->addModbusModel(modbusServerModel_);
+					Log(Error, "tcp modbus server accepted connection from client")
+						.parameter("Client", client.remote_endpoint());
 					return tcpServerModel;
 				}
 		);
