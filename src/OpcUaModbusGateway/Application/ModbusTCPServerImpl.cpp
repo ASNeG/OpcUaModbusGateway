@@ -16,6 +16,7 @@
  */
 
 #include "ModbusTCP/TCPServerModel.h"
+#include "ModbusTCP/TCPServerHandler.h"
 
 #include "OpcUaModbusGateway/Application/ModbusTCPServerImpl.h"
 #include "OpcUaModbusGateway/Application/LogDefault.h"
@@ -106,8 +107,8 @@ namespace OpcUaModbusGateway
 			return;
 		}
 
-		//auto stateString = modbusTCPServer_.tcpServerStateToString(serverState);
-		//stateCallback_(stateString);
+		auto stateString = ModbusTCP::TCPServerHandler::tcpServerStateToString(serverState);
+		stateCallback_(stateString);
 	}
 
 
