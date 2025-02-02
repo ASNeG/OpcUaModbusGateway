@@ -25,6 +25,7 @@
 #include "OpcUaModbusGateway/Util/ModbusGatewayConfig.h"
 #include "OpcUaModbusGateway/CustomerObjectType/ModbusServerInterface.h"
 #include "OpcUaModbusGateway/Application/ModbusTCPServer.h"
+#include "OpcUaModbusGateway/Application/ModbusServerModel.h"
 #include "OpcUaModbusGateway/OpcUa/OpcUaModbusServerRegister.h"
 
 namespace OpcUaModbusGateway
@@ -57,6 +58,7 @@ namespace OpcUaModbusGateway
         ModbusTCPServer::SPtr modbusTCPServer_ = nullptr;
         ModbusTCPServerConfig::SPtr modbusTCPServerConfig_;
         OpcUaStackServer::ApplicationServiceIf* applicationServiceIf_ = nullptr;
+        ModbusServerModel::SPtr modbusServerModel_ = nullptr;
 
         OpcUaModbusServerRegister modbusServerRegister_;
 

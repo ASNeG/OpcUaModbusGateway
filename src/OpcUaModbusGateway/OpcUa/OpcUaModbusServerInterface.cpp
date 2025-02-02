@@ -65,8 +65,12 @@ namespace OpcUaModbusGateway
 			return false;
 		}
 
+		// Create modbus server model
+		modbusServerModel_ = std::make_shared<ModbusServerModel>();
+
 		// Create modbus tcp server
 		modbusTCPServer_ = std::make_shared<ModbusTCPServer>();
+		//modbusTCPServer_->modbusServerModel(modbusServerModel_);
 
 		return true;
 	}
