@@ -21,6 +21,7 @@
 #include <memory>
 #include <vector>
 
+#include "OpcUaModbusGateway/Application/ModbusServerModel.h"
 #include "OpcUaModbusGateway/Util/ModbusGatewayConfig.h"
 
 namespace OpcUaModbusGateway
@@ -36,6 +37,11 @@ namespace OpcUaModbusGateway
 
 		ModbusTCPServer(void);
 		~ModbusTCPServer(void);
+
+		void modbusServerModel(ModbusServerModel::SPtr modbusServerModel);
+
+		bool open(ModbusTCPServerConfig::SPtr& modbusTCPServerConfig);
+		bool close(void);
 
 	  private:
 		ModbusTCPServerImpl* modbusTCPServerImpl_ = nullptr;

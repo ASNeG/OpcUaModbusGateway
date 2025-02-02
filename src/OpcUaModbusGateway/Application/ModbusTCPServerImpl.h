@@ -19,6 +19,9 @@
 #define __OpcUaModbusGateway_ModbusTCPServerImpl_h__
 
 #include "OpcUaModbusGateway/Util/ModbusGatewayConfig.h"
+#include "OpcUaModbusGateway/Application/ModbusServerModel.h"
+
+#include "ModbusTCP/TCPServer.h"
 
 namespace OpcUaModbusGateway
 {
@@ -26,11 +29,25 @@ namespace OpcUaModbusGateway
 	class ModbusTCPServerImpl
 	{
 	  public:
+		using StateCallback = std::function<void (const std::string&)>;
 
 		ModbusTCPServerImpl(void);
 		~ModbusTCPServerImpl(void);
 
+		void stateCallback(StateCallback stateCallback);
+		void modbusServerModel(ModbusServerModel::SPtr modbusServerModel);
+
+		bool open(ModbusTCPServerConfig::SPtr& modbusTCPServerConfig);
+		bool close(void);
+
 	  private:
+		StateCallback stateCallback_;
+		asio::ip::tcp::endpoint serverEndpoint_;
+		ModbusTCP::TCPServer modbusTCPServer_;
+		ModbusTCP::TCPServerState modbusTCPServerState_;
+		ModbusServerModel::SPtr modbusServerModel_ = nullptr;
+
+		void serverStateCallback(ModbusTCP::TCPServerState serverState);
 
 	};
 }

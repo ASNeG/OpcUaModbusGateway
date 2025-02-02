@@ -109,31 +109,42 @@ namespace OpcUaModbusGateway
 			return false;
 		}
 
+#if 0
+		// Set state callback
+		modbusTCPClient_->stateCallback(
+			[this](const std::string& state) {
+				setModbusConnectionState(state);
+			}
+		);
+#endif
+
+		// Connect to modbus tcp server
+		rc = modbusTCPServer_->open(modbusTCPServerConfig_);
+		if (rc == false) {
+			Log(Error, "create modbus tcp module error")
+				.parameter("Name", modbusTCPServerConfig_->name());
+			return false;
+		}
+
 		return true;
 	}
 
 	bool
 	OpcUaModbusServerInterface::deleteFromOpcUaModel(void)
 	{
-#if 0
+		// Close modbus tcp server
+		modbusTCPServer_->close();
 
-		// Delete modbus client register instances from opc ua model
-		auto rc = modbusClientRegister_.shutdown();
-		if (!rc) {
-			Log(Error, "delete client register node instance error");
-			return false;
-		}
-
-		// remove object from opc ua model
+		// Delete opc ua nodes from opc ua information model
 		DeleteNodeInstance deleteNodeInstance;
 		deleteNodeInstance.node(nodeId());
 
 		if (!deleteNodeInstance.query(applicationServiceIf_)) {
 			Log(Error, "delete node instance error")
-				.parameter("ModbusCientNodeId", nodeId());
+				.parameter("ModbusServerNodeId", nodeId());
 			return false;
 		}
-#endif
+
 		return true;
 	}
 

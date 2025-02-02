@@ -31,5 +31,23 @@ namespace OpcUaModbusGateway
 		delete modbusTCPServerImpl_;
 	}
 
+	void
+	ModbusTCPServer::modbusServerModel(ModbusServerModel::SPtr modbusServerModel)
+	{
+		modbusTCPServerImpl_->modbusServerModel(modbusServerModel);
+	}
+
+	bool
+	ModbusTCPServer::open(ModbusTCPServerConfig::SPtr& modbusTCPServerConfig)
+	{
+		return modbusTCPServerImpl_->open(modbusTCPServerConfig);
+	}
+
+	bool
+	ModbusTCPServer::close(void)
+	{
+		return modbusTCPServerImpl_->close();
+	}
+
 }
 
