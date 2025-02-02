@@ -123,6 +123,9 @@ namespace OpcUaModbusGateway
 	)
 	{
 		modbusTCPClientState_ = clientState;
+		if (stateCallback_ == nullptr) {
+			return;
+		}
 
 		auto stateString = modbusTCPClient_.tcpClientStateToString(clientState);
 		stateCallback_(stateString);
