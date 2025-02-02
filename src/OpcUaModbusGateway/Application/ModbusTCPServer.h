@@ -34,10 +34,12 @@ namespace OpcUaModbusGateway
 	  public:
 		using SPtr = std::shared_ptr<ModbusTCPServer>;
 		using Vec = std::vector<SPtr>;
+		using StateCallback = std::function<void (const std::string&)>;
 
 		ModbusTCPServer(void);
 		~ModbusTCPServer(void);
 
+		void stateCallback(StateCallback stateCallback);
 		void modbusServerModel(ModbusServerModel::SPtr modbusServerModel);
 
 		bool open(ModbusTCPServerConfig::SPtr& modbusTCPServerConfig);

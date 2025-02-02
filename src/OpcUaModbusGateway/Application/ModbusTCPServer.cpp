@@ -32,6 +32,12 @@ namespace OpcUaModbusGateway
 	}
 
 	void
+	ModbusTCPServer::stateCallback(StateCallback stateCallback)
+	{
+		modbusTCPServerImpl_->stateCallback(stateCallback);
+	}
+
+	void
 	ModbusTCPServer::modbusServerModel(ModbusServerModel::SPtr modbusServerModel)
 	{
 		modbusTCPServerImpl_->modbusServerModel(modbusServerModel);
