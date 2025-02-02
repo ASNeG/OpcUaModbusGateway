@@ -118,13 +118,35 @@ namespace OpcUaModbusGateway
 	bool
 	ModbusServerModel::setValueBoolean(RegisterEntry::Map& registerMap, uint16_t startAddress, uint8_t* values, uint16_t numValues)
 	{
-		return false;
+		for (uint16_t idx = 0; idx < numValues; idx++) {
+			auto it = registerMap.find(startAddress + idx);
+			if (it == registerMap.end()) return false;
+
+			uint16_t pos = idx / 8;
+			uint8_t rest = idx % 8;
+			bool value = (values[pos] & (1 << rest) != 0);
+
+			bool rc = it->second->setBoolCallback_(value);
+			if (!rc) return false;
+
+		}
+		return true;
 	}
 
 	bool
 	ModbusServerModel::setValueUInt16(RegisterEntry::Map& registerMap, uint16_t startAddress, uint8_t* values, uint16_t numValues)
 	{
-		return false;
+		uint16_t* value = (uint16_t*)values;
+
+		for (uint16_t idx = 0; idx < numValues; idx++) {
+			auto it = registerMap.find(startAddress + idx);
+			if (it == registerMap.end()) return false;
+
+			bool rc = it->second->setUInt16Callback_(value[idx]);
+			if (!rc) return false;
+
+		}
+		return true;
 	}
 
 	bool
@@ -143,13 +165,35 @@ namespace OpcUaModbusGateway
 	bool
 	ModbusServerModel::getValueBoolean(RegisterEntry::Map& registerMap, uint16_t startAddress, uint8_t* values, uint16_t numValues)
 	{
-		return false;
+		for (uint16_t idx = 0; idx < numValues; idx++) {
+			auto it = registerMap.find(startAddress + idx);
+			if (it == registerMap.end()) return false;
+
+			bool value = false;
+			bool rc = it->second->getBoolCallback_(value);
+			if (!rc) return false;
+
+			uint16_t pos = idx / 8;
+			uint8_t rest = idx % 8;
+			if (value) values[pos] = values[pos] | (1 << rest);
+			else values[pos] = values[pos] & ~(1 << rest);
+		}
+		return true;
 	}
 
 	bool
 	ModbusServerModel::getValueUInt16(RegisterEntry::Map& registerMap, uint16_t startAddress, uint8_t* values, uint16_t numValues)
 	{
-		return false;
+		uint16_t* value = (uint16_t*)values;
+
+		for (uint16_t idx = 0; idx < numValues; idx++) {
+			auto it = registerMap.find(startAddress + idx);
+			if (it == registerMap.end()) return false;
+
+			bool rc = it->second->getUInt16Callback_(value[idx]);
+			if (!rc) return false;
+		}
+		return true;
 	}
 
 	bool

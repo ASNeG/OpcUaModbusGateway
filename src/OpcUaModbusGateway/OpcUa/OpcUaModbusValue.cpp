@@ -138,15 +138,17 @@ namespace OpcUaModbusGateway
 		return true;
 	}
 
-	void
+	bool
 	OpcUaModbusValue::getDataValue(bool& value)
 	{
 		// Server: ReadCoils
 		// Server: ReadDiscreteInputRegisters
 		// FIXME: TODO
+
+		return true;
 	}
 
-	void
+	bool
 	OpcUaModbusValue::setDataValue(uint16_t value)
 	{
 		// Server: WriteSingleHoldingRegister
@@ -154,9 +156,11 @@ namespace OpcUaModbusGateway
 		// Client: ReadInputRegisters
 		// Client: ReadMultipleHoldingRegisters
 		// FIXME: TODO
+
+		return  true;
 	}
 
-	void
+	bool
 	OpcUaModbusValue::setDataValue(bool value)
 	{
 		// Server: WriteSingleCoil
@@ -164,6 +168,8 @@ namespace OpcUaModbusGateway
 		// Client: ReadCoils
 		// Client: ReadDiscreteInputRegisters
 		// FIXME: TODO
+
+		return true;
 	}
 
 	bool

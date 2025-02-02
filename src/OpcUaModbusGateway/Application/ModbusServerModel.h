@@ -32,10 +32,10 @@ namespace OpcUaModbusGateway
 		using SPtr = std::shared_ptr<RegisterEntry>;
 		using Map = std::map<uint16_t, SPtr>;
 
-		using SetBoolCallback = std::function<void (bool value)>;
-		using GetBoolCallback = std::function<void (bool& value)>;
-		using SetUInt16Callback = std::function<void (uint16_t value)>;
-		using GetUInt16Callback = std::function<void (bool& value)>;
+		using SetBoolCallback = std::function<bool (bool value)>;
+		using GetBoolCallback = std::function<bool (bool& value)>;
+		using SetUInt16Callback = std::function<bool (uint16_t value)>;
+		using GetUInt16Callback = std::function<bool (uint16_t& value)>;
 
 		SetBoolCallback setBoolCallback_;
 		GetBoolCallback getBoolCallback_;
