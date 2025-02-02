@@ -32,42 +32,51 @@ namespace OpcUaModbusGateway
 	{
 	}
 
-	 bool
-	 TypeConverter::checkType(const std::string& typeString)
-	 {
-		 // Check if type string in opc ua exist
-		 auto type = OpcUaBuildInTypeMap::string2BuildInType(typeString);
-		 if (type == OpcUaBuildInType_Unknown) return false;
-		 return true;
-	 }
+	bool
+	TypeConverter::checkType(
+		const std::string& typeString
+	)
+	{
+		// Check if type string in opc ua exist
+		auto type = OpcUaBuildInTypeMap::string2BuildInType(typeString);
+		if (type == OpcUaBuildInType_Unknown) return false;
+		return true;
+	}
 
-	 OpcUaBuildInType
-	 TypeConverter::getType(const std::string& typeString)
-	 {
-		 return OpcUaBuildInTypeMap::string2BuildInType(typeString);
-	 }
+	OpcUaBuildInType
+	TypeConverter::getType(
+		const std::string& typeString)
+	{
+		return OpcUaBuildInTypeMap::string2BuildInType(typeString);
+	}
 
-	 bool
-	 TypeConverter::canConversion(const std::string& fromTypeString, const std::string& toTypeString)
-	 {
-		 if (!checkType(fromTypeString)) return false;
-		 if (!checkType(toTypeString)) return false;
-		 auto fromType = getType(fromTypeString);
-		 auto toType = getType(toTypeString);
+	bool
+	TypeConverter::canConversion(
+		const std::string& fromTypeString,
+		const std::string& toTypeString
+	)
+	{
+		if (!checkType(fromTypeString)) return false;
+		if (!checkType(toTypeString)) return false;
+		auto fromType = getType(fromTypeString);
+		auto toType = getType(toTypeString);
 
-		 OpcUaTypeConversion typeConv;
-		 auto conversionType = typeConv.conversionType(fromType, toType);
-		 if (conversionType == 'X') return false;
-		 return true;
-	 }
+		OpcUaTypeConversion typeConv;
+		auto conversionType = typeConv.conversionType(fromType, toType);
+		if (conversionType == 'X') return false;
+		return true;
+	}
 
-#if 0
-		bool conversion(
-			OpcUaVariant& sourceVariant,		// source variant data
-			OpcUaBuildInType targetType,		// target type
-			OpcUaVariant& targetVariant 		// target variant data
-		);
-
-#endif
+	bool
+	TypeConverter::conversion(
+		OpcUaVariant& sourceVariant,
+		OpcUaBuildInType targetType,
+		OpcUaVariant& targetVariant
+	)
+	{
+		OpcUaTypeConversion typeConv;
+		return typeConv.conversion(sourceVariant, targetType, targetVariant);
+		return true;
+	}
 
 }

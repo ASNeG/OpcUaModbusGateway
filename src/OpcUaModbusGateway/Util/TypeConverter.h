@@ -21,6 +21,7 @@
 #include <string>
 
 #include "OpcUaStackCore/BuildInTypes/OpcUaType.h"
+#include "OpcUaStackCore/BuildInTypes/OpcUaVariant.h"
 
 namespace OpcUaModbusGateway
 {
@@ -31,9 +32,21 @@ namespace OpcUaModbusGateway
 		TypeConverter(void);
 		~TypeConverter(void);
 
-		static bool checkType(const std::string& typeString);
-		static OpcUaStackCore::OpcUaBuildInType getType(const std::string& typeString);
-		static bool canConversion(const std::string& fromTypeString, const std::string& toTypeString);
+		static bool checkType(
+			const std::string& typeString
+		);
+		static OpcUaStackCore::OpcUaBuildInType getType(
+			const std::string& typeString
+		);
+		static bool canConversion(
+			const std::string& fromTypeString,
+			const std::string& toTypeString
+		);
+		static bool conversion(
+			OpcUaStackCore::OpcUaVariant& sourceVariant,
+			OpcUaStackCore::OpcUaBuildInType targetType,
+			OpcUaStackCore::OpcUaVariant& targetVariant
+		);
 	};
 
 }
