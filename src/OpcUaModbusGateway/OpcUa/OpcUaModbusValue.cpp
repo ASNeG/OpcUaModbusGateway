@@ -156,11 +156,9 @@ namespace OpcUaModbusGateway
 				rc = modbusServerModel_->registerCoils(
 					registerConfig_->address(),
 					[this](bool value) {
-						std::cout << "SET DATA VALUE" << std::endl;
 						return setDataValue(value);
 					},
 					[this](bool& value) {
-						std::cout << "GET DATA VALUE" << std::endl;
 						return getDataValue(value);
 					}
 				);
@@ -174,6 +172,18 @@ namespace OpcUaModbusGateway
 			}
 			case RegisterGroupConfig::ModbusGroupType::Input:
 			{
+				rc = modbusServerModel_->registerInputs(
+					registerConfig_->address(),
+					[this](bool& value) {
+						return getDataValue(value);
+					}
+				);
+				if (!rc) {
+					Log(Error, "register input in modbus model error")
+						.parameter("Name", registerConfig_->name())
+						.parameter("Address", registerConfig_->address());
+					return false;
+				}
 				break;
 			}
 			case RegisterGroupConfig::ModbusGroupType::HoldingRegister:
@@ -224,6 +234,7 @@ namespace OpcUaModbusGateway
 			}
 			case RegisterGroupConfig::ModbusGroupType::Input:
 			{
+				modbusServerModel_->deregisterInputs(registerConfig_->address());
 				break;
 			}
 			case RegisterGroupConfig::ModbusGroupType::HoldingRegister:
