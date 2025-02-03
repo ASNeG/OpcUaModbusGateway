@@ -187,6 +187,8 @@ namespace OpcUaModbusGateway
 		std::string name(void);
 		std::string ipAddress(void);
 		uint32_t port(void);
+		uint32_t sendTimeout(void);
+		uint32_t recvTimeout(void);
 		RegisterGroupConfig::Vec& registerGroupConfigVec(RegisterGroupConfig::ModbusGroupType modbusGroupType);
 		std::vector<RegisterGroupConfig::ModbusGroupType> registerGroupTypes(void);
 
@@ -196,6 +198,10 @@ namespace OpcUaModbusGateway
 		std::string ipAddress_ = "127.0.0.1";
 		uint32_t port_ = 123;
 		RegisterGroupMap registerGroupMap_;
+
+		// Optional attributes
+		uint32_t sendTimeout_ = 0xFFFFFFFF;
+		uint32_t recvTimeout_ = 0xFFFFFFFF;
 	};
 
 
