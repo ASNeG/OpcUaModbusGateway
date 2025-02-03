@@ -70,7 +70,7 @@ namespace OpcUaModbusGateway
 
 		// Create modbus tcp server
 		modbusTCPServer_ = std::make_shared<ModbusTCPServer>();
-		//modbusTCPServer_->modbusServerModel(modbusServerModel_);
+		modbusTCPServer_->modbusServerModel(modbusServerModel_);
 
 		return true;
 	}
@@ -113,14 +113,12 @@ namespace OpcUaModbusGateway
 			return false;
 		}
 
-#if 0
 		// Set state callback
-		modbusTCPClient_->stateCallback(
+		modbusTCPServer_->stateCallback(
 			[this](const std::string& state) {
 				setModbusConnectionState(state);
 			}
 		);
-#endif
 
 		// Connect to modbus tcp server
 		rc = modbusTCPServer_->open(modbusTCPServerConfig_);
@@ -152,26 +150,12 @@ namespace OpcUaModbusGateway
 		return true;
 	}
 
-#if 0
 	void
 	OpcUaModbusServerInterface::setModbusConnectionState(
-		const std::string& setModbusConnectionState
+		const std::string& modbusConnectionState
 	)
 	{
-		OpcUaDateTime now(boost::posix_time::microsec_clock::local_time());
-		OpcUaDataValue dataValue;
-
-		auto value = boost::make_shared<OpcUaString>();
-		value->value(setModbusConnectionState);
-		dataValue.variant()->variant(value);
-		dataValue.statusCode((OpcUaStatusCode)Success);
-		dataValue.sourceTimestamp(now);
-		dataValue.sourcePicoseconds(0);
-		dataValue.serverTimestamp(now);
-		dataValue.serverPicoseconds(0);
-
-		set_ModbusConnectionState_Variable(dataValue);
+		// ntohing to do
 	}
-#endif
 
 }

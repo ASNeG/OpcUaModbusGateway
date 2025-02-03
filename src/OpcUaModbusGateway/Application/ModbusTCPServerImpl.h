@@ -22,6 +22,7 @@
 #include "OpcUaModbusGateway/Application/ModbusServerModel.h"
 
 #include "ModbusTCP/TCPServer.h"
+#include "ModbusTCP/TCPServerModel.h"
 
 namespace OpcUaModbusGateway
 {
@@ -43,11 +44,16 @@ namespace OpcUaModbusGateway
 	  private:
 		StateCallback stateCallback_;
 		asio::ip::tcp::endpoint serverEndpoint_;
+		ModbusTCP::TCPServerModel::SPtr tcpServerModel_ = nullptr;  // FIXME: Create map.....
 		ModbusTCP::TCPServer modbusTCPServer_;
 		ModbusTCP::TCPServerState modbusTCPServerState_;
 		ModbusServerModel::SPtr modbusServerModel_ = nullptr;
+		Base::LogHandler::SPtr logHandler_ = nullptr;
 
-		void serverStateCallback(ModbusTCP::TCPServerState serverState);
+		void serverStateCallback(
+			ModbusTCP::TCPServerState modbusTCPServerState,
+			asio::ip::tcp::socket& client
+		);
 
 	};
 }

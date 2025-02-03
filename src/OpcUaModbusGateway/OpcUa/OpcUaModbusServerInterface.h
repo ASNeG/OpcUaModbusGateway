@@ -64,6 +64,10 @@ namespace OpcUaModbusGateway
 
         std::string namespaceName_ = "";
         uint32_t namespaceIndex_ = 0;
+
+        void setModbusConnectionState(
+        	const std::string& modbusConnectionState
+       );
    };
 
 }

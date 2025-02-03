@@ -27,13 +27,20 @@ namespace OpcUaModbusGateway
 
 	using namespace OpcUaStackCore;
 
-	LogDefault::LogDefault(void)
+	LogDefault::LogDefault(const std::string& message)
 	: Base::LogHandler()
+	, message_(message)
 	{
 	}
 
 	LogDefault::~LogDefault(void)
 	{
+	}
+
+	void
+	LogDefault::message(const std::string& message)
+	{
+		message_ = message;
 	}
 
 	void
@@ -43,22 +50,22 @@ namespace OpcUaModbusGateway
 		{
 			case Base::LogLevel::Error:
 			{
-				Log(Error, "modbus client message").parameter("Message", message);
+				Log(Error, message_).parameter("Message", message);
 				break;
 			}
 			case Base::LogLevel::Warning:
 			{
-				Log(Warning, "modbus client message").parameter("Message", message);
+				Log(Warning, message_).parameter("Message", message);
 				break;
 			}
 			case Base::LogLevel::Info:
 			{
-				Log(Info, "modbus client message").parameter("Message", message);
+				Log(Info, message_).parameter("Message", message);
 				break;
 			}
 			case Base::LogLevel::Debug:
 			{
-				Log(Debug, "modbus client message").parameter("Message", message);
+				Log(Debug, message_).parameter("Message", message);
 				break;
 			}
 		}

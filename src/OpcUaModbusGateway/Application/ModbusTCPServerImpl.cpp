@@ -17,7 +17,6 @@
 
 #include "OpcUaStackCore/Base/Log.h"
 
-#include "ModbusTCP/TCPServerModel.h"
 #include "ModbusTCP/TCPServerHandler.h"
 
 #include "OpcUaModbusGateway/Application/ModbusTCPServerImpl.h"
@@ -56,8 +55,8 @@ namespace OpcUaModbusGateway
 		bool rc = true;
 
 		// Add own log handler to modbus tcp client
-		Base::LogHandler::SPtr logHandler = std::make_shared<LogDefault>();
-		modbusTCPServer_.logHandler(logHandler);
+		logHandler_ = std::make_shared<LogDefault>("modbus server message");
+		modbusTCPServer_.logHandler(logHandler_);
 
 		// Create server endpoint
 		rc = modbusTCPServer_.getEndpoint(
@@ -73,7 +72,6 @@ namespace OpcUaModbusGateway
 		rc = modbusTCPServer_.open(
 				serverEndpoint_,
 				[this](asio::io_context& ctx, asio::ip::tcp::socket& client) {
-					ModbusTCP::TCPServerModel::SPtr tcpServerModel = nullptr;
 
 					Log(Debug, "tcp modbus server receives connection request")
 					    .parameter("Client", client.remote_endpoint());
@@ -81,20 +79,24 @@ namespace OpcUaModbusGateway
 					if (modbusServerModel_ == nullptr) {
 						Log(Error, "tcp modbus server error, because modbus server model empty")
 							.parameter("Client", client.remote_endpoint());
-						return tcpServerModel;
+						return tcpServerModel_;
 					}
 
-					tcpServerModel->stateCallback(
-						[this](ModbusTCP::TCPServerState state) {
-							serverStateCallback(state);
+					// Create tcp server model
+					tcpServerModel_ = std::make_shared<ModbusTCP::TCPServerModel>(ctx);
+
+					// FIXME: We must save the tcp server model in a hash ....
+
+					tcpServerModel_->addModbusModel(modbusServerModel_);
+					tcpServerModel_->stateCallback(
+						[this, &client](ModbusTCP::TCPServerState state) {
+							serverStateCallback(state, client);
 						}
 					);
 
-					tcpServerModel = std::make_shared<ModbusTCP::TCPServerModel>(ctx);
-					tcpServerModel->addModbusModel(modbusServerModel_);
 					Log(Error, "tcp modbus server accepted connection from client")
 						.parameter("Client", client.remote_endpoint());
-					return tcpServerModel;
+					return tcpServerModel_;
 				}
 		);
 
@@ -111,15 +113,29 @@ namespace OpcUaModbusGateway
 	}
 
 	void
-	ModbusTCPServerImpl::serverStateCallback(ModbusTCP::TCPServerState serverState)
+	ModbusTCPServerImpl::serverStateCallback(
+		ModbusTCP::TCPServerState serverState,
+		asio::ip::tcp::socket& client
+	)
 	{
+		if (serverState == modbusTCPServerState_) {
+			return;
+		}
+
+		auto newStateString = ModbusTCP::TCPServerHandler::tcpServerStateToString(serverState);
+		auto oldStateString = ModbusTCP::TCPServerHandler::tcpServerStateToString(modbusTCPServerState_);
+
+		Log(Debug, "change server state")
+			//.parameter("Client", client.remote_endpoint())
+			.parameter("OldState", oldStateString)
+			.parameter("NewState", newStateString);
+
 		modbusTCPServerState_ = serverState;
 		if (stateCallback_ == nullptr) {
 			return;
 		}
 
-		auto stateString = ModbusTCP::TCPServerHandler::tcpServerStateToString(serverState);
-		stateCallback_(stateString);
+		stateCallback_(newStateString);
 	}
 
 

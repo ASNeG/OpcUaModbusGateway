@@ -88,7 +88,7 @@ namespace OpcUaModbusGateway
 		bool rc = true;
 
 		// Add own log handler to modbus tcp client
-		Base::LogHandler::SPtr logHandler = std::make_shared<LogDefault>();
+		Base::LogHandler::SPtr logHandler = std::make_shared<LogDefault>("modbus client message");
 		modbusTCPClient_.logHandler(logHandler);
 
 		// Create client endpoint

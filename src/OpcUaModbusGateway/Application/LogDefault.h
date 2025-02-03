@@ -29,10 +29,15 @@ namespace OpcUaModbusGateway
 	  public:
 		using SPtr = std::shared_ptr<LogDefault>;
 
-		LogDefault(void);
+		LogDefault(const std::string& message);
 		virtual ~LogDefault(void);
 
+		void message(const std::string& message);
+
 		virtual void log(Base::LogLevel logLevel, const std::string& message) override;
+
+	  private:
+		std::string message_ = "modbus client message";
 	};
 }
 
