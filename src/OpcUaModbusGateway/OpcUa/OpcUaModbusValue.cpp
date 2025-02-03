@@ -44,9 +44,12 @@ namespace OpcUaModbusGateway
 		uint32_t namespaceIndex,
 		RegisterConfig::SPtr registerConfig,
 		OpcUaStackServer::ApplicationServiceIf* applicationServiceIf,
-		OpcUaStackCore::OpcUaNodeId& rootNodeId
+		OpcUaStackCore::OpcUaNodeId& rootNodeId,
+		ModbusServerModel::SPtr modbusServerModel,
+		RegisterGroupConfig::ModbusGroupType modbusGroupType
 	)
 	{
+		bool rc = true;
 		OpcUaNodeId nodeId;
 		OpcUaDataValue dataValue;
 		OpcUaDateTime now(boost::posix_time::microsec_clock::universal_time());
@@ -57,6 +60,8 @@ namespace OpcUaModbusGateway
 		registerConfig_ = registerConfig;
 		applicationServiceIf_ = applicationServiceIf;
 		rootNodeId_ = rootNodeId;
+		modbusServerModel_ = modbusServerModel;
+		modbusGroupType_ = modbusGroupType;
 
 		// create a new modbus value object instance in opc ua information model
 		modbusValue_ = boost::make_shared<ModbusValue>();
@@ -106,12 +111,21 @@ namespace OpcUaModbusGateway
 		dataValue.variant()->fromString(type, false, "0");
 		modbusValue_->set_Variable(dataValue);
 
+		// Register getter and setter methods
+		rc = registerSetterAndGetter();
+		if (rc == false) {
+			return false;
+		}
+
 		return true;
 	}
 
 	bool
 	OpcUaModbusValue::shutdown(void)
 	{
+		// Deregister getter and setter methods
+		deregisterSetterAndGetter();
+
 		// remove object from opc ua model
 		DeleteNodeInstance deleteNodeInstance;
 		deleteNodeInstance.node(valueNodeId_);
@@ -122,6 +136,132 @@ namespace OpcUaModbusGateway
 				.parameter("ValueName", registerConfig_->name());
 			return false;
 		}
+
+		return true;
+	}
+
+	bool
+	OpcUaModbusValue::registerSetterAndGetter(void)
+	{
+		bool rc = true;
+
+		if (modbusServerModel_ == nullptr) {
+			return true;
+		}
+
+		switch (modbusGroupType_)
+		{
+			case RegisterGroupConfig::ModbusGroupType::Coil:
+			{
+				rc = modbusServerModel_->registerCoils(
+					registerConfig_->address(),
+					[this](bool value) {
+						std::cout << "SET DATA VALUE" << std::endl;
+						return setDataValue(value);
+					},
+					[this](bool& value) {
+						std::cout << "GET DATA VALUE" << std::endl;
+						return getDataValue(value);
+					}
+				);
+				if (!rc) {
+					Log(Error, "register coil in modbus model error")
+						.parameter("Name", registerConfig_->name())
+						.parameter("Address", registerConfig_->address());
+					return false;
+				}
+				break;
+			}
+			case RegisterGroupConfig::ModbusGroupType::Input:
+			{
+				break;
+			}
+			case RegisterGroupConfig::ModbusGroupType::HoldingRegister:
+			{
+				break;
+			}
+			case RegisterGroupConfig::ModbusGroupType::InputRegister:
+			{
+				break;
+			}
+		}
+
+#if 0
+		bool registerCoils(
+			uint16_t id,
+			RegisterEntry::SetBoolCallback setBoolCallback,
+			RegisterEntry::GetBoolCallback getBoolCallback
+		);
+		bool registerInputs(
+			uint16_t id,
+			RegisterEntry::GetBoolCallback getBoolCallback
+		);
+		bool registerHoldingRegisters(
+			uint16_t id,
+			RegisterEntry::SetUInt16Callback setUInt16Callback,
+			RegisterEntry::GetUInt16Callback getUInt16Callback
+		);
+		bool registerInputTegisters(
+			uint16_t id,
+			RegisterEntry::GetUInt16Callback getUInt16Callback
+		);
+
+#endif
+
+		return true;
+	}
+
+	bool
+	OpcUaModbusValue::deregisterSetterAndGetter(void)
+	{
+		bool rc = true;
+
+		if (modbusServerModel_ == nullptr) {
+			return true;
+		}
+
+		switch (modbusGroupType_)
+		{
+			case RegisterGroupConfig::ModbusGroupType::Coil:
+			{
+
+				break;
+			}
+			case RegisterGroupConfig::ModbusGroupType::Input:
+			{
+				break;
+			}
+			case RegisterGroupConfig::ModbusGroupType::HoldingRegister:
+			{
+				break;
+			}
+			case RegisterGroupConfig::ModbusGroupType::InputRegister:
+			{
+				break;
+			}
+		}
+
+#if 0
+		bool registerCoils(
+			uint16_t id,
+			RegisterEntry::SetBoolCallback setBoolCallback,
+			RegisterEntry::GetBoolCallback getBoolCallback
+		);
+		bool registerInputs(
+			uint16_t id,
+			RegisterEntry::GetBoolCallback getBoolCallback
+		);
+		bool registerHoldingRegisters(
+			uint16_t id,
+			RegisterEntry::SetUInt16Callback setUInt16Callback,
+			RegisterEntry::GetUInt16Callback getUInt16Callback
+		);
+		bool registerInputTegisters(
+			uint16_t id,
+			RegisterEntry::GetUInt16Callback getUInt16Callback
+		);
+
+#endif
 
 		return true;
 	}

@@ -47,7 +47,8 @@ namespace OpcUaModbusGateway
 		uint32_t namespaceIndex,
 		RegisterGroupConfig::SPtr registerGroupConfig,
 		OpcUaStackServer::ApplicationServiceIf* applicationServiceIf,
-		OpcUaStackCore::OpcUaNodeId& rootNodeId
+		OpcUaStackCore::OpcUaNodeId& rootNodeId,
+		ModbusServerModel::SPtr modbusServerModel
 	)
 	{
 		bool rc = true;
@@ -82,7 +83,13 @@ namespace OpcUaModbusGateway
 		for (auto registerConfig : registerGroupConfig_->registerConfigVec()) {
 			auto value = std::make_shared<OpcUaModbusValue>();
 			auto rc =  value->startup(
-			   	namespaceName, rootNodeId_.namespaceIndex(), registerConfig, applicationServiceIf_, groupNodeId_
+			   	namespaceName,
+				rootNodeId_.namespaceIndex(),
+				registerConfig,
+				applicationServiceIf_,
+				groupNodeId_,
+				modbusServerModel,
+				registerGroupConfig->type()
 			);
 			if (!rc) {
 			   	Log(Error, "create opc ua register value error")

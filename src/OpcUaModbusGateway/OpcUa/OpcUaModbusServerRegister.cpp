@@ -52,7 +52,8 @@ namespace OpcUaModbusGateway
 		const std::string& namespaceName,
 		ModbusTCPServerConfig::SPtr modbusTCPServerConfig,
 		OpcUaStackServer::ApplicationServiceIf* applicationServiceIf,
-		OpcUaStackCore::OpcUaNodeId& rootNodeId
+		OpcUaStackCore::OpcUaNodeId& rootNodeId,
+		ModbusServerModel::SPtr modbusServerModel
 	)
 	{
 		bool rc = true;
@@ -82,7 +83,12 @@ namespace OpcUaModbusGateway
    			for (auto registerGroupConfig : registerGroupConfigs) {
    				auto ServerGroup = std::make_shared<OpcUaModbusServerGroup>();
    				auto rc =  ServerGroup->startup(
-   					namespaceName, rootNodeId_.namespaceIndex(), registerGroupConfig, applicationServiceIf_, typeNodeId
+   					namespaceName,
+					rootNodeId_.namespaceIndex(),
+					registerGroupConfig,
+					applicationServiceIf_,
+					typeNodeId,
+					modbusServerModel
    				);
    				if (!rc) {
    					Log(Error, "create opc ua register group error")

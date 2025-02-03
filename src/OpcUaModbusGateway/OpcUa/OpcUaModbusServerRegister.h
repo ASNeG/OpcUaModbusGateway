@@ -24,6 +24,7 @@
 
 #include "OpcUaModbusGateway/Util/ModbusGatewayConfig.h"
 #include "OpcUaModbusGateway/OpcUa/OpcUaModbusServerGroup.h"
+#include "OpcUaModbusGateway/Application/ModbusServerModel.h"
 
 namespace OpcUaModbusGateway
 {
@@ -38,7 +39,8 @@ namespace OpcUaModbusGateway
 			const std::string& namespaceName,
 			ModbusTCPServerConfig::SPtr modbusTCPServerConfig,
 			OpcUaStackServer::ApplicationServiceIf* OpcUaModbusServerRegisterIf,
-			OpcUaStackCore::OpcUaNodeId& rootNodeId
+			OpcUaStackCore::OpcUaNodeId& rootNodeId,
+			ModbusServerModel::SPtr modbusServerModel
 		);
 		bool shutdown(void);
 

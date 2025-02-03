@@ -13,28 +13,28 @@
       <QueryTimeout>3000</QueryTimeout>
     
       <RegisterGroup Group="Coil" GroupName="Name1" Interval="1000">
-          <Register Address="0" Name="Val1"/>
-          <Register Address="1" Name="Val2"/>
+          <Register Address="0" Name="Val0"/>
+          <Register Address="1" Name="Val1"/>
       </RegisterGroup>
       <RegisterGroup Group="Coil" GroupName="Name2" Interval="1000">
-          <Register Address="0" Name="Val1"/>
-          <Register Address="1" Name="Val2"/>
+          <Register Address="10" Name="Val10"/>
+          <Register Address="11" Name="Val11"/>
       </RegisterGroup>
       <RegisterGroup Group="Input" GroupName="Name3" Interval="1000">
-          <Register Address="0" Name="Val1"/>
-          <Register Address="1" Name="Val2"/>
+          <Register Address="0" Name="Val0"/>
+          <Register Address="1" Name="Val1"/>
       </RegisterGroup>
       <RegisterGroup Group="HoldingRegister" GroupName="Name4" Interval="1000">
-          <Register Address="0" Name="Val1" Unit="V" Type="Float" A="0" B="1"/>
-          <Register Address="1" Name="Val2" Unit="A" Type="Float" A="0" B="1"/>
+          <Register Address="0" Name="Val0" Unit="V" Type="Float" A="0" B="1"/>
+          <Register Address="1" Name="Val1" Unit="A" Type="Float" A="0" B="1"/>
       </RegisterGroup>
       <RegisterGroup Group="InputRegister" GroupName="Name5" Interval="1000">
-          <Register Address="0" Name="Val1" Unit="X" Type="UInt16"/>
-          <Register Address="1" Name="Val2" Unit="Y" Type="Float" A="0" B="1"/>
+          <Register Address="0" Name="Val0" Unit="X" Type="UInt16"/>
+          <Register Address="1" Name="Val1" Unit="Y" Type="Float" A="0" B="1"/>
       </RegisterGroup>
      <RegisterGroup Group="InputRegister" GroupName="Name6" Interval="1000">
-          <Register Address="10" Name="Val1" Unit="X" Type="UInt16"/>
-          <Register Address="11" Name="Val2" Unit="Y" Type="Float" A="0" B="1"/>
+          <Register Address="10" Name="Val10" Unit="X" Type="UInt16"/>
+          <Register Address="11" Name="Val11" Unit="Y" Type="Float" A="0" B="1"/>
       </RegisterGroup>
 
   </ModbusTCPClient>
@@ -50,28 +50,28 @@
       <Port>5502</Port>
    
       <RegisterGroup Group="Coil" GroupName="Name1" Interval="1000">
-          <Register Address="0" Name="Val1"/>
-          <Register Address="1" Name="Val2"/>
+          <Register Address="0" Name="Val0"/>
+          <Register Address="1" Name="Val1"/>
       </RegisterGroup>
       <RegisterGroup Group="Coil" GroupName="Name2" Interval="1000">
-          <Register Address="0" Name="Val1"/>
-          <Register Address="1" Name="Val2"/>
+          <Register Address="10" Name="Val10"/>
+          <Register Address="11" Name="Val11"/>
       </RegisterGroup>
       <RegisterGroup Group="Input" GroupName="Name3" Interval="1000">
-          <Register Address="0" Name="Val1"/>
-          <Register Address="1" Name="Val2"/>
+          <Register Address="0" Name="Val0"/>
+          <Register Address="1" Name="Val1"/>
       </RegisterGroup>
       <RegisterGroup Group="HoldingRegister" GroupName="Name4" Interval="1000">
-          <Register Address="0" Name="Val1" Unit="V" Type="Float" A="0" B="1"/>
-          <Register Address="1" Name="Val2" Unit="A" Type="Float" A="0" B="1"/>
+          <Register Address="0" Name="Val0" Unit="V" Type="Float" A="0" B="1"/>
+          <Register Address="1" Name="Val1" Unit="A" Type="Float" A="0" B="1"/>
       </RegisterGroup>
       <RegisterGroup Group="InputRegister" GroupName="Name5" Interval="1000">
-          <Register Address="0" Name="Val1" Unit="X" Type="UInt16"/>
-          <Register Address="1" Name="Val2" Unit="Y" Type="Float" A="0" B="1"/>
+          <Register Address="0" Name="Val0" Unit="X" Type="UInt16"/>
+          <Register Address="1" Name="Val1" Unit="Y" Type="Float" A="0" B="1"/>
       </RegisterGroup>
      <RegisterGroup Group="InputRegister" GroupName="Name6" Interval="1000">
-          <Register Address="10" Name="Val1" Unit="X" Type="UInt16"/>
-          <Register Address="11" Name="Val2" Unit="Y" Type="Float" A="0" B="1"/>
+          <Register Address="10" Name="Val10" Unit="X" Type="UInt16"/>
+          <Register Address="11" Name="Val11" Unit="Y" Type="Float" A="0" B="1"/>
       </RegisterGroup>
     
   </ModbusTCPServer>

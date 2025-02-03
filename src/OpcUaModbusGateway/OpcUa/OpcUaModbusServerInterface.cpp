@@ -105,7 +105,8 @@ namespace OpcUaModbusGateway
 			namespaceName_,
 			modbusTCPServerConfig_,
 			applicationServiceIf_,
-			rootNodeId
+			rootNodeId,
+			modbusServerModel_
 		);
 		if (rc == false) {
 			Log(Error, "create modbus tcp server register error")

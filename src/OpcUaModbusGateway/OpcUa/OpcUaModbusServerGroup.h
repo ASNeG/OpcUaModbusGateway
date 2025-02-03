@@ -24,6 +24,7 @@
 
 #include "OpcUaModbusGateway/Util/ModbusGatewayConfig.h"
 #include "OpcUaModbusGateway/OpcUa/OpcUaModbusValue.h"
+#include "OpcUaModbusGateway/Application/ModbusServerModel.h"
 
 namespace OpcUaModbusGateway
 {
@@ -42,7 +43,8 @@ namespace OpcUaModbusGateway
 			uint32_t namespaceIndex,
 			RegisterGroupConfig::SPtr registerGroupConfig,
 			OpcUaStackServer::ApplicationServiceIf* applicationServiceIf_,
-			OpcUaStackCore::OpcUaNodeId& rootNodeId
+			OpcUaStackCore::OpcUaNodeId& rootNodeId,
+			ModbusServerModel::SPtr modbusServerModel
 		);
 		bool shutdown(void);
 

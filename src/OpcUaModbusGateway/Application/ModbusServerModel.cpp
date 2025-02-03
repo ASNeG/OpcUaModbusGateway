@@ -16,6 +16,7 @@
  */
 
 #include <functional>
+#include <iostream>
 
 #include "OpcUaStackCore/Base/Log.h"
 
@@ -114,6 +115,7 @@ namespace OpcUaModbusGateway
 	bool
 	ModbusServerModel::checkType(ModbusProt::MemoryType memoryType)
 	{
+		std::cout << "ModbusServerModel::checkType" << std::endl;
 		switch (memoryType)
 		{
 			case ModbusProt::MemoryType::Coils: return coilsMap_.size() != 0;
@@ -127,6 +129,7 @@ namespace OpcUaModbusGateway
 	bool
 	ModbusServerModel::checkAddress(RegisterEntry::Map& registerMap, uint16_t startAddress, uint16_t numValues)
 	{
+		std::cout << "ModbusServerModel::checkAddress1" << std::endl;
 		for (uint16_t idx = 0; idx < numValues; idx++) {
 			auto it = registerMap.find(startAddress + idx);
 			if (it == registerMap.end()) return false;
@@ -137,6 +140,7 @@ namespace OpcUaModbusGateway
 	bool
 	ModbusServerModel::checkAddress(ModbusProt::MemoryType memoryType, uint16_t startAddress, uint16_t numValues)
 	{
+		std::cout << "ModbusServerModel::checkAddress2" << std::endl;
 		switch (memoryType)
 		{
 			case ModbusProt::MemoryType::Coils: return checkAddress(coilsMap_, startAddress, numValues);

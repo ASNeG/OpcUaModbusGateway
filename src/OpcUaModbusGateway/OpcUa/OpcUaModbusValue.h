@@ -21,8 +21,8 @@
 #include "OpcUaStackServer/Application/ApplicationServiceIf.h"
 
 #include "OpcUaModbusGateway/Util/ModbusGatewayConfig.h"
-
 #include "OpcUaModbusGateway/CustomerVariableType/ModbusValue.h"
+#include "OpcUaModbusGateway/Application/ModbusServerModel.h"
 
 namespace OpcUaModbusGateway
 {
@@ -41,7 +41,9 @@ namespace OpcUaModbusGateway
 			uint32_t namespaceIndex,
 			RegisterConfig::SPtr registerConfig,
 			OpcUaStackServer::ApplicationServiceIf* applicationServiceIf_,
-			OpcUaStackCore::OpcUaNodeId& rootNodeId
+			OpcUaStackCore::OpcUaNodeId& rootNodeId,
+			ModbusServerModel::SPtr modbusServerModel,
+			RegisterGroupConfig::ModbusGroupType modbusGroupType
 		);
 		bool shutdown(void);
 
@@ -60,12 +62,17 @@ namespace OpcUaModbusGateway
 		uint32_t namespaceIndex_ = 0;
 		RegisterConfig::SPtr registerConfig_;
 		OpcUaStackServer::ApplicationServiceIf* applicationServiceIf_ = nullptr;
+		ModbusServerModel::SPtr modbusServerModel_ = nullptr;
+		RegisterGroupConfig::ModbusGroupType modbusGroupType_ = RegisterGroupConfig::ModbusGroupType::None;
 
 		OpcUaStackCore::OpcUaNodeId valueNodeId_;
 		OpcUaStackCore::OpcUaNodeId rootNodeId_;
 
 		ModbusValue::SPtr modbusValue_;
 		OpcUaStackCore::OpcUaDataValue writeDataValue_;
+
+		bool registerSetterAndGetter(void);
+		bool deregisterSetterAndGetter(void);
 	};
 
 }
