@@ -42,6 +42,7 @@ namespace OpcUaModbusGateway
 		bool close(void);
 
 	  private:
+		ModbusTCPServerConfig::SPtr modbusTCPServerConfig_ = nullptr;
 		uint32_t connectionId_ = 0;
 		StateCallback stateCallback_;
 		asio::ip::tcp::endpoint serverEndpoint_;

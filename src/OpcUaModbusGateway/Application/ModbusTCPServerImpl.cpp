@@ -53,6 +53,7 @@ namespace OpcUaModbusGateway
 	ModbusTCPServerImpl::open(ModbusTCPServerConfig::SPtr& modbusTCPServerConfig)
 	{
 		bool rc = true;
+		modbusTCPServerConfig_ = modbusTCPServerConfig;
 
 		// Add own log handler to modbus tcp client
 		logHandler_ = std::make_shared<LogDefault>("modbus server message");
@@ -101,6 +102,8 @@ namespace OpcUaModbusGateway
 
 		// Create tcp server model
 		tcpServerModel = std::make_shared<ModbusTCP::TCPServerModel>(ctx);
+		tcpServerModel->recvTimeout(modbusTCPServerConfig_->recvTimeout());
+		tcpServerModel->sendTimeout(modbusTCPServerConfig_->sendTimeout());
 		tcpServerModel->addModbusModel(modbusServerModel_);
 		tcpServerModel->stateCallback(
 			[this, &client, connectionId](ModbusTCP::TCPServerState state) {
