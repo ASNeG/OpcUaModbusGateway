@@ -59,18 +59,30 @@ namespace OpcUaModbusGateway
 			RegisterEntry::SetBoolCallback setBoolCallback,
 			RegisterEntry::GetBoolCallback getBoolCallback
 		);
+		void deregisterCoils(
+			uint16_t id
+		);
 		bool registerInputs(
 			uint16_t id,
 			RegisterEntry::GetBoolCallback getBoolCallback
+		);
+		void deregisterInputs(
+			uint16_t id
 		);
 		bool registerHoldingRegisters(
 			uint16_t id,
 			RegisterEntry::SetUInt16Callback setUInt16Callback,
 			RegisterEntry::GetUInt16Callback getUInt16Callback
 		);
-		bool registerInputTegisters(
+		void deregisterHoldingRegisters(
+			uint16_t id
+		);
+		bool registerInputRegisters(
 			uint16_t id,
 			RegisterEntry::GetUInt16Callback getUInt16Callback
+		);
+		void deregisterInputRegisters(
+			uint16_t id
 		);
 
 		bool checkType(ModbusProt::MemoryType memoryType) override;

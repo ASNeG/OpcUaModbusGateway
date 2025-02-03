@@ -187,11 +187,6 @@ namespace OpcUaModbusGateway
 		}
 
 #if 0
-		bool registerCoils(
-			uint16_t id,
-			RegisterEntry::SetBoolCallback setBoolCallback,
-			RegisterEntry::GetBoolCallback getBoolCallback
-		);
 		bool registerInputs(
 			uint16_t id,
 			RegisterEntry::GetBoolCallback getBoolCallback
@@ -224,7 +219,7 @@ namespace OpcUaModbusGateway
 		{
 			case RegisterGroupConfig::ModbusGroupType::Coil:
 			{
-
+				modbusServerModel_->deregisterCoils(registerConfig_->address());
 				break;
 			}
 			case RegisterGroupConfig::ModbusGroupType::Input:
@@ -240,28 +235,6 @@ namespace OpcUaModbusGateway
 				break;
 			}
 		}
-
-#if 0
-		bool registerCoils(
-			uint16_t id,
-			RegisterEntry::SetBoolCallback setBoolCallback,
-			RegisterEntry::GetBoolCallback getBoolCallback
-		);
-		bool registerInputs(
-			uint16_t id,
-			RegisterEntry::GetBoolCallback getBoolCallback
-		);
-		bool registerHoldingRegisters(
-			uint16_t id,
-			RegisterEntry::SetUInt16Callback setUInt16Callback,
-			RegisterEntry::GetUInt16Callback getUInt16Callback
-		);
-		bool registerInputTegisters(
-			uint16_t id,
-			RegisterEntry::GetUInt16Callback getUInt16Callback
-		);
-
-#endif
 
 		return true;
 	}

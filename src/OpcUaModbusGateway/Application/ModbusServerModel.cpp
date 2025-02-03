@@ -56,6 +56,14 @@ namespace OpcUaModbusGateway
 		return rc;
 	}
 
+	void
+	ModbusServerModel::deregisterCoils(
+		uint16_t id
+	)
+	{
+		coilsMap_.erase(id);
+	}
+
 	bool
 	ModbusServerModel::registerInputs(
 		uint16_t id,
@@ -72,6 +80,14 @@ namespace OpcUaModbusGateway
 				.parameter("Id", id);
 		}
 		return rc;
+	}
+
+	void
+	ModbusServerModel::deregisterInputs(
+		uint16_t id
+	)
+	{
+		inputsMap_.erase(id);
 	}
 
 	bool
@@ -94,8 +110,16 @@ namespace OpcUaModbusGateway
 		return rc;
 	}
 
+	void
+	ModbusServerModel::deregisterHoldingRegisters(
+		uint16_t id
+	)
+	{
+		holdingRegistersMap_.erase(id);
+	}
+
 	bool
-	ModbusServerModel::registerInputTegisters(
+	ModbusServerModel::registerInputRegisters(
 		uint16_t id,
 		RegisterEntry::GetUInt16Callback getUInt16Callback
 	)
@@ -110,6 +134,14 @@ namespace OpcUaModbusGateway
 				.parameter("Id", id);
 		}
 		return rc;
+	}
+
+	void
+	ModbusServerModel::deregisterInputRegisters(
+		uint16_t id
+	)
+	{
+		inputRegistersMap_.erase(id);
 	}
 
 	bool
