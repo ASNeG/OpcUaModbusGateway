@@ -188,6 +188,21 @@ namespace OpcUaModbusGateway
 			}
 			case RegisterGroupConfig::ModbusGroupType::HoldingRegister:
 			{
+				rc = modbusServerModel_->registerHoldingRegisters(
+					registerConfig_->address(),
+					[this](uint16_t value) {
+						return setDataValue(value);
+					},
+					[this](uint16_t& value) {
+						return getDataValue(value);
+					}
+				);
+				if (!rc) {
+					Log(Error, "register holding registers in modbus model error")
+						.parameter("Name", registerConfig_->name())
+						.parameter("Address", registerConfig_->address());
+					return false;
+				}
 				break;
 			}
 			case RegisterGroupConfig::ModbusGroupType::InputRegister:
@@ -197,15 +212,6 @@ namespace OpcUaModbusGateway
 		}
 
 #if 0
-		bool registerInputs(
-			uint16_t id,
-			RegisterEntry::GetBoolCallback getBoolCallback
-		);
-		bool registerHoldingRegisters(
-			uint16_t id,
-			RegisterEntry::SetUInt16Callback setUInt16Callback,
-			RegisterEntry::GetUInt16Callback getUInt16Callback
-		);
 		bool registerInputTegisters(
 			uint16_t id,
 			RegisterEntry::GetUInt16Callback getUInt16Callback
@@ -239,6 +245,7 @@ namespace OpcUaModbusGateway
 			}
 			case RegisterGroupConfig::ModbusGroupType::HoldingRegister:
 			{
+				modbusServerModel_->deregisterHoldingRegisters(registerConfig_->address());
 				break;
 			}
 			case RegisterGroupConfig::ModbusGroupType::InputRegister:
@@ -260,23 +267,45 @@ namespace OpcUaModbusGateway
 		// Read modbus variable
 		OpcUaDataValue dataValue;
 		if (!modbusValue_->get_Variable(dataValue)) {
+			Log(Error, "read data value error")
+				.parameter("ValueNodeId", valueNodeId_)
+				.parameter("ValueName", registerConfig_->name());
 			return false;
 		}
 
 		// Convert modbus variable to uint16
 		OpcUaVariant targetVariant;
-		rc = TypeConverter::conversion(*dataValue.variant(), OpcUaBuildInType::OpcUaBuildInType_OpcUaInt16, targetVariant);
+		rc = TypeConverter::conversion(*dataValue.variant(), OpcUaBuildInType::OpcUaBuildInType_OpcUaUInt16, targetVariant);
 		if (!rc) {
 			Log(Error, "value conversion error")
 				.parameter("ValueNodeId", valueNodeId_)
 				.parameter("ValueName", registerConfig_->name())
 				.parameter("SourceType", dataValue.variant()->variantType())
-				.parameter("TargetType", OpcUaBuildInType::OpcUaBuildInType_OpcUaInt16);
+				.parameter("TargetType", OpcUaBuildInType::OpcUaBuildInType_OpcUaUInt16);
 			return false;
 		}
 
-		// Get variable from variant
-		value = targetVariant.get<uint16_t>();
+		// Check target type
+		if (targetVariant.variantType() != OpcUaBuildInType::OpcUaBuildInType_OpcUaUInt16) {
+			Log(Error, "value target type error")
+				.parameter("ValueNodeId", valueNodeId_)
+				.parameter("ValueName", registerConfig_->name())
+				.parameter("SourceType", dataValue.variant()->variantType())
+				.parameter("TargetType", OpcUaBuildInType::OpcUaBuildInType_OpcUaUInt16);
+			return false;
+		}
+
+		// Read value from target
+		rc = targetVariant.getValue(value);
+		if (!rc) {
+			Log(Error, "value access error")
+				.parameter("ValueNodeId", valueNodeId_)
+				.parameter("ValueName", registerConfig_->name())
+				.parameter("SourceType", dataValue.variant()->variantType())
+				.parameter("TargetType", OpcUaBuildInType::OpcUaBuildInType_OpcUaUInt16);
+			return false;
+		}
+
 		return true;
 	}
 
@@ -305,8 +334,26 @@ namespace OpcUaModbusGateway
 			return false;
 		}
 
-		// Get variable from variant
-		value = targetVariant.get<bool>();
+		// Check target type
+		if (targetVariant.variantType() != OpcUaBuildInType::OpcUaBuildInType_OpcUaBoolean) {
+			Log(Error, "value target type error")
+				.parameter("ValueNodeId", valueNodeId_)
+				.parameter("ValueName", registerConfig_->name())
+				.parameter("SourceType", dataValue.variant()->variantType())
+				.parameter("TargetType", OpcUaBuildInType::OpcUaBuildInType_OpcUaUInt16);
+			return false;
+		}
+
+		// Read value from target
+		rc = targetVariant.getValue(value);
+		if (!rc) {
+			Log(Error, "value access error")
+				.parameter("ValueNodeId", valueNodeId_)
+				.parameter("ValueName", registerConfig_->name())
+				.parameter("SourceType", dataValue.variant()->variantType())
+				.parameter("TargetType", OpcUaBuildInType::OpcUaBuildInType_OpcUaBoolean);
+			return false;
+		}
 		return true;
 	}
 
@@ -326,6 +373,16 @@ namespace OpcUaModbusGateway
 		rc = TypeConverter::conversion(sourceVariant, targetType, targetVariant);
 		if (!rc) {
 			Log(Error, "value conversion error")
+				.parameter("ValueNodeId", valueNodeId_)
+				.parameter("ValueName", registerConfig_->name())
+				.parameter("SourceType", OpcUaBuildInType::OpcUaBuildInType_OpcUaUInt16)
+				.parameter("TargetType", targetType);
+			return false;
+		}
+
+		// Check target type
+		if (targetVariant.variantType() != targetType) {
+			Log(Error, "value target type error")
 				.parameter("ValueNodeId", valueNodeId_)
 				.parameter("ValueName", registerConfig_->name())
 				.parameter("SourceType", OpcUaBuildInType::OpcUaBuildInType_OpcUaUInt16)
@@ -360,6 +417,16 @@ namespace OpcUaModbusGateway
 		rc = TypeConverter::conversion(sourceVariant, targetType, targetVariant);
 		if (!rc) {
 			Log(Error, "value conversion error")
+				.parameter("ValueNodeId", valueNodeId_)
+				.parameter("ValueName", registerConfig_->name())
+				.parameter("SourceType", OpcUaBuildInType::OpcUaBuildInType_OpcUaBoolean)
+				.parameter("TargetType", targetType);
+			return false;
+		}
+
+		// Check target type
+		if (targetVariant.variantType() != targetType) {
+			Log(Error, "value target type error")
 				.parameter("ValueNodeId", valueNodeId_)
 				.parameter("ValueName", registerConfig_->name())
 				.parameter("SourceType", OpcUaBuildInType::OpcUaBuildInType_OpcUaBoolean)
