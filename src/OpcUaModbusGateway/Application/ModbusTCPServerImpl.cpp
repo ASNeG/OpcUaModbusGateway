@@ -72,40 +72,58 @@ namespace OpcUaModbusGateway
 		rc = modbusTCPServer_.open(
 				serverEndpoint_,
 				[this](asio::io_context& ctx, asio::ip::tcp::socket& client) {
-
-					Log(Debug, "tcp modbus server receives connection request")
-					    .parameter("Client", client.remote_endpoint());
-
-					if (modbusServerModel_ == nullptr) {
-						Log(Error, "tcp modbus server error, because modbus server model empty")
-							.parameter("Client", client.remote_endpoint());
-						return tcpServerModel_;
-					}
-
-					// Create tcp server model
-					tcpServerModel_ = std::make_shared<ModbusTCP::TCPServerModel>(ctx);
-
-					// FIXME: We must save the tcp server model in a hash ....
-
-					tcpServerModel_->addModbusModel(modbusServerModel_);
-					tcpServerModel_->stateCallback(
-						[this, &client](ModbusTCP::TCPServerState state) {
-							serverStateCallback(state, client);
-						}
-					);
-
-					Log(Error, "tcp modbus server accepted connection from client")
-						.parameter("Client", client.remote_endpoint());
-					return tcpServerModel_;
+					return acceptNewConnection(ctx, client);
 				}
 		);
 
 		return true;
 	}
 
+	ModbusTCP::TCPServerHandler::SPtr
+	ModbusTCPServerImpl::acceptNewConnection(
+		asio::io_context& ctx,
+		asio::ip::tcp::socket& client
+	)
+	{
+		ModbusTCP::TCPServerModel::SPtr tcpServerModel = nullptr;
+		connectionId_++;
+		uint32_t connectionId = connectionId_;
+
+		Log(Debug, "tcp modbus server receives connection request")
+		    .parameter("Client", client.remote_endpoint())
+			.parameter("ConnectionId", connectionId);
+
+		if (modbusServerModel_ == nullptr) {
+			Log(Error, "tcp modbus server error, because modbus server model empty")
+				.parameter("Client", client.remote_endpoint());
+			return tcpServerModel;
+		}
+
+		// Create tcp server model
+		tcpServerModel = std::make_shared<ModbusTCP::TCPServerModel>(ctx);
+		tcpServerModel->addModbusModel(modbusServerModel_);
+		tcpServerModel->stateCallback(
+			[this, &client, connectionId](ModbusTCP::TCPServerState state) {
+				serverStateCallback(state, client, connectionId);
+			}
+		);
+
+		// Add tcp server model to map
+		tcpServerModelMap_.insert(std::make_pair(connectionId, tcpServerModel));
+
+		Log(Error, "tcp modbus server accepted connection from client")
+			.parameter("Client", client.remote_endpoint());
+		return tcpServerModel;
+	}
+
 	bool
 	ModbusTCPServerImpl::close(void)
 	{
+		// Close all existing tco server models
+		for (auto tcpServerModel : tcpServerModelMap_) {
+			tcpServerModel.second->disconnect();
+		}
+
 		// Close server endpoint
 		modbusTCPServer_.close();
 
@@ -115,9 +133,17 @@ namespace OpcUaModbusGateway
 	void
 	ModbusTCPServerImpl::serverStateCallback(
 		ModbusTCP::TCPServerState serverState,
-		asio::ip::tcp::socket& client
+		asio::ip::tcp::socket& client,
+		uint32_t connectionId
 	)
 	{
+		// Check if connection is down
+		if (serverState == ModbusTCP::TCPServerState::Down) {
+			// Remove connection from tcp server model map
+			tcpServerModelMap_.erase(connectionId);
+		}
+
+		// Check if stated changed
 		if (serverState == modbusTCPServerState_) {
 			return;
 		}
@@ -126,7 +152,7 @@ namespace OpcUaModbusGateway
 		auto oldStateString = ModbusTCP::TCPServerHandler::tcpServerStateToString(modbusTCPServerState_);
 
 		Log(Debug, "change server state")
-			//.parameter("Client", client.remote_endpoint())
+			.parameter("ConnectionId", connectionId)
 			.parameter("OldState", oldStateString)
 			.parameter("NewState", newStateString);
 

@@ -42,17 +42,23 @@ namespace OpcUaModbusGateway
 		bool close(void);
 
 	  private:
+		uint32_t connectionId_ = 0;
 		StateCallback stateCallback_;
 		asio::ip::tcp::endpoint serverEndpoint_;
-		ModbusTCP::TCPServerModel::SPtr tcpServerModel_ = nullptr;  // FIXME: Create map.....
+		ModbusTCP::TCPServerModel::Map tcpServerModelMap_;
 		ModbusTCP::TCPServer modbusTCPServer_;
 		ModbusTCP::TCPServerState modbusTCPServerState_;
 		ModbusServerModel::SPtr modbusServerModel_ = nullptr;
 		Base::LogHandler::SPtr logHandler_ = nullptr;
 
+		ModbusTCP::TCPServerHandler::SPtr acceptNewConnection(
+			asio::io_context& ctx,
+			asio::ip::tcp::socket& client
+		);
 		void serverStateCallback(
 			ModbusTCP::TCPServerState modbusTCPServerState,
-			asio::ip::tcp::socket& client
+			asio::ip::tcp::socket& client,
+			uint32_t connectionId
 		);
 
 	};
