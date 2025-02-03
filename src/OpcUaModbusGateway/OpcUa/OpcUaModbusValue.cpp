@@ -207,18 +207,21 @@ namespace OpcUaModbusGateway
 			}
 			case RegisterGroupConfig::ModbusGroupType::InputRegister:
 			{
+				rc = modbusServerModel_->registerInputRegisters(
+					registerConfig_->address(),
+					[this](uint16_t& value) {
+						return getDataValue(value);
+					}
+				);
+				if (!rc) {
+					Log(Error, "register input registers in modbus model error")
+						.parameter("Name", registerConfig_->name())
+						.parameter("Address", registerConfig_->address());
+					return false;
+				}
 				break;
 			}
 		}
-
-#if 0
-		bool registerInputTegisters(
-			uint16_t id,
-			RegisterEntry::GetUInt16Callback getUInt16Callback
-		);
-
-#endif
-
 		return true;
 	}
 
@@ -250,10 +253,10 @@ namespace OpcUaModbusGateway
 			}
 			case RegisterGroupConfig::ModbusGroupType::InputRegister:
 			{
+				modbusServerModel_->deregisterInputRegisters(registerConfig_->address());
 				break;
 			}
 		}
-
 		return true;
 	}
 
