@@ -499,11 +499,11 @@ namespace OpcUaModbusGateway
 	bool
 	OpcUaModbusValue::convertModbusToOpcUa(uint16_t sourceValue, OpcUaStackCore::OpcUaVariant& targetVariant)
 	{
-		// FIXME: value conversion disabled if a = 0.0 and b = 1.0
+		auto targetType = OpcUaBuildInTypeMap::string2BuildInType(registerConfig_->opcUaTypeString());
+		bool calcEnable = registerConfig_->a() != 0.0 || registerConfig_->b() != 1.0;
 
 		// No conversion necessary
-		auto targetType = OpcUaBuildInTypeMap::string2BuildInType(registerConfig_->opcUaTypeString());
-		if (targetType == OpcUaBuildInType_OpcUaUInt16) {
+		if (targetType == OpcUaBuildInType_OpcUaUInt16 && !calcEnable) {
 			targetVariant.setValue(sourceValue);
 			return true;
 		}
@@ -512,8 +512,9 @@ namespace OpcUaModbusGateway
 		double doubleValue = (double)sourceValue;
 
 		// Calculate new target
-		doubleValue = registerConfig_->a() + registerConfig_->b() * doubleValue;
-		// Check ranges!!!
+		if (calcEnable) {
+			doubleValue = registerConfig_->a() + registerConfig_->b() * doubleValue;
+		}
 
 		// Convert double value to target values
 		OpcUaVariant sourceVariant(doubleValue);
@@ -578,9 +579,11 @@ namespace OpcUaModbusGateway
 	bool
 	OpcUaModbusValue::convertOpcUaToModbus(OpcUaStackCore::OpcUaVariant& sourceVariant, uint16_t& targetValue)
 	{
-		// No conversion necessary
 		auto sourceType = sourceVariant.variantType();
-		if (sourceType == OpcUaBuildInType_OpcUaUInt16) {
+		bool calcEnable = registerConfig_->a() != 0.0 || registerConfig_->b() != 1.0;
+
+		// No conversion necessary
+		if (sourceType == OpcUaBuildInType_OpcUaUInt16 && !calcEnable) {
 			sourceVariant.getValue(targetValue);
 			return true;
 		}
@@ -598,12 +601,11 @@ namespace OpcUaModbusGateway
 		}
 		double doubleValue;
 		doubleVariant.getValue(doubleValue);
-		std::cout << "TargetDouble = " << doubleVariant << " " << doubleValue << std::endl;
-
 
 		// Calculate new target
-		doubleValue = (doubleValue - registerConfig_->a()) / registerConfig_->b();
-		// Check range!!!!!
+		if (calcEnable) {
+			doubleValue = (doubleValue - registerConfig_->a()) / registerConfig_->b();
+		}
 
 		// Convert double value to target values
 		doubleVariant.setValue(doubleValue);
