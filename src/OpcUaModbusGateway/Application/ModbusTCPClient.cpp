@@ -102,6 +102,20 @@ namespace OpcUaModbusGateway
 	}
 
 	void
+	ModbusTCPClient::readCoils(
+		uint16_t startingAddress,
+		uint16_t quantityOfInputs,
+		ReadCoilsHandler readCoilsHandler
+	)
+	{
+		modbusTCPClientImpl_->readCoils(
+			startingAddress,
+			quantityOfInputs,
+			readCoilsHandler
+		);
+	}
+
+	void
 	ModbusTCPClient::readDiscreteInputs(
 		uint16_t startingAddress,
 		uint16_t quantityOfInputs,

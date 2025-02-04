@@ -22,6 +22,7 @@
 
 #include "OpcUaStackServer/Application/ApplicationServiceIf.h"
 
+#include "OpcUaModbusGateway/Application/ModbusTCPClient.h"
 #include "OpcUaModbusGateway/Util/ModbusGatewayConfig.h"
 #include "OpcUaModbusGateway/OpcUa/OpcUaModbusValue.h"
 
@@ -42,7 +43,8 @@ namespace OpcUaModbusGateway
 			uint32_t namespaceIndex,
 			RegisterGroupConfig::SPtr registerGroupConfig,
 			OpcUaStackServer::ApplicationServiceIf* applicationServiceIf_,
-			OpcUaStackCore::OpcUaNodeId& rootNodeId
+			OpcUaStackCore::OpcUaNodeId& rootNodeId,
+			ModbusTCPClient::SPtr modbusTCPClient
 		);
 		bool shutdown(void);
 
@@ -56,6 +58,8 @@ namespace OpcUaModbusGateway
 		OpcUaStackCore::OpcUaNodeId rootNodeId_;
 
 		OpcUaModbusValue::Vec modbusValueVec_;
+
+		ModbusTCPClient::SPtr modbusTCPClient_ = nullptr;
 	};
 
 }

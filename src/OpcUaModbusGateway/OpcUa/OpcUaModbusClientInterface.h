@@ -24,7 +24,6 @@
 
 #include "OpcUaModbusGateway/Util/ModbusGatewayConfig.h"
 #include "OpcUaModbusGateway/CustomerObjectType/ModbusClientInterface.h"
-#include "OpcUaModbusGateway/Application/ModbusTCPClient.h"
 #include "OpcUaModbusGateway/OpcUa/OpcUaModbusClientRegister.h"
 
 namespace OpcUaModbusGateway

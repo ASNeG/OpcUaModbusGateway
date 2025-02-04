@@ -30,6 +30,8 @@ namespace OpcUaModbusGateway
 	  public:
 		using StateCallback = std::function<void (const std::string&)>;
 
+		using ReadCoilsHandler = std::function<void (uint32_t errorCode, std::vector<bool>& coilStatus)>;
+
 		ModbusTCPClientImpl(void);
 		~ModbusTCPClientImpl(void);
 
@@ -50,41 +52,53 @@ namespace OpcUaModbusGateway
 			uint32_t& errorCode,
 			std::vector<bool>& coilStatus
 		);
+		void readCoils(
+			uint16_t startingAddress,
+			uint16_t quantityOfInputs,
+			ReadCoilsHandler readCoilsHandler
+		);
+
 		void readDiscreteInputs(
 			uint16_t startingAddress,
 			uint16_t quantityOfInputs,
 			uint32_t& errorCode,
 			std::vector<bool>& inputStatus
 		);
+
 		void readInputRegisters(
 			uint16_t startingAddress,
 			uint16_t quantityOfInputs,
 			uint32_t& errorCode,
 			std::vector<uint16_t>& inputRegisters
 		);
+
 		void readHoldingRegisters(
 			uint16_t startingAddress,
 			uint16_t quantityOfInputs,
 			uint32_t& errorCode,
 			std::vector<uint16_t>& holdingRegisters
 		);
+
 		void writeMultipleCoils(
 			uint16_t startingAddress,
 			std::vector<bool>& coils,
 			uint32_t& errorCode,
 			uint16_t& count
 		);
+
 		void writeMultipleHoldingRegisters(
 			uint16_t startingAddress,
 			std::vector<uint16_t>& holdingRegisters,
 			uint32_t& errorCode,
 			uint16_t& count
 		);
+
 		void writeSingleCoil(
 			uint16_t startingAddress,
 			bool value,
 			uint32_t& errorCode
 		);
+
 		void writeSingleHoldingRegister(
 			uint16_t startingAddress,
 			uint16_t holdingRegister,
@@ -101,6 +115,7 @@ namespace OpcUaModbusGateway
 		ModbusTCP::TCPClientState modbusTCPClientState_;
 
 		void clientConnectionHandler(ModbusTCP::TCPClientState clientState);
+
 	};
 }
 

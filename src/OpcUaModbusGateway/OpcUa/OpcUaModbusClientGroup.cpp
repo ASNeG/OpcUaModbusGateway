@@ -47,7 +47,8 @@ namespace OpcUaModbusGateway
 		uint32_t namespaceIndex,
 		RegisterGroupConfig::SPtr registerGroupConfig,
 		OpcUaStackServer::ApplicationServiceIf* applicationServiceIf,
-		OpcUaStackCore::OpcUaNodeId& rootNodeId
+		OpcUaStackCore::OpcUaNodeId& rootNodeId,
+		ModbusTCPClient::SPtr modbusTCPClient
 	)
 	{
 		bool rc = true;
@@ -57,6 +58,7 @@ namespace OpcUaModbusGateway
 		registerGroupConfig_ = registerGroupConfig;
 		rootNodeId_ = rootNodeId;
 		applicationServiceIf_ = applicationServiceIf;
+		modbusTCPClient_ = modbusTCPClient;
 
 		// Create group folder instance
 		id_++;

@@ -184,6 +184,50 @@ namespace OpcUaModbusGateway
 	}
 
 	void
+	ModbusTCPClientImpl::readCoils(
+		uint16_t startingAddress,
+		uint16_t quantityOfInputs,
+		ReadCoilsHandler readCoilsHandler
+	)
+	{
+		// Create and send read coils request
+		auto readCoilsReq = std::make_shared<ModbusProt::ReadCoilsReqPDU>();
+		readCoilsReq->startingAddress(startingAddress);
+		readCoilsReq->quantityOfInputs(quantityOfInputs);
+		ModbusProt::ModbusPDU::SPtr req = readCoilsReq;
+		modbusTCPClient_.send(slaveId_, req,
+			[this, readCoilsHandler](ModbusProt::ModbusError error, ModbusProt::ModbusPDU::SPtr& req, ModbusProt::ModbusPDU::SPtr& res) {
+				uint32_t errorCode;
+				std::vector<bool> coilStatus;
+
+				if (error != ModbusProt::ModbusError::Ok) {
+					errorCode = static_cast<int>(error) + 100;
+					return;
+				}
+
+				// Handle error response
+				if (res->pduType() == ModbusProt::PDUType::Error) {
+					auto errorRes = std::static_pointer_cast<ModbusProt::ErrorPDU>(res);
+					errorCode = errorRes->exceptionCode();
+					return;
+				}
+
+				// Handle response
+				errorCode = 0;
+				auto readCoilsReq = std::static_pointer_cast<ModbusProt::ReadCoilsReqPDU>(req);
+				auto readCoilsRes = std::static_pointer_cast<ModbusProt::ReadCoilsResPDU>(res);
+				for (uint32_t idx = 0; idx < readCoilsReq->quantityOfInputs(); idx++) {
+					bool b;
+					readCoilsRes->getCoilStatus(idx, b);
+					coilStatus.push_back(b);
+				}
+
+				readCoilsHandler(errorCode, coilStatus);
+			}
+		);
+	}
+
+	void
 	ModbusTCPClientImpl::readDiscreteInputs(
 		uint16_t startingAddress,
 		uint16_t quantityOfInputs,

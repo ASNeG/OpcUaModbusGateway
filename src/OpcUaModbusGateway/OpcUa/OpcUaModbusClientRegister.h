@@ -38,7 +38,8 @@ namespace OpcUaModbusGateway
 			const std::string& namespaceName,
 			ModbusTCPClientConfig::SPtr modbusTCPClientConfig,
 			OpcUaStackServer::ApplicationServiceIf* OpcUaModbusClientRegisterIf,
-			OpcUaStackCore::OpcUaNodeId& rootNodeId
+			OpcUaStackCore::OpcUaNodeId& rootNodeId,
+			ModbusTCPClient::SPtr modbusTCPClient
 		);
 		bool shutdown(void);
 
