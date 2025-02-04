@@ -335,38 +335,12 @@ namespace OpcUaModbusGateway
 			return false;
 		}
 
-		// Convert modbus variable to bool
-		OpcUaVariant targetVariant;
-		rc = TypeConverter::conversion(*dataValue.variant(), OpcUaBuildInType::OpcUaBuildInType_OpcUaBoolean, targetVariant);
+		// Convertion opc ua variable to modbus variable
+		rc = convertOpcUaToModbus(*dataValue.variant(), value);
 		if (!rc) {
-			Log(Error, "value conversion error")
-				.parameter("ValueNodeId", valueNodeId_)
-				.parameter("ValueName", registerConfig_->name())
-				.parameter("SourceType", dataValue.variant()->variantType())
-				.parameter("TargetType", OpcUaBuildInType::OpcUaBuildInType_OpcUaBoolean);
-			return false;
+			Log(Error, "convert opc ua variable to modbus variable error");
 		}
 
-		// Check target type
-		if (targetVariant.variantType() != OpcUaBuildInType::OpcUaBuildInType_OpcUaBoolean) {
-			Log(Error, "value target type error")
-				.parameter("ValueNodeId", valueNodeId_)
-				.parameter("ValueName", registerConfig_->name())
-				.parameter("SourceType", dataValue.variant()->variantType())
-				.parameter("TargetType", OpcUaBuildInType::OpcUaBuildInType_OpcUaUInt16);
-			return false;
-		}
-
-		// Read value from target
-		rc = targetVariant.getValue(value);
-		if (!rc) {
-			Log(Error, "value access error")
-				.parameter("ValueNodeId", valueNodeId_)
-				.parameter("ValueName", registerConfig_->name())
-				.parameter("SourceType", dataValue.variant()->variantType())
-				.parameter("TargetType", OpcUaBuildInType::OpcUaBuildInType_OpcUaBoolean);
-			return false;
-		}
 		return true;
 	}
 
@@ -406,28 +380,11 @@ namespace OpcUaModbusGateway
 		// Client: ReadDiscreteInputRegisters
 		bool rc = true;
 
-		// Convert variable to target data value type
-		auto targetType = OpcUaBuildInTypeMap::string2BuildInType(registerConfig_->opcUaTypeString());
-		OpcUaVariant sourceVariant(value);
-		OpcUaVariant targetVariant;
-		rc = TypeConverter::conversion(sourceVariant, targetType, targetVariant);
+		// Conversion modbus variable to opc ua variable
+		OpcUaStackCore::OpcUaVariant targetVariant;
+		rc = convertModbusToOpcUa(value, targetVariant);
 		if (!rc) {
-			Log(Error, "value conversion error")
-				.parameter("ValueNodeId", valueNodeId_)
-				.parameter("ValueName", registerConfig_->name())
-				.parameter("SourceType", OpcUaBuildInType::OpcUaBuildInType_OpcUaBoolean)
-				.parameter("TargetType", targetType);
-			return false;
-		}
-
-		// Check target type
-		if (targetVariant.variantType() != targetType) {
-			Log(Error, "value target type error")
-				.parameter("ValueNodeId", valueNodeId_)
-				.parameter("ValueName", registerConfig_->name())
-				.parameter("SourceType", OpcUaBuildInType::OpcUaBuildInType_OpcUaBoolean)
-				.parameter("TargetType", targetType);
-			return false;
+			Log(Error, "convert modbus variable to opc ua variable error");
 		}
 
 		// Set data value
@@ -468,9 +425,11 @@ namespace OpcUaModbusGateway
 	bool
 	OpcUaModbusValue::convertModbusToOpcUa(bool sourceValue, OpcUaStackCore::OpcUaVariant& targetVariant)
 	{
-		// No conversion necessary
 		auto targetType = OpcUaBuildInTypeMap::string2BuildInType(registerConfig_->opcUaTypeString());
-		if (targetType == OpcUaBuildInType_OpcUaBoolean) {
+		bool calcEnable = registerConfig_->a() != 0.0 || registerConfig_->b() != 1.0;
+
+		// No conversion necessary
+		if (targetType == OpcUaBuildInType_OpcUaBoolean && !calcEnable) {
 			targetVariant.setValue(sourceValue);
 			return true;
 		}
@@ -479,7 +438,9 @@ namespace OpcUaModbusGateway
 		double doubleValue = (double)sourceValue;
 
 		// Calculate new target
-		doubleValue = registerConfig_->a() + registerConfig_->b() * doubleValue;
+		if (calcEnable) {
+			doubleValue = registerConfig_->a() + registerConfig_->b() * doubleValue;
+		}
 
 		// Convert double value to target value
 		OpcUaVariant sourceVariant(doubleValue);
@@ -534,9 +495,11 @@ namespace OpcUaModbusGateway
 	bool
 	OpcUaModbusValue::convertOpcUaToModbus(OpcUaStackCore::OpcUaVariant& sourceVariant, bool& targetValue)
 	{
-		// No conversion necessary
 		auto sourceType = sourceVariant.variantType();
-		if (sourceType == OpcUaBuildInType_OpcUaBoolean) {
+		bool calcEnable = registerConfig_->a() != 0.0 || registerConfig_->b() != 1.0;
+
+		// No conversion necessary
+		if (sourceType == OpcUaBuildInType_OpcUaBoolean && !calcEnable) {
 			sourceVariant.getValue(targetValue);
 			return true;
 		}
@@ -557,7 +520,9 @@ namespace OpcUaModbusGateway
 
 
 		// Calculate new target
-		doubleValue = (doubleValue - registerConfig_->a()) / registerConfig_->b();
+		if (calcEnable) {
+			doubleValue = (doubleValue - registerConfig_->a()) / registerConfig_->b();
+		}
 
 		// Convert double value to target values
 		doubleVariant.setValue(doubleValue);
@@ -587,6 +552,9 @@ namespace OpcUaModbusGateway
 			sourceVariant.getValue(targetValue);
 			return true;
 		}
+
+		// FIXME: Direct conversion if not calcEnable
+		// FIXME: Range checks
 
 		// Convert source value to double
 		OpcUaVariant doubleVariant;

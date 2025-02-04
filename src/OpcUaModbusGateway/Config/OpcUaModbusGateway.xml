@@ -15,6 +15,7 @@
       <RegisterGroup Group="Coil" GroupName="Name1" Interval="1000">
           <Register Address="0" Name="Val0"/>
           <Register Address="1" Name="Val1"/>
+          <Register Address="2" Name="Val3" Unit="A" Type="UInt16" A="0" B="2"/>
       </RegisterGroup>
       <RegisterGroup Group="Coil" GroupName="Name2" Interval="1000">
           <Register Address="10" Name="Val10"/>
@@ -27,6 +28,7 @@
       <RegisterGroup Group="HoldingRegister" GroupName="Name4" Interval="1000">
           <Register Address="0" Name="Val0" Unit="V" Type="Float" A="0" B="1"/>
           <Register Address="1" Name="Val1" Unit="A" Type="Float" A="0" B="1"/>
+          <Register Address="2" Name="Val2" Unit="A" Type="UInt16" A="0" B="1"/>
       </RegisterGroup>
       <RegisterGroup Group="HoldingRegister" GroupName="UnitConv" Interval="1000">
           <Register Address="10" Name="Val10" Unit="V" Type="Float" A="-10" B="10"/>
@@ -57,6 +59,7 @@
       <RegisterGroup Group="Coil" GroupName="Name1">
           <Register Address="0" Name="Val0"/>
           <Register Address="1" Name="Val1"/>
+          <Register Address="2" Name="Val3" Unit="A" Type="UInt16" A="0" B="2"/>
       </RegisterGroup>
       <RegisterGroup Group="Coil" GroupName="Name2">
           <Register Address="10" Name="Val10"/>
@@ -69,6 +72,7 @@
       <RegisterGroup Group="HoldingRegister" GroupName="Name4">
           <Register Address="0" Name="Val0" Unit="V" Type="Float" A="0" B="1"/>
           <Register Address="1" Name="Val1" Unit="A" Type="Float" A="0" B="1"/>
+          <Register Address="2" Name="Val2" Unit="A" Type="UInt16" A="0" B="1"/>
       </RegisterGroup>
       <RegisterGroup Group="HoldingRegister" GroupName="UnitConv">
           <Register Address="10" Name="Val10" Unit="V" Type="Float" A="-10" B="10"/>
