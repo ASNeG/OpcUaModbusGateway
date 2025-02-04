@@ -323,8 +323,8 @@ namespace OpcUaModbusGateway
 		}
 
 		auto modbusType = RegisterConfig::ModbusType::Bool;
-		if (modbusGroupType_ == ModbusGroupType::InputRegister) auto modbusType = RegisterConfig::ModbusType::UInt16;
-		if (modbusGroupType_ == ModbusGroupType::HoldingRegister) auto modbusType = RegisterConfig::ModbusType::UInt16;
+		if (modbusGroupType_ == ModbusGroupType::InputRegister) modbusType = RegisterConfig::ModbusType::UInt16;
+		if (modbusGroupType_ == ModbusGroupType::HoldingRegister) modbusType = RegisterConfig::ModbusType::UInt16;
 
 		auto modbusAccess = RegisterConfig::ModbusAccess::ReadWrite;
 		if (modbusAppl_ == RegisterConfig::ModbusAppl::Master) {
