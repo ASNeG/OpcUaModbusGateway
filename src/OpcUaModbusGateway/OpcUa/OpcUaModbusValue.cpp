@@ -92,6 +92,27 @@ namespace OpcUaModbusGateway
 			return false;
 		}
 
+		// Set precision value
+		dataValue.serverTimestamp(now);
+		dataValue.sourceTimestamp(now);
+		dataValue.statusCode(Success);
+		dataValue.variant()->setValue(OpcUaDouble(registerConfig_->b()));
+		modbusValue_->set_Precision_Variable(dataValue);
+
+		// Set unit value
+		dataValue.serverTimestamp(now);
+		dataValue.sourceTimestamp(now);
+		dataValue.statusCode(Success);
+		dataValue.variant()->setValue(OpcUaString(registerConfig_->unit()));
+		modbusValue_->set_Unit_Variable(dataValue);
+
+		// Set register value
+		dataValue.serverTimestamp(now);
+		dataValue.sourceTimestamp(now);
+		dataValue.statusCode(Success);
+		dataValue.variant()->setValue((uint16_t)registerConfig_->address());
+		modbusValue_->set_Register_Variable(dataValue);
+
 		// Set data type
 		auto type = OpcUaBuildInTypeMap::string2BuildInType(registerConfig->opcUaTypeString());
 		nodeId.set(type, 0);
