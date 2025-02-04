@@ -73,6 +73,11 @@ namespace OpcUaModbusGateway
 
 		bool registerSetterAndGetter(void);
 		bool deregisterSetterAndGetter(void);
+
+		bool convertModbusToOpcUa(bool sourceValue, OpcUaStackCore::OpcUaVariant& targetVariant);
+		bool convertModbusToOpcUa(uint16_t sourceValue, OpcUaStackCore::OpcUaVariant& targetVariant);
+		bool convertOpcUaToModbus(OpcUaStackCore::OpcUaVariant& sourceVariant, bool& targetValue);
+		bool convertOpcUaToModbus(OpcUaStackCore::OpcUaVariant& sourceVariant, uint16_t& targetValue);
 	};
 
 }
