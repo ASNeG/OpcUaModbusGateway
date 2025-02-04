@@ -31,7 +31,7 @@
       <RegisterGroup Group="HoldingRegister" GroupName="UnitConv" Interval="1000">
           <Register Address="10" Name="Val10" Unit="V" Type="Float" A="-10" B="10"/>
           <Register Address="11" Name="Val11" Unit="A" Type="Float" A="10" B="100"/>
-          <Register Address="12" Name="Val12" Unit="°C" Type="Float" A="-50" B="0.0015259"/>
+          <Register Address="12" Name="Val12" Unit="°C" Type="Float" A="-50" B="0.00228885"/>
       </RegisterGroup>
       <RegisterGroup Group="InputRegister" GroupName="Name5" Interval="1000">
           <Register Address="0" Name="Val0" Unit="X" Type="UInt16"/>
