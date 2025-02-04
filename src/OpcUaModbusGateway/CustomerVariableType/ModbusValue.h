@@ -29,6 +29,14 @@ namespace OpcUaModbusGateway
        virtual ~ModbusValue(void);
 
         //
+        // UInt16
+        //
+        void address_Variable(OpcUaStackServer::ServerVariable::SPtr& serverVariable);
+        OpcUaStackServer::ServerVariable::SPtr& address_Variable(void);
+        bool get_Address_Variable(OpcUaStackCore::OpcUaDataValue& dataValue);
+        bool set_Address_Variable(const OpcUaStackCore::OpcUaDataValue& dataValue);
+
+        //
         // Double
         //
         void precision_Variable(OpcUaStackServer::ServerVariable::SPtr& serverVariable);
@@ -37,12 +45,20 @@ namespace OpcUaModbusGateway
         bool set_Precision_Variable(const OpcUaStackCore::OpcUaDataValue& dataValue);
 
         //
-        // String
+        // Double
         //
-        void register_Variable(OpcUaStackServer::ServerVariable::SPtr& serverVariable);
-        OpcUaStackServer::ServerVariable::SPtr& register_Variable(void);
-        bool get_Register_Variable(OpcUaStackCore::OpcUaDataValue& dataValue);
-        bool set_Register_Variable(const OpcUaStackCore::OpcUaDataValue& dataValue);
+        void rangeBegin_Variable(OpcUaStackServer::ServerVariable::SPtr& serverVariable);
+        OpcUaStackServer::ServerVariable::SPtr& rangeBegin_Variable(void);
+        bool get_RangeBegin_Variable(OpcUaStackCore::OpcUaDataValue& dataValue);
+        bool set_RangeBegin_Variable(const OpcUaStackCore::OpcUaDataValue& dataValue);
+
+        //
+        // Double
+        //
+        void rangeEnd_Variable(OpcUaStackServer::ServerVariable::SPtr& serverVariable);
+        OpcUaStackServer::ServerVariable::SPtr& rangeEnd_Variable(void);
+        bool get_RangeEnd_Variable(OpcUaStackCore::OpcUaDataValue& dataValue);
+        bool set_RangeEnd_Variable(const OpcUaStackCore::OpcUaDataValue& dataValue);
 
         //
         // String
@@ -61,8 +77,10 @@ namespace OpcUaModbusGateway
         bool set_Variable(const OpcUaStackCore::OpcUaDataValue& dataValue);
     
       private:
+        OpcUaStackServer::ServerVariable::SPtr address_Variable_;
         OpcUaStackServer::ServerVariable::SPtr precision_Variable_;
-        OpcUaStackServer::ServerVariable::SPtr register_Variable_;
+        OpcUaStackServer::ServerVariable::SPtr rangeBegin_Variable_;
+        OpcUaStackServer::ServerVariable::SPtr rangeEnd_Variable_;
         OpcUaStackServer::ServerVariable::SPtr unit_Variable_;
         OpcUaStackServer::ServerVariable::SPtr variable_;
    

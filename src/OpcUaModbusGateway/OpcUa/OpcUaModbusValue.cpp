@@ -106,12 +106,28 @@ namespace OpcUaModbusGateway
 		dataValue.variant()->setValue(OpcUaString(registerConfig_->unit()));
 		modbusValue_->set_Unit_Variable(dataValue);
 
-		// Set register value
+		// Set range begin value
+		dataValue.serverTimestamp(now);
+		dataValue.sourceTimestamp(now);
+		dataValue.statusCode(Success);
+		dataValue.variant()->setValue(OpcUaDouble(registerConfig_->a()));
+		modbusValue_->set_RangeBegin_Variable(dataValue);
+
+		// Set range end value
+		double range = 1.0;
+		if (registerConfig_->modbusType() == RegisterConfig::ModbusType::UInt16) range = 65535.0;
+		dataValue.serverTimestamp(now);
+		dataValue.sourceTimestamp(now);
+		dataValue.statusCode(Success);
+		dataValue.variant()->setValue(OpcUaDouble(registerConfig_->a() + registerConfig_->b() * range));
+		modbusValue_->set_RangeEnd_Variable(dataValue);
+
+		// Set address value
 		dataValue.serverTimestamp(now);
 		dataValue.sourceTimestamp(now);
 		dataValue.statusCode(Success);
 		dataValue.variant()->setValue((uint16_t)registerConfig_->address());
-		modbusValue_->set_Register_Variable(dataValue);
+		modbusValue_->set_Address_Variable(dataValue);
 
 		// Set data type
 		auto type = OpcUaBuildInTypeMap::string2BuildInType(registerConfig->opcUaTypeString());

@@ -19,30 +19,38 @@ namespace OpcUaModbusGateway
     
     ModbusValue::ModbusValue(void)
     : VariableBase()
+    , address_Variable_(boost::make_shared<ServerVariable>("Address_Variable"))
     , precision_Variable_(boost::make_shared<ServerVariable>("Precision_Variable"))
-    , register_Variable_(boost::make_shared<ServerVariable>("Register_Variable"))
+    , rangeBegin_Variable_(boost::make_shared<ServerVariable>("RangeBegin_Variable"))
+    , rangeEnd_Variable_(boost::make_shared<ServerVariable>("RangeEnd_Variable"))
     , unit_Variable_(boost::make_shared<ServerVariable>("Unit_Variable"))
     , variable_(boost::make_shared<ServerVariable>("Variable"))
     {
         variableTypeNamespaceName("http://ASNEG.de/OpcUaModbusGateway/");
         variableTypeNodeId((OpcUaUInt32)2003);
+        setServerVariable(address_Variable_);
         setServerVariable(precision_Variable_);
-        setServerVariable(register_Variable_);
+        setServerVariable(rangeBegin_Variable_);
+        setServerVariable(rangeEnd_Variable_);
         setServerVariable(unit_Variable_);
         setServerVariable(variable_);
     }
     
     ModbusValue::ModbusValue(const ModbusValue& value)
     : VariableBase()
+    , address_Variable_(boost::make_shared<ServerVariable>("Address_Variable"))
     , precision_Variable_(boost::make_shared<ServerVariable>("Precision_Variable"))
-    , register_Variable_(boost::make_shared<ServerVariable>("Register_Variable"))
+    , rangeBegin_Variable_(boost::make_shared<ServerVariable>("RangeBegin_Variable"))
+    , rangeEnd_Variable_(boost::make_shared<ServerVariable>("RangeEnd_Variable"))
     , unit_Variable_(boost::make_shared<ServerVariable>("Unit_Variable"))
     , variable_(boost::make_shared<ServerVariable>("Variable"))
     {
         variableTypeNamespaceName("http://ASNEG.de/OpcUaModbusGateway/");
         variableTypeNodeId((OpcUaUInt32)2003);
+        setServerVariable(address_Variable_);
         setServerVariable(precision_Variable_);
-        setServerVariable(register_Variable_);
+        setServerVariable(rangeBegin_Variable_);
+        setServerVariable(rangeEnd_Variable_);
         setServerVariable(unit_Variable_);
         setServerVariable(variable_);
     }
@@ -52,15 +60,27 @@ namespace OpcUaModbusGateway
     }
 
     ServerVariable::SPtr&
+    ModbusValue::address_Variable(void)
+    {
+        return address_Variable_;
+    }
+
+    ServerVariable::SPtr&
     ModbusValue::precision_Variable(void)
     {
         return precision_Variable_;
     }
 
     ServerVariable::SPtr&
-    ModbusValue::register_Variable(void)
+    ModbusValue::rangeBegin_Variable(void)
     {
-        return register_Variable_;
+        return rangeBegin_Variable_;
+    }
+
+    ServerVariable::SPtr&
+    ModbusValue::rangeEnd_Variable(void)
+    {
+        return rangeEnd_Variable_;
     }
 
     ServerVariable::SPtr&
@@ -76,15 +96,27 @@ namespace OpcUaModbusGateway
     }
 
     void
+    ModbusValue::address_Variable(ServerVariable::SPtr& serverVariable)
+    {
+        address_Variable_ = serverVariable;
+    }
+
+    void
     ModbusValue::precision_Variable(ServerVariable::SPtr& serverVariable)
     {
         precision_Variable_ = serverVariable;
     }
 
     void
-    ModbusValue::register_Variable(ServerVariable::SPtr& serverVariable)
+    ModbusValue::rangeBegin_Variable(ServerVariable::SPtr& serverVariable)
     {
-        register_Variable_ = serverVariable;
+        rangeBegin_Variable_ = serverVariable;
+    }
+
+    void
+    ModbusValue::rangeEnd_Variable(ServerVariable::SPtr& serverVariable)
+    {
+        rangeEnd_Variable_ = serverVariable;
     }
 
     void
@@ -100,15 +132,27 @@ namespace OpcUaModbusGateway
     }
 
     bool
+    ModbusValue::get_Address_Variable(OpcUaDataValue& dataValue)
+    {
+        return address_Variable_->getDataValue(dataValue);
+    }
+
+    bool
     ModbusValue::get_Precision_Variable(OpcUaDataValue& dataValue)
     {
         return precision_Variable_->getDataValue(dataValue);
     }
 
     bool
-    ModbusValue::get_Register_Variable(OpcUaDataValue& dataValue)
+    ModbusValue::get_RangeBegin_Variable(OpcUaDataValue& dataValue)
     {
-        return register_Variable_->getDataValue(dataValue);
+        return rangeBegin_Variable_->getDataValue(dataValue);
+    }
+
+    bool
+    ModbusValue::get_RangeEnd_Variable(OpcUaDataValue& dataValue)
+    {
+        return rangeEnd_Variable_->getDataValue(dataValue);
     }
 
     bool
@@ -124,15 +168,27 @@ namespace OpcUaModbusGateway
     }
 
     bool
+    ModbusValue::set_Address_Variable(const OpcUaDataValue& dataValue)
+    {
+        return address_Variable_->setDataValue(dataValue);
+    }
+
+    bool
     ModbusValue::set_Precision_Variable(const OpcUaDataValue& dataValue)
     {
         return precision_Variable_->setDataValue(dataValue);
     }
 
     bool
-    ModbusValue::set_Register_Variable(const OpcUaDataValue& dataValue)
+    ModbusValue::set_RangeBegin_Variable(const OpcUaDataValue& dataValue)
     {
-        return register_Variable_->setDataValue(dataValue);
+        return rangeBegin_Variable_->setDataValue(dataValue);
+    }
+
+    bool
+    ModbusValue::set_RangeEnd_Variable(const OpcUaDataValue& dataValue)
+    {
+        return rangeEnd_Variable_->setDataValue(dataValue);
     }
 
     bool
