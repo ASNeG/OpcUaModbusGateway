@@ -341,12 +341,17 @@ namespace OpcUaModbusGateway
 		}
 
 		// Get interval attribute from configuration
-		rc = config.getConfigParameter("<xmlattr>.Interval", interval_);
-		if (rc == false) {
-			Log(Error, "attribute not found in register group configuration")
-				.parameter("Attribute", "Interval")
-				.parameter("GroupName", groupName_);
-			return false;
+		if (modbusAppl_ == RegisterConfig::ModbusAppl::Slave) {
+			interval_ = 0;
+		}
+		else {
+			rc = config.getConfigParameter("<xmlattr>.Interval", interval_);
+			if (rc == false) {
+				Log(Error, "attribute not found in register group configuration")
+					.parameter("Attribute", "Interval")
+					.parameter("GroupName", groupName_);
+				return false;
+			}
 		}
 
 		// Find input register entries in configuration
