@@ -465,26 +465,9 @@ namespace OpcUaModbusGateway
 			errorCode = static_cast<int>(ModbusProt::ModbusError::Timeout) + 100;
 			return;
 		}
-		if (modbusError != ModbusProt::ModbusError::Ok) {
-			errorCode = static_cast<int>(modbusError) + 100;
-			return;
-		}
-
-		// Handle error response
-		if (modbusRes->pduType() == ModbusProt::PDUType::Error) {
-			auto errorRes = std::static_pointer_cast<ModbusProt::ErrorPDU>(modbusRes);
-			errorCode = errorRes->exceptionCode();;
-			return;
-		}
 
 		// Handle response
-		errorCode = 0;
-		auto readHoldingRegistersRes = std::static_pointer_cast<ModbusProt::ReadMultipleHoldingRegistersResPDU>(modbusRes);
-		for (uint32_t idx = 0; idx < readHoldingRegistersReq->quantityOfInputs(); idx++) {
-			uint16_t value;
-			readHoldingRegistersRes->getHoldingRegisters(idx, value);
-			holdingRegisters.push_back(value);
-		}
+		readHoldingRegistersHandleResponse(modbusError, req, modbusRes, errorCode, holdingRegisters);
 	}
 
 	void
