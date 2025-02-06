@@ -34,6 +34,11 @@ namespace OpcUaModbusGateway
 		using ReadDiscreteInputsHandler = std::function<void (uint32_t errorCode, std::vector<bool>& inputStatus)>;
 		using ReadInputRegistersHandler = std::function<void (uint32_t errorCode, std::vector<uint16_t>& inputRegisters)>;
 		using ReadHoldingRegistersHandler = std::function<void (uint32_t errorCode, std::vector<uint16_t>& holdingRegisters)>;
+		using WriteMultipleCoilsHandler = std::function<void (uint32_t errorCode, uint16_t count)>;
+		using WriteMultipleHoldingRegistersHandler = std::function<void (uint32_t errorCode, uint16_t count)>;
+		using WriteSingleCoilHandler = std::function<void (uint32_t errorCode)>;
+		using WriteSingleHoldingRegisterHandler = std::function<void (uint32_t errorCode)>;
+
 
 		ModbusTCPClientImpl(void);
 		~ModbusTCPClientImpl(void);
@@ -103,6 +108,11 @@ namespace OpcUaModbusGateway
 			uint32_t& errorCode,
 			uint16_t& count
 		);
+		void writeMultipleCoils(
+			uint16_t startingAddress,
+			std::vector<bool>& coils,
+			WriteMultipleCoilsHandler writeMultipleCoilsHandler
+		);
 
 		void writeMultipleHoldingRegisters(
 			uint16_t startingAddress,
@@ -110,17 +120,32 @@ namespace OpcUaModbusGateway
 			uint32_t& errorCode,
 			uint16_t& count
 		);
+		void writeMultipleHoldingRegisters(
+			uint16_t startingAddress,
+			std::vector<uint16_t>& holdingRegisters,
+			WriteMultipleHoldingRegistersHandler writeMultipleHoldingRegistersHandler
+		);
 
 		void writeSingleCoil(
 			uint16_t startingAddress,
 			bool value,
 			uint32_t& errorCode
 		);
+		void writeSingleCoil(
+			uint16_t startingAddress,
+			bool value,
+			WriteSingleCoilHandler writeSingleCoilHandler
+		);
 
 		void writeSingleHoldingRegister(
 			uint16_t startingAddress,
 			uint16_t holdingRegister,
 			uint32_t& errorCode
+		);
+		void writeSingleHoldingRegister(
+			uint16_t startingAddress,
+			uint16_t holdingRegister,
+			WriteSingleHoldingRegisterHandler writeSingleHoldingRegisterHandler
 		);
 
 	  private:
@@ -161,6 +186,28 @@ namespace OpcUaModbusGateway
 			ModbusProt::ModbusPDU::SPtr& res,
 			uint32_t& errorCode,
 			std::vector<uint16_t>& holdingRegisters
+		);
+		void writeMultipleCoilsHandleResponse(
+			uint16_t startingAddress,
+			std::vector<bool>& coils,
+			uint32_t& errorCode,
+			uint16_t& count
+		);
+		void writeMultipleHoldingRegistersHandleResponse(
+			uint16_t startingAddress,
+			std::vector<uint16_t>& holdingRegisters,
+			uint32_t& errorCode,
+			uint16_t& count
+		);
+		void writeSingleCoilHandleResponse(
+			uint16_t startingAddress,
+			std::vector<bool>& coils,
+			uint32_t& errorCode
+		);
+		void writeSingleHoldingRegisterHandleResponse(
+			uint16_t startingAddress,
+			std::vector<uint16_t>& holdingRegisters,
+			uint32_t& errorCode
 		);
 
 	};

@@ -495,6 +495,16 @@ namespace OpcUaModbusGateway
 	}
 
 	void
+	ModbusTCPClientImpl::writeMultipleCoilsHandleResponse(
+		uint16_t startingAddress,
+		std::vector<bool>& coils,
+		uint32_t& errorCode,
+		uint16_t& count
+	)
+	{
+	}
+
+	void
 	ModbusTCPClientImpl::writeMultipleCoils(
 		uint16_t startingAddress,
 		std::vector<bool>& coils,
@@ -543,6 +553,26 @@ namespace OpcUaModbusGateway
 		errorCode = 0;
 		auto writeMultipleCoilsRes = std::static_pointer_cast<ModbusProt::WriteMultipleCoilsResPDU>(modbusRes);
 		count = writeMultipleCoilsRes->quantityOfOutputs();
+	}
+
+	void
+	ModbusTCPClientImpl::writeMultipleCoils(
+		uint16_t startingAddress,
+		std::vector<bool>& coils,
+		WriteMultipleCoilsHandler writeMultipleCoilsHandler
+	)
+	{
+
+	}
+
+	void
+	ModbusTCPClientImpl::writeMultipleHoldingRegistersHandleResponse(
+		uint16_t startingAddress,
+		std::vector<uint16_t>& holdingRegisters,
+		uint32_t& errorCode,
+		uint16_t& count
+	)
+	{
 	}
 
 	void
@@ -597,6 +627,24 @@ namespace OpcUaModbusGateway
 	}
 
 	void
+	ModbusTCPClientImpl::writeMultipleHoldingRegisters(
+		uint16_t startingAddress,
+		std::vector<uint16_t>& holdingRegisters,
+		WriteMultipleHoldingRegistersHandler writeMultipleHoldingRegistersHandler
+	)
+	{
+	}
+
+	void
+	ModbusTCPClientImpl::writeSingleCoilHandleResponse(
+		uint16_t startingAddress,
+		std::vector<bool>& coils,
+		uint32_t& errorCode
+	)
+	{
+	}
+
+	void
 	ModbusTCPClientImpl::writeSingleCoil(
 		uint16_t startingAddress,
 		bool value,
@@ -642,6 +690,24 @@ namespace OpcUaModbusGateway
 	}
 
 	void
+	ModbusTCPClientImpl::writeSingleCoil(
+		uint16_t startingAddress,
+		bool value,
+		WriteSingleCoilHandler writeSingleCoilHandler
+	)
+	{
+	}
+
+	void
+	ModbusTCPClientImpl::writeSingleHoldingRegisterHandleResponse(
+		uint16_t startingAddress,
+		std::vector<uint16_t>& holdingRegisters,
+		uint32_t& errorCode
+	)
+	{
+	}
+
+	void
 	ModbusTCPClientImpl::writeSingleHoldingRegister(
 		uint16_t startingAddress,
 		uint16_t holdingRegister,
@@ -684,6 +750,15 @@ namespace OpcUaModbusGateway
 
 		// Handle response
 		errorCode = 0;
+	}
+
+	void
+	ModbusTCPClientImpl::writeSingleHoldingRegister(
+		uint16_t startingAddress,
+		uint16_t holdingRegister,
+		WriteSingleHoldingRegisterHandler writeSingleHoldingRegisterHandler
+	)
+	{
 	}
 
 }
