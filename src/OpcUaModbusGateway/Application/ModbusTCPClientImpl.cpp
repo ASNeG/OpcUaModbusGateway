@@ -646,22 +646,9 @@ namespace OpcUaModbusGateway
 			errorCode = static_cast<int>(ModbusProt::ModbusError::Timeout) + 100;
 			return;
 		}
-		if (modbusError != ModbusProt::ModbusError::Ok) {
-			errorCode = static_cast<int>(modbusError) + 100;
-			return;
-		}
-
-		// Handle error response
-		if (modbusRes->pduType() == ModbusProt::PDUType::Error) {
-			auto errorRes = std::static_pointer_cast<ModbusProt::ErrorPDU>(modbusRes);
-			errorCode = errorRes->exceptionCode();;
-			return;
-		}
 
 		// Handle response
-		errorCode = 0;
-		auto writeMultipleHoldingRegistersRes = std::static_pointer_cast<ModbusProt::WriteMultipleHoldingRegistersResPDU>(modbusRes);
-		count = writeMultipleHoldingRegistersRes->quantityOfRegisters();
+		writeMultipleHoldingRegistersHandleResponse(modbusError, req, modbusRes, errorCode, count);
 	}
 
 	void
@@ -671,6 +658,24 @@ namespace OpcUaModbusGateway
 		WriteMultipleHoldingRegistersHandler writeMultipleHoldingRegistersHandler
 	)
 	{
+		// Create and send write multiple holding registers request
+		auto writeMultipleHoldingRegistersReq = std::make_shared<ModbusProt::WriteMultipleHoldingRegistersReqPDU>();
+		writeMultipleHoldingRegistersReq->startingAddress(startingAddress);
+		writeMultipleHoldingRegistersReq->quantityOfRegisters(holdingRegisters.size());
+		for (uint32_t idx = 0; idx < holdingRegisters.size(); idx++) {
+			writeMultipleHoldingRegistersReq->setRegistersValue(idx, holdingRegisters[idx]);
+		}
+		ModbusProt::ModbusPDU::SPtr req = writeMultipleHoldingRegistersReq;
+		modbusTCPClient_.send(slaveId_, req,
+			[this, &writeMultipleHoldingRegistersHandler](ModbusProt::ModbusError error, ModbusProt::ModbusPDU::SPtr& req, ModbusProt::ModbusPDU::SPtr& res) {
+				uint32_t errorCode;
+				uint16_t count;
+
+				// Handle response
+				writeMultipleHoldingRegistersHandleResponse(error, req, res, errorCode, count);
+				writeMultipleHoldingRegistersHandler(errorCode, count);
+			}
+		);
 	}
 
 	void
