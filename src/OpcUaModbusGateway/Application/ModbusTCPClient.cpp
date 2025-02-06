@@ -132,6 +132,20 @@ namespace OpcUaModbusGateway
 	}
 
 	void
+	ModbusTCPClient::readDiscreteInputs(
+		uint16_t startingAddress,
+		uint16_t quantityOfInputs,
+		ReadDiscreteInputsHandler readDiscreteInputsHandler
+	)
+	{
+		modbusTCPClientImpl_->readDiscreteInputs(
+			startingAddress,
+			quantityOfInputs,
+			readDiscreteInputsHandler
+		);
+	}
+
+	void
 	ModbusTCPClient::readInputRegisters(
 		uint16_t startingAddress,
 		uint16_t quantityOfInputs,
@@ -148,6 +162,20 @@ namespace OpcUaModbusGateway
 	}
 
 	void
+	ModbusTCPClient::readInputRegisters(
+		uint16_t startingAddress,
+		uint16_t quantityOfInputs,
+		ReadInputRegistersHandler readInputRegistersHandler
+	)
+	{
+		modbusTCPClientImpl_->readInputRegisters(
+			startingAddress,
+			quantityOfInputs,
+			readInputRegistersHandler
+		);
+	}
+
+	void
 	ModbusTCPClient::readHoldingRegisters(
 		uint16_t startingAddress,
 		uint16_t quantityOfInputs,
@@ -160,6 +188,20 @@ namespace OpcUaModbusGateway
 			quantityOfInputs,
 			errorCode,
 			holdingRegisters
+		);
+	}
+
+	void
+	ModbusTCPClient::readHoldingRegisters(
+		uint16_t startingAddress,
+		uint16_t quantityOfInputs,
+		ReadHoldingRegistersHandler readHoldingRegistersHandler
+	)
+	{
+		modbusTCPClientImpl_->readHoldingRegisters(
+			startingAddress,
+			quantityOfInputs,
+			readHoldingRegistersHandler
 		);
 	}
 

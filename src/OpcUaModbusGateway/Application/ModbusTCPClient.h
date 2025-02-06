@@ -36,6 +36,13 @@ namespace OpcUaModbusGateway
 		using StateCallback = std::function<void (const std::string&)>;
 
 		using ReadCoilsHandler = std::function<void (uint32_t errorCode, std::vector<bool>& coilStatus)>;
+		using ReadDiscreteInputsHandler = std::function<void (uint32_t errorCode, std::vector<bool>& inputStatus)>;
+		using ReadInputRegistersHandler = std::function<void (uint32_t errorCode, std::vector<uint16_t>& inputRegisters)>;
+		using ReadHoldingRegistersHandler = std::function<void (uint32_t errorCode, std::vector<uint16_t>& holdingRegisters)>;
+		using WriteMultipleCoilsHandler = std::function<void (uint32_t errorCode, uint16_t count)>;
+		using WriteMultipleHoldingRegistersHandler = std::function<void (uint32_t errorCode, uint16_t count)>;
+		using WriteSingleCoilHandler = std::function<void (uint32_t errorCode)>;
+		using WriteSingleHoldingRegisterHandler = std::function<void (uint32_t errorCode)>;
 
 		ModbusTCPClient(void);
 		~ModbusTCPClient(void);
@@ -62,41 +69,63 @@ namespace OpcUaModbusGateway
 			uint16_t quantityOfInputs,
 			ReadCoilsHandler readCoilsHandler
 		);
+
 		void readDiscreteInputs(
 			uint16_t startingAddress,
 			uint16_t quantityOfInputs,
 			uint32_t& errorCode,
 			std::vector<bool>& inputStatus
 		);
+		void readDiscreteInputs(
+			uint16_t startingAddress,
+			uint16_t quantityOfInputs,
+			ReadDiscreteInputsHandler readDiscreteInputsHandler
+		);
+
 		void readInputRegisters(
 			uint16_t startingAddress,
 			uint16_t quantityOfInputs,
 			uint32_t& errorCode,
 			std::vector<uint16_t>& inputRegisters
 		);
+		void readInputRegisters(
+			uint16_t startingAddress,
+			uint16_t quantityOfInputs,
+			ReadInputRegistersHandler readInputRegistersHandler
+		);
+
 		void readHoldingRegisters(
 			uint16_t startingAddress,
 			uint16_t quantityOfInputs,
 			uint32_t& errorCode,
 			std::vector<uint16_t>& holdingRegisters
 		);
+		void readHoldingRegisters(
+			uint16_t startingAddress,
+			uint16_t quantityOfInputs,
+			ReadHoldingRegistersHandler readHoldingRegistersHandler
+		);
+
 		void writeMultipleCoils(
 			uint16_t startingAddress,
 			std::vector<bool>& coils,
 			uint32_t& errorCode,
 			uint16_t& count
 		);
+
 		void writeMultipleHoldingRegisters(
 			uint16_t startingAddress,
 			std::vector<uint16_t>& holdingRegisters,
 			uint32_t& errorCode,
 			uint16_t& count
 		);
+
 		void writeSingleCoil(
 			uint16_t startingAddress,
 			bool value,
 			uint32_t& errorCode
 		);
+
 		void writeSingleHoldingRegister(
 			uint16_t startingAddress,
 			uint16_t holdingRegister,
