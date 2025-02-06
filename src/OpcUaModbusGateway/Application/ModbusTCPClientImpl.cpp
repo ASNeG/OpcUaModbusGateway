@@ -223,6 +223,38 @@ namespace OpcUaModbusGateway
 	}
 
 	void
+	ModbusTCPClientImpl::readDiscreteInputsHandleResponse(
+		ModbusProt::ModbusError error,
+		ModbusProt::ModbusPDU::SPtr& req,
+		ModbusProt::ModbusPDU::SPtr& res,
+		uint32_t& errorCode,
+		std::vector<bool>& inputStatus
+	)
+	{
+		if (error != ModbusProt::ModbusError::Ok) {
+			errorCode = static_cast<int>(error) + 100;
+			return;
+		}
+
+		// Handle error response
+		if (res->pduType() == ModbusProt::PDUType::Error) {
+			auto errorRes = std::static_pointer_cast<ModbusProt::ErrorPDU>(res);
+			errorCode = errorRes->exceptionCode();;
+			return;
+		}
+
+		// Handle response
+		errorCode = 0;
+		auto readDiscreteInputsReq = std::static_pointer_cast<ModbusProt::ReadDiscreteInputsReqPDU>(req);
+		auto readDiscreteInputsRes = std::static_pointer_cast<ModbusProt::ReadDiscreteInputsResPDU>(res);
+		for (uint32_t idx = 0; idx < readDiscreteInputsReq->quantityOfInputs(); idx++) {
+			bool b;
+			readDiscreteInputsRes->getInputStatus(idx, b);
+			inputStatus.push_back(b);
+		}
+	}
+
+	void
 	ModbusTCPClientImpl::readDiscreteInputs(
 		uint16_t startingAddress,
 		uint16_t quantityOfInputs,
@@ -252,26 +284,32 @@ namespace OpcUaModbusGateway
 			errorCode = static_cast<int>(ModbusProt::ModbusError::Timeout) + 100;
 			return;
 		}
-		if (modbusError != ModbusProt::ModbusError::Ok) {
-			errorCode = static_cast<int>(modbusError) + 100;
-			return;
-		}
-
-		// Handle error response
-		if (modbusRes->pduType() == ModbusProt::PDUType::Error) {
-			auto errorRes = std::static_pointer_cast<ModbusProt::ErrorPDU>(modbusRes);
-			errorCode = errorRes->exceptionCode();;
-			return;
-		}
-
 		// Handle response
-		errorCode = 0;
-		auto readDiscreteInputsRes = std::static_pointer_cast<ModbusProt::ReadDiscreteInputsResPDU>(modbusRes);
-		for (uint32_t idx = 0; idx < readDiscreteInputsReq->quantityOfInputs(); idx++) {
-			bool b;
-			readDiscreteInputsRes->getInputStatus(idx, b);
-			inputStatus.push_back(b);
-		}
+		readDiscreteInputsHandleResponse(modbusError, req, modbusRes, errorCode, inputStatus);
+	}
+
+	void
+	ModbusTCPClientImpl::readDiscreteInputs(
+		uint16_t startingAddress,
+		uint16_t quantityOfInputs,
+		ReadDiscreteInputsHandler readDiscreteInputsHandler
+	)
+	{
+		// Create and send read discrete inputs request
+		auto readDiscreteInputsReq = std::make_shared<ModbusProt::ReadDiscreteInputsReqPDU>();
+		readDiscreteInputsReq->startingAddress(startingAddress);
+		readDiscreteInputsReq->quantityOfInputs(quantityOfInputs);
+		ModbusProt::ModbusPDU::SPtr req = readDiscreteInputsReq;
+		modbusTCPClient_.send(slaveId_, req,
+			[this, readDiscreteInputsHandler](ModbusProt::ModbusError error, ModbusProt::ModbusPDU::SPtr& req, ModbusProt::ModbusPDU::SPtr& res) {
+				uint32_t errorCode;
+				std::vector<bool> inputStatus;
+
+				// Handle response
+				readDiscreteInputsHandleResponse(error, req, res, errorCode, inputStatus);
+				readDiscreteInputsHandler(errorCode, inputStatus);
+			}
+		);
 	}
 
 	void
