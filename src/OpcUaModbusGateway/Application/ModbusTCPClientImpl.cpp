@@ -404,6 +404,38 @@ namespace OpcUaModbusGateway
 	}
 
 	void
+	ModbusTCPClientImpl::readHoldingRegistersHandleResponse(
+		ModbusProt::ModbusError error,
+		ModbusProt::ModbusPDU::SPtr& req,
+		ModbusProt::ModbusPDU::SPtr& res,
+		uint32_t& errorCode,
+		std::vector<uint16_t>& holdingRegisters
+	)
+	{
+		if (error != ModbusProt::ModbusError::Ok) {
+			errorCode = static_cast<int>(error) + 100;
+			return;
+		}
+
+		// Handle error response
+		if (res->pduType() == ModbusProt::PDUType::Error) {
+			auto errorRes = std::static_pointer_cast<ModbusProt::ErrorPDU>(res);
+			errorCode = errorRes->exceptionCode();;
+			return;
+		}
+
+		// Handle response
+		errorCode = 0;
+		auto readHoldingRegistersReq = std::static_pointer_cast<ModbusProt::ReadMultipleHoldingRegistersReqPDU>(req);
+		auto readHoldingRegistersRes = std::static_pointer_cast<ModbusProt::ReadMultipleHoldingRegistersResPDU>(res);
+		for (uint32_t idx = 0; idx < readHoldingRegistersReq->quantityOfInputs(); idx++) {
+			uint16_t value;
+			readHoldingRegistersRes->getHoldingRegisters(idx, value);
+			holdingRegisters.push_back(value);
+		}
+	}
+
+	void
 	ModbusTCPClientImpl::readHoldingRegisters(
 		uint16_t startingAddress,
 		uint16_t quantityOfInputs,
@@ -453,6 +485,30 @@ namespace OpcUaModbusGateway
 			readHoldingRegistersRes->getHoldingRegisters(idx, value);
 			holdingRegisters.push_back(value);
 		}
+	}
+
+	void
+	ModbusTCPClientImpl::readHoldingRegisters(
+		uint16_t startingAddress,
+		uint16_t quantityOfInputs,
+		ReadHoldingRegistersHandler readHoldingRegistersHandler
+	)
+	{
+		// Create and send read holding registers request
+		auto readHoldingRegistersReq = std::make_shared<ModbusProt::ReadMultipleHoldingRegistersReqPDU>();
+		readHoldingRegistersReq->startingAddress(startingAddress);
+		readHoldingRegistersReq->quantityOfInputs(quantityOfInputs);
+		ModbusProt::ModbusPDU::SPtr req = readHoldingRegistersReq;
+		modbusTCPClient_.send(slaveId_, req,
+			[this, readHoldingRegistersHandler](ModbusProt::ModbusError error, ModbusProt::ModbusPDU::SPtr& req, ModbusProt::ModbusPDU::SPtr& res) {
+				uint32_t errorCode;
+				std::vector<uint16_t> holdingRegisters;
+
+				// Handle response
+				readHoldingRegistersHandleResponse(error, req, res, errorCode, holdingRegisters);
+				readHoldingRegistersHandler(errorCode, holdingRegisters);
+			}
+		);
 	}
 
 	void

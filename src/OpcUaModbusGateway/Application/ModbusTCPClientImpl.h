@@ -33,6 +33,7 @@ namespace OpcUaModbusGateway
 		using ReadCoilsHandler = std::function<void (uint32_t errorCode, std::vector<bool>& coilStatus)>;
 		using ReadDiscreteInputsHandler = std::function<void (uint32_t errorCode, std::vector<bool>& inputStatus)>;
 		using ReadInputRegistersHandler = std::function<void (uint32_t errorCode, std::vector<uint16_t>& inputRegisters)>;
+		using ReadHoldingRegistersHandler = std::function<void (uint32_t errorCode, std::vector<uint16_t>& holdingRegisters)>;
 
 		ModbusTCPClientImpl(void);
 		~ModbusTCPClientImpl(void);
@@ -89,6 +90,11 @@ namespace OpcUaModbusGateway
 			uint16_t quantityOfInputs,
 			uint32_t& errorCode,
 			std::vector<uint16_t>& holdingRegisters
+		);
+		void readHoldingRegisters(
+			uint16_t startingAddress,
+			uint16_t quantityOfInputs,
+			ReadHoldingRegistersHandler readHoldingRegistersHandler
 		);
 
 		void writeMultipleCoils(
@@ -148,6 +154,13 @@ namespace OpcUaModbusGateway
 			ModbusProt::ModbusPDU::SPtr& res,
 			uint32_t& errorCode,
 			std::vector<uint16_t>& inputRegisters
+		);
+		void readHoldingRegistersHandleResponse(
+			ModbusProt::ModbusError error,
+			ModbusProt::ModbusPDU::SPtr& req,
+			ModbusProt::ModbusPDU::SPtr& res,
+			uint32_t& errorCode,
+			std::vector<uint16_t>& holdingRegisters
 		);
 
 	};
