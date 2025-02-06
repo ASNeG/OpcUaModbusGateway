@@ -200,8 +200,7 @@ namespace OpcUaModbusGateway
 
 			uint16_t pos = idx / 8;
 			uint8_t rest = idx % 8;
-			bool value = (values[pos] & (1 << rest) != 0);
-
+			bool value = ((values[pos] & (1 << rest)) != 0);
 			bool rc = it->second->setBoolCallback_(value);
 			if (!rc) {
 				return false;
