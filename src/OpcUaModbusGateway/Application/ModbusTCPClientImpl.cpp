@@ -813,20 +813,9 @@ namespace OpcUaModbusGateway
 			errorCode = static_cast<int>(ModbusProt::ModbusError::Timeout) + 100;
 			return;
 		}
-		if (modbusError != ModbusProt::ModbusError::Ok) {
-			errorCode = static_cast<int>(modbusError) + 100;
-			return;
-		}
-
-		// Handle error response
-		if (modbusRes->pduType() == ModbusProt::PDUType::Error) {
-			auto errorRes = std::static_pointer_cast<ModbusProt::ErrorPDU>(modbusRes);
-			errorCode = errorRes->exceptionCode();;
-			return;
-		}
 
 		// Handle response
-		errorCode = 0;
+		writeSingleHoldingRegisterHandleResponse(modbusError, req, modbusRes, errorCode);
 	}
 
 	void
@@ -836,6 +825,20 @@ namespace OpcUaModbusGateway
 		WriteSingleHoldingRegisterHandler writeSingleHoldingRegisterHandler
 	)
 	{
+		// Create and send write single holding register request
+		auto writeSingleHoldingRegisterReq = std::make_shared<ModbusProt::WriteSingleHoldingRegisterReqPDU>();
+		writeSingleHoldingRegisterReq->address(startingAddress);
+		writeSingleHoldingRegisterReq->registerValue(holdingRegister);
+		ModbusProt::ModbusPDU::SPtr req = writeSingleHoldingRegisterReq;
+		modbusTCPClient_.send(slaveId_, req,
+			[this, &writeSingleHoldingRegisterHandler](ModbusProt::ModbusError error, ModbusProt::ModbusPDU::SPtr& req, ModbusProt::ModbusPDU::SPtr& res) {
+				uint32_t errorCode;
+
+				// Handle response
+				writeSingleHoldingRegisterHandleResponse(error, req, res, errorCode);
+				writeSingleHoldingRegisterHandler(errorCode);
+			}
+		);
 	}
 
 }
