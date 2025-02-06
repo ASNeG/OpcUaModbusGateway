@@ -496,12 +496,29 @@ namespace OpcUaModbusGateway
 
 	void
 	ModbusTCPClientImpl::writeMultipleCoilsHandleResponse(
-		uint16_t startingAddress,
-		std::vector<bool>& coils,
+		ModbusProt::ModbusError error,
+		ModbusProt::ModbusPDU::SPtr& req,
+		ModbusProt::ModbusPDU::SPtr& res,
 		uint32_t& errorCode,
 		uint16_t& count
 	)
 	{
+		if (error != ModbusProt::ModbusError::Ok) {
+			errorCode = static_cast<int>(error) + 100;
+			return;
+		}
+
+		// Handle error response
+		if (res->pduType() == ModbusProt::PDUType::Error) {
+			auto errorRes = std::static_pointer_cast<ModbusProt::ErrorPDU>(res);
+			errorCode = errorRes->exceptionCode();;
+			return;
+		}
+
+		// Handle response
+		errorCode = 0;
+		auto writeMultipleCoilsRes = std::static_pointer_cast<ModbusProt::WriteMultipleCoilsResPDU>(res);
+		count = writeMultipleCoilsRes->quantityOfOutputs();
 	}
 
 	void
@@ -567,12 +584,29 @@ namespace OpcUaModbusGateway
 
 	void
 	ModbusTCPClientImpl::writeMultipleHoldingRegistersHandleResponse(
-		uint16_t startingAddress,
-		std::vector<uint16_t>& holdingRegisters,
+		ModbusProt::ModbusError error,
+		ModbusProt::ModbusPDU::SPtr& req,
+		ModbusProt::ModbusPDU::SPtr& res,
 		uint32_t& errorCode,
 		uint16_t& count
 	)
 	{
+		if (error != ModbusProt::ModbusError::Ok) {
+			errorCode = static_cast<int>(error) + 100;
+			return;
+		}
+
+		// Handle error response
+		if (res->pduType() == ModbusProt::PDUType::Error) {
+			auto errorRes = std::static_pointer_cast<ModbusProt::ErrorPDU>(res);
+			errorCode = errorRes->exceptionCode();;
+			return;
+		}
+
+		// Handle response
+		errorCode = 0;
+		auto writeMultipleHoldingRegistersRes = std::static_pointer_cast<ModbusProt::WriteMultipleHoldingRegistersResPDU>(res);
+		count = writeMultipleHoldingRegistersRes->quantityOfRegisters();
 	}
 
 	void
@@ -637,11 +671,26 @@ namespace OpcUaModbusGateway
 
 	void
 	ModbusTCPClientImpl::writeSingleCoilHandleResponse(
-		uint16_t startingAddress,
-		std::vector<bool>& coils,
+		ModbusProt::ModbusError error,
+		ModbusProt::ModbusPDU::SPtr& req,
+		ModbusProt::ModbusPDU::SPtr& res,
 		uint32_t& errorCode
 	)
 	{
+		if (error != ModbusProt::ModbusError::Ok) {
+			errorCode = static_cast<int>(error) + 100;
+			return;
+		}
+
+		// Handle error response
+		if (res->pduType() == ModbusProt::PDUType::Error) {
+			auto errorRes = std::static_pointer_cast<ModbusProt::ErrorPDU>(res);
+			errorCode = errorRes->exceptionCode();;
+			return;
+		}
+
+		// Handle response
+		errorCode = 0;
 	}
 
 	void
@@ -700,11 +749,26 @@ namespace OpcUaModbusGateway
 
 	void
 	ModbusTCPClientImpl::writeSingleHoldingRegisterHandleResponse(
-		uint16_t startingAddress,
-		std::vector<uint16_t>& holdingRegisters,
+		ModbusProt::ModbusError error,
+		ModbusProt::ModbusPDU::SPtr& req,
+		ModbusProt::ModbusPDU::SPtr& res,
 		uint32_t& errorCode
 	)
 	{
+		if (error != ModbusProt::ModbusError::Ok) {
+			errorCode = static_cast<int>(error) + 100;
+			return;
+		}
+
+		// Handle error response
+		if (res->pduType() == ModbusProt::PDUType::Error) {
+			auto errorRes = std::static_pointer_cast<ModbusProt::ErrorPDU>(res);
+			errorCode = errorRes->exceptionCode();;
+			return;
+		}
+
+		// Handle response
+		errorCode = 0;
 	}
 
 	void

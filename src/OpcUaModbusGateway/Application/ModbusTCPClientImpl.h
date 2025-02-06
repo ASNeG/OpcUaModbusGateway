@@ -188,25 +188,29 @@ namespace OpcUaModbusGateway
 			std::vector<uint16_t>& holdingRegisters
 		);
 		void writeMultipleCoilsHandleResponse(
-			uint16_t startingAddress,
-			std::vector<bool>& coils,
+			ModbusProt::ModbusError error,
+			ModbusProt::ModbusPDU::SPtr& req,
+			ModbusProt::ModbusPDU::SPtr& res,
 			uint32_t& errorCode,
 			uint16_t& count
 		);
 		void writeMultipleHoldingRegistersHandleResponse(
-			uint16_t startingAddress,
-			std::vector<uint16_t>& holdingRegisters,
+			ModbusProt::ModbusError error,
+			ModbusProt::ModbusPDU::SPtr& req,
+			ModbusProt::ModbusPDU::SPtr& res,
 			uint32_t& errorCode,
 			uint16_t& count
 		);
 		void writeSingleCoilHandleResponse(
-			uint16_t startingAddress,
-			std::vector<bool>& coils,
+			ModbusProt::ModbusError error,
+			ModbusProt::ModbusPDU::SPtr& req,
+			ModbusProt::ModbusPDU::SPtr& res,
 			uint32_t& errorCode
 		);
 		void writeSingleHoldingRegisterHandleResponse(
-			uint16_t startingAddress,
-			std::vector<uint16_t>& holdingRegisters,
+			ModbusProt::ModbusError error,
+			ModbusProt::ModbusPDU::SPtr& req,
+			ModbusProt::ModbusPDU::SPtr& res,
 			uint32_t& errorCode
 		);
 
