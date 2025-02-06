@@ -132,6 +132,38 @@ namespace OpcUaModbusGateway
 	}
 
 	void
+	ModbusTCPClientImpl::readCoilsHandleResponse(
+		ModbusProt::ModbusError error,
+		ModbusProt::ModbusPDU::SPtr& req,
+		ModbusProt::ModbusPDU::SPtr& res,
+		uint32_t& errorCode,
+		std::vector<bool>& coilStatus
+	)
+	{
+		if (error != ModbusProt::ModbusError::Ok) {
+			errorCode = static_cast<int>(error) + 100;
+			return;
+		}
+
+		// Handle error response
+		if (res->pduType() == ModbusProt::PDUType::Error) {
+			auto errorRes = std::static_pointer_cast<ModbusProt::ErrorPDU>(res);
+			errorCode = errorRes->exceptionCode();;
+			return;
+		}
+
+		// Handle response
+		errorCode = 0;
+		auto readCoilsReq = std::static_pointer_cast<ModbusProt::ReadCoilsReqPDU>(req);
+		auto readCoilsRes = std::static_pointer_cast<ModbusProt::ReadCoilsResPDU>(res);
+		for (uint32_t idx = 0; idx < readCoilsReq->quantityOfInputs(); idx++) {
+			bool b;
+			readCoilsRes->getCoilStatus(idx, b);
+			coilStatus.push_back(b);
+		}
+	}
+
+	void
 	ModbusTCPClientImpl::readCoils(
 		uint16_t startingAddress,
 		uint16_t quantityOfInputs,
@@ -161,26 +193,9 @@ namespace OpcUaModbusGateway
 			errorCode = static_cast<int>(ModbusProt::ModbusError::Timeout) + 100;
 			return;
 		}
-		if (modbusError != ModbusProt::ModbusError::Ok) {
-			errorCode = static_cast<int>(modbusError) + 100;
-			return;
-		}
-
-		// Handle error response
-		if (modbusRes->pduType() == ModbusProt::PDUType::Error) {
-			auto errorRes = std::static_pointer_cast<ModbusProt::ErrorPDU>(modbusRes);
-			errorCode = errorRes->exceptionCode();;
-			return;
-		}
 
 		// Handle response
-		errorCode = 0;
-		auto readCoilsRes = std::static_pointer_cast<ModbusProt::ReadCoilsResPDU>(modbusRes);
-		for (uint32_t idx = 0; idx < readCoilsReq->quantityOfInputs(); idx++) {
-			bool b;
-			readCoilsRes->getCoilStatus(idx, b);
-			coilStatus.push_back(b);
-		}
+		readCoilsHandleResponse(modbusError, req, modbusRes, errorCode, coilStatus);
 	}
 
 	void
@@ -200,28 +215,8 @@ namespace OpcUaModbusGateway
 				uint32_t errorCode;
 				std::vector<bool> coilStatus;
 
-				if (error != ModbusProt::ModbusError::Ok) {
-					errorCode = static_cast<int>(error) + 100;
-					return;
-				}
-
-				// Handle error response
-				if (res->pduType() == ModbusProt::PDUType::Error) {
-					auto errorRes = std::static_pointer_cast<ModbusProt::ErrorPDU>(res);
-					errorCode = errorRes->exceptionCode();
-					return;
-				}
-
 				// Handle response
-				errorCode = 0;
-				auto readCoilsReq = std::static_pointer_cast<ModbusProt::ReadCoilsReqPDU>(req);
-				auto readCoilsRes = std::static_pointer_cast<ModbusProt::ReadCoilsResPDU>(res);
-				for (uint32_t idx = 0; idx < readCoilsReq->quantityOfInputs(); idx++) {
-					bool b;
-					readCoilsRes->getCoilStatus(idx, b);
-					coilStatus.push_back(b);
-				}
-
+				readCoilsHandleResponse(error, req, res, errorCode, coilStatus);
 				readCoilsHandler(errorCode, coilStatus);
 			}
 		);

@@ -116,6 +116,14 @@ namespace OpcUaModbusGateway
 
 		void clientConnectionHandler(ModbusTCP::TCPClientState clientState);
 
+		void readCoilsHandleResponse(
+			ModbusProt::ModbusError error,
+			ModbusProt::ModbusPDU::SPtr& req,
+			ModbusProt::ModbusPDU::SPtr& res,
+			uint32_t& errorCode,
+			std::vector<bool>& coilStatus
+		);
+
 	};
 }
 
