@@ -554,22 +554,9 @@ namespace OpcUaModbusGateway
 			errorCode = static_cast<int>(ModbusProt::ModbusError::Timeout) + 100;
 			return;
 		}
-		if (modbusError != ModbusProt::ModbusError::Ok) {
-			errorCode = static_cast<int>(modbusError) + 100;
-			return;
-		}
-
-		// Handle error response
-		if (modbusRes->pduType() == ModbusProt::PDUType::Error) {
-			auto errorRes = std::static_pointer_cast<ModbusProt::ErrorPDU>(modbusRes);
-			errorCode = errorRes->exceptionCode();;
-			return;
-		}
 
 		// Handle response
-		errorCode = 0;
-		auto writeMultipleCoilsRes = std::static_pointer_cast<ModbusProt::WriteMultipleCoilsResPDU>(modbusRes);
-		count = writeMultipleCoilsRes->quantityOfOutputs();
+		writeMultipleCoilsHandleResponse(modbusError, req, modbusRes, errorCode, count);
 	}
 
 	void
@@ -579,7 +566,24 @@ namespace OpcUaModbusGateway
 		WriteMultipleCoilsHandler writeMultipleCoilsHandler
 	)
 	{
+		// Create and send write multiple coils request
+		auto writeMultipleCoilsReq = std::make_shared<ModbusProt::WriteMultipleCoilsReqPDU>();
+		writeMultipleCoilsReq->startingAddress(startingAddress);
+		writeMultipleCoilsReq->quantityOfOutputs(coils.size());
+		for (uint32_t idx = 0; idx < coils.size(); idx++) {
+			writeMultipleCoilsReq->setOutputsValue(idx, coils[idx]);
+		}
+		ModbusProt::ModbusPDU::SPtr req = writeMultipleCoilsReq;
+		modbusTCPClient_.send(slaveId_, req,
+			[this, &writeMultipleCoilsHandler](ModbusProt::ModbusError error, ModbusProt::ModbusPDU::SPtr& req, ModbusProt::ModbusPDU::SPtr& res) {
+				uint32_t errorCode;
+				uint16_t count;
 
+				// Handle response
+				writeMultipleCoilsHandleResponse(error, req, res, errorCode, count);
+				writeMultipleCoilsHandler(errorCode, count);
+			}
+		);
 	}
 
 	void
