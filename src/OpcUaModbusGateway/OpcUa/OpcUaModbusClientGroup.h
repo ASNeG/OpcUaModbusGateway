@@ -64,6 +64,7 @@ namespace OpcUaModbusGateway
 		OpcUaStackCore::IOThread::SPtr ioThread_ = nullptr;
 		OpcUaStackCore::SlotTimerElement::SPtr slotTimerElement_ = nullptr;
 
+		void readCoil(OpcUaModbusValue::SPtr modbusValue);
 		void readLoop(void);
 	};
 

@@ -142,9 +142,34 @@ namespace OpcUaModbusGateway
 	}
 
 	void
+	OpcUaModbusClientGroup::readCoil(OpcUaModbusValue::SPtr modbusValue)
+	{
+		modbusTCPClient_->readCoils(
+			modbusValue->registerConfig()->address(),
+			1,
+			[this, modbusValue](uint32_t errorCode, std::vector<bool>& coilStatus) {
+				if (errorCode != 0) {
+					modbusValue->setDataValue(BadCommunicationError, false);
+				}
+				else {
+					modbusValue->setDataValue(Success, coilStatus[0]);
+				}
+			}
+		);
+	}
+
+	void
 	OpcUaModbusClientGroup::readLoop(void)
 	{
-		// FIXME: TODO
+		for (auto modbusValue : modbusValueVec_) {
+
+			// Check modbus type
+			switch(registerGroupConfig_->type()) {
+				case RegisterGroupConfig::ModbusGroupType::Coil:
+					readCoil(modbusValue);
+					break;
+			}
+		}
 	}
 
 }
