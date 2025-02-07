@@ -106,7 +106,7 @@ namespace OpcUaModbusGateway
 		rc = modbusClientRegister_.startup(
 			namespaceName_,
 			modbusTCPClientConfig_,
-			&applicationIf_->service(),
+			applicationIf_,
 			rootNodeId,
 			modbusTCPClient_
 		);

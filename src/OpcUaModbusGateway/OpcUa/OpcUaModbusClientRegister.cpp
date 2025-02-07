@@ -51,7 +51,7 @@ namespace OpcUaModbusGateway
 	OpcUaModbusClientRegister::startup(
 		const std::string& namespaceName,
 		ModbusTCPClientConfig::SPtr modbusTCPClientConfig,
-		OpcUaStackServer::ApplicationServiceIf* applicationServiceIf,
+		OpcUaStackServer::ApplicationIf* applicationIf,
 		OpcUaStackCore::OpcUaNodeId& rootNodeId,
 		ModbusTCPClient::SPtr modbusTCPClient
 	)
@@ -61,7 +61,7 @@ namespace OpcUaModbusGateway
 		namespaceName_ = namespaceName;
 		modbusTCPClientConfig_ = modbusTCPClientConfig;
 		rootNodeId_ = rootNodeId;
-		applicationServiceIf_ = applicationServiceIf;
+		applicationIf_ = applicationIf;
 
 		// Create register type folder
 		for (auto registerGroupType : modbusTCPClientConfig->registerGroupTypes()) {
@@ -70,7 +70,7 @@ namespace OpcUaModbusGateway
    			BrowsePathToNodeId browsePathToNodeId({
    				BrowseName(rootNodeId_, OpcUaQualifiedName(displayName, rootNodeId_.namespaceIndex()))
    			});
-   			if (!browsePathToNodeId.query(applicationServiceIf_, true)) {
+   			if (!browsePathToNodeId.query(&applicationIf_->service(), true)) {
    				Log(Error, "call browse path to node id service error")
    					.parameter("DisplayName", displayName);
    				return false;
@@ -86,7 +86,7 @@ namespace OpcUaModbusGateway
    					namespaceName,
 					rootNodeId_.namespaceIndex(),
 					registerGroupConfig,
-					applicationServiceIf_,
+					&applicationIf_->service(),
 					typeNodeId,
 					modbusTCPClient
    				);
