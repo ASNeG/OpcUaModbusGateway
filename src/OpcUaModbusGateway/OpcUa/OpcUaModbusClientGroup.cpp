@@ -53,6 +53,7 @@ namespace OpcUaModbusGateway
 	{
 		bool rc = true;
 
+		ioThread_ = applicationIf->applicationThreadPool();
 		namespaceName_ = namespaceName;
 		namespaceIndex_ = namespaceIndex;
 		registerGroupConfig_ = registerGroupConfig;
@@ -102,12 +103,10 @@ namespace OpcUaModbusGateway
 		}
 
 		// Startup read timer
-#if 0
 		slotTimerElement_ = boost::make_shared<SlotTimerElement>();
 		slotTimerElement_->timeoutCallback(boost::bind(&OpcUaModbusClientGroup::readLoop, this));
-		slotTimerElement_->expireTime(boost::posix_time::microsec_clock::local_time(), 1111);
+		slotTimerElement_->expireTime(boost::posix_time::microsec_clock::local_time(), registerGroupConfig->interval());
 		ioThread_->slotTimer()->start(slotTimerElement_);
-#endif
 
 		return true;
 	}
@@ -116,6 +115,8 @@ namespace OpcUaModbusGateway
 	OpcUaModbusClientGroup::shutdown(void)
 	{
 		// Stop read timer
+		ioThread_->slotTimer()->stop(slotTimerElement_);
+		slotTimerElement_.reset();
 
 		// Shutdown modbus values
 		for (auto modbusValue : modbusValueVec_) {
@@ -143,7 +144,7 @@ namespace OpcUaModbusGateway
 	void
 	OpcUaModbusClientGroup::readLoop(void)
 	{
-		;
+		// FIXME: TODO
 	}
 
 }

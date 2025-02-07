@@ -61,7 +61,8 @@ namespace OpcUaModbusGateway
 
 		uint32_t maxRegisterInRequest_ = 20;
 		ModbusTCPClient::SPtr modbusTCPClient_ = nullptr;
-		OpcUaStackCore::SlotTimerElement::SPtr slotTimerElement_;
+		OpcUaStackCore::IOThread::SPtr ioThread_ = nullptr;
+		OpcUaStackCore::SlotTimerElement::SPtr slotTimerElement_ = nullptr;
 
 		void readLoop(void);
 	};
