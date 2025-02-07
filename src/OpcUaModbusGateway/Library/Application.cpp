@@ -107,7 +107,7 @@ namespace OpcUaModbusGateway
 			auto opcuaModbusServerInterface = boost::make_shared<OpcUaModbusServerInterface>();
 			rc = opcuaModbusServerInterface->init(
 					modbusTCPServerConfig,
-					&applicationIf->service(),
+					applicationIf,
 					"http://ASNEG.de/OpcUaModbusGateway/"
 			);
 			if (rc == false) {

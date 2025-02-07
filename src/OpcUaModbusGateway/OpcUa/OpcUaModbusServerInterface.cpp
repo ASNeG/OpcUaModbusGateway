@@ -39,19 +39,19 @@ namespace OpcUaModbusGateway
 	bool
 	OpcUaModbusServerInterface::init(
 		ModbusTCPServerConfig::SPtr modbusTCPServerConfig,
-		ApplicationServiceIf* applicationServiceIf,
+		ApplicationIf* applicationIf,
 		const std::string& namespaceName
 	)
 	{
 		modbusTCPServerConfig_ = modbusTCPServerConfig;
-		applicationServiceIf_ = applicationServiceIf;
+		applicationIf_ = applicationIf;
 		namespaceName_ = namespaceName;
 
 		// Map namespace name to namespace index
 		GetNamespaceInfo getNamespaceInfo;
 
 		// Read Namespace array
-		if (!getNamespaceInfo.query(applicationServiceIf)) {
+		if (!getNamespaceInfo.query(&applicationIf->service())) {
 			Log(Error, "get namespace info error")
 			    .parameter("NamespaceName", namespaceName);
 			return false;
@@ -93,7 +93,7 @@ namespace OpcUaModbusGateway
 			referenceTypeNodeId,							// reference type between object and variable instance
 			obj
 		);
-		if (!createObjectInstance.query(applicationServiceIf_)) {
+		if (!createObjectInstance.query(&applicationIf_->service())) {
 			Log(Error, "create object error")
 				.parameter("DisplayName", modbusTCPServerConfig_->name());
 			return false;
@@ -104,7 +104,7 @@ namespace OpcUaModbusGateway
 		rc = modbusServerRegister_.startup(
 			namespaceName_,
 			modbusTCPServerConfig_,
-			applicationServiceIf_,
+			&applicationIf_->service(),
 			rootNodeId,
 			modbusServerModel_
 		);
@@ -142,7 +142,7 @@ namespace OpcUaModbusGateway
 		DeleteNodeInstance deleteNodeInstance;
 		deleteNodeInstance.node(nodeId());
 
-		if (!deleteNodeInstance.query(applicationServiceIf_)) {
+		if (!deleteNodeInstance.query(&applicationIf_->service())) {
 			Log(Error, "delete node instance error")
 				.parameter("ModbusServerNodeId", nodeId());
 			return false;
