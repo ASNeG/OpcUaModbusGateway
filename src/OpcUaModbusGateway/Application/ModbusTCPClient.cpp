@@ -222,6 +222,20 @@ namespace OpcUaModbusGateway
 	}
 
 	void
+	ModbusTCPClient::writeMultipleCoils(
+		uint16_t startingAddress,
+		std::vector<bool>& coils,
+		WriteMultipleCoilsHandler writeMultipleCoilsHandler
+	)
+	{
+		modbusTCPClientImpl_->writeMultipleCoils(
+			startingAddress,
+			coils,
+			writeMultipleCoilsHandler
+		);
+	}
+
+	void
 	ModbusTCPClient::writeMultipleHoldingRegisters(
 		uint16_t startingAddress,
 		std::vector<uint16_t>& holdingRegisters,
@@ -234,6 +248,19 @@ namespace OpcUaModbusGateway
 			holdingRegisters,
 			errorCode,
 			count
+		);
+	}
+	void
+	ModbusTCPClient::writeMultipleHoldingRegisters(
+		uint16_t startingAddress,
+		std::vector<uint16_t>& holdingRegisters,
+		WriteMultipleHoldingRegistersHandler writeMultipleHoldingRegistersHandler
+	)
+	{
+		modbusTCPClientImpl_->writeMultipleHoldingRegisters(
+			startingAddress,
+			holdingRegisters,
+			writeMultipleHoldingRegistersHandler
 		);
 	}
 
@@ -252,6 +279,20 @@ namespace OpcUaModbusGateway
 	}
 
 	void
+	ModbusTCPClient::writeSingleCoil(
+		uint16_t startingAddress,
+		bool value,
+		WriteSingleCoilHandler writeSingleCoilHandler
+	)
+	{
+		modbusTCPClientImpl_->writeSingleCoil(
+			startingAddress,
+			value,
+			writeSingleCoilHandler
+		);
+	}
+
+	void
 	ModbusTCPClient::writeSingleHoldingRegister(
 		uint16_t startingAddress,
 		uint16_t holdingRegister,
@@ -262,6 +303,20 @@ namespace OpcUaModbusGateway
 			startingAddress,
 			holdingRegister,
 			errorCode
+		);
+	}
+
+	void
+	ModbusTCPClient::writeSingleHoldingRegister(
+		uint16_t startingAddress,
+		uint16_t holdingRegister,
+		WriteSingleHoldingRegisterHandler writeSingleHoldingRegisterHandler
+	)
+	{
+		modbusTCPClientImpl_->writeSingleHoldingRegister(
+			startingAddress,
+			holdingRegister,
+			writeSingleHoldingRegisterHandler
 		);
 	}
 

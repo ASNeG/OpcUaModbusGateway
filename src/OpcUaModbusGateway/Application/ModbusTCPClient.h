@@ -112,6 +112,11 @@ namespace OpcUaModbusGateway
 			uint32_t& errorCode,
 			uint16_t& count
 		);
+		void writeMultipleCoils(
+			uint16_t startingAddress,
+			std::vector<bool>& coils,
+			WriteMultipleCoilsHandler writeMultipleCoilsHandler
+		);
 
 		void writeMultipleHoldingRegisters(
 			uint16_t startingAddress,
@@ -119,17 +124,32 @@ namespace OpcUaModbusGateway
 			uint32_t& errorCode,
 			uint16_t& count
 		);
+		void writeMultipleHoldingRegisters(
+			uint16_t startingAddress,
+			std::vector<uint16_t>& holdingRegisters,
+			WriteMultipleHoldingRegistersHandler writeMultipleHoldingRegistersHandler
+		);
 
 		void writeSingleCoil(
 			uint16_t startingAddress,
 			bool value,
 			uint32_t& errorCode
 		);
+		void writeSingleCoil(
+			uint16_t startingAddress,
+			bool value,
+			WriteSingleCoilHandler writeSingleCoilHandler
+		);
 
 		void writeSingleHoldingRegister(
 			uint16_t startingAddress,
 			uint16_t holdingRegister,
 			uint32_t& errorCode
+		);
+		void writeSingleHoldingRegister(
+			uint16_t startingAddress,
+			uint16_t holdingRegister,
+			WriteSingleHoldingRegisterHandler writeSingleHoldingRegisterHandler
 		);
 
 	  private:

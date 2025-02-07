@@ -101,6 +101,13 @@ namespace OpcUaModbusGateway
 			modbusValueVec_.push_back(value);
 		}
 
+		// Startup read timer
+#if 0
+		slotTimerElement_ = boost::make_shared<SlotTimerElement>();
+		slotTimerElement_->timeoutCallback(boost::bind(&OpcUaModbusClientGroup::readLoop, this));
+		slotTimerElement_->expireTime(boost::posix_time::microsec_clock::local_time(), 1111);
+		ioThread_->slotTimer()->start(slotTimerElement_);
+#endif
 
 		return true;
 	}
@@ -108,6 +115,8 @@ namespace OpcUaModbusGateway
 	bool
 	OpcUaModbusClientGroup::shutdown(void)
 	{
+		// Stop read timer
+
 		// Shutdown modbus values
 		for (auto modbusValue : modbusValueVec_) {
 			auto rc = modbusValue->shutdown();
@@ -129,6 +138,12 @@ namespace OpcUaModbusGateway
 		}
 
 		return true;
+	}
+
+	void
+	OpcUaModbusClientGroup::readLoop(void)
+	{
+		;
 	}
 
 }

@@ -59,7 +59,11 @@ namespace OpcUaModbusGateway
 
 		OpcUaModbusValue::Vec modbusValueVec_;
 
+		uint32_t maxRegisterInRequest_ = 20;
 		ModbusTCPClient::SPtr modbusTCPClient_ = nullptr;
+		OpcUaStackCore::SlotTimerElement::SPtr slotTimerElement_;
+
+		void readLoop(void);
 	};
 
 }
