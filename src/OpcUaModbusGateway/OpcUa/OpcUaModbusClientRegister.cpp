@@ -86,7 +86,7 @@ namespace OpcUaModbusGateway
    					namespaceName,
 					rootNodeId_.namespaceIndex(),
 					registerGroupConfig,
-					&applicationIf_->service(),
+					applicationIf_,
 					typeNodeId,
 					modbusTCPClient
    				);

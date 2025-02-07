@@ -46,7 +46,7 @@ namespace OpcUaModbusGateway
 		const std::string& namespaceName,
 		uint32_t namespaceIndex,
 		RegisterGroupConfig::SPtr registerGroupConfig,
-		OpcUaStackServer::ApplicationServiceIf* applicationServiceIf,
+		OpcUaStackServer::ApplicationIf* applicationIf,
 		OpcUaStackCore::OpcUaNodeId& rootNodeId,
 		ModbusTCPClient::SPtr modbusTCPClient
 	)
@@ -57,7 +57,7 @@ namespace OpcUaModbusGateway
 		namespaceIndex_ = namespaceIndex;
 		registerGroupConfig_ = registerGroupConfig;
 		rootNodeId_ = rootNodeId;
-		applicationServiceIf_ = applicationServiceIf;
+		applicationIf_ = applicationIf;
 		modbusTCPClient_ = modbusTCPClient;
 
 		// Create group folder instance
@@ -74,7 +74,7 @@ namespace OpcUaModbusGateway
 			OpcUaNodeId((uint32_t)OpcUaId_BaseObjectType)   // type node id
 		);
 
-		if (!createNodeInstance.query(applicationServiceIf_)) {
+		if (!createNodeInstance.query(&applicationIf_->service())) {
 			Log(Error, "create register group node instance error")
 				.parameter("DisplayName", registerGroupConfig_->groupName());
 			return false;
@@ -87,7 +87,7 @@ namespace OpcUaModbusGateway
 			   	namespaceName,
 				rootNodeId_.namespaceIndex(),
 				registerConfig,
-				applicationServiceIf_,
+				&applicationIf_->service(),
 				groupNodeId_,
 				nullptr,
 				registerGroupConfig->type()
@@ -130,7 +130,7 @@ namespace OpcUaModbusGateway
 		DeleteNodeInstance deleteNodeInstance;
 		deleteNodeInstance.node(groupNodeId_);
 
-		if (!deleteNodeInstance.query(applicationServiceIf_)) {
+		if (!deleteNodeInstance.query(&applicationIf_->service())) {
 			Log(Error, "delete group node instance error")
 				.parameter("GroupNodeId", groupNodeId_)
 				.parameter("Name", registerGroupConfig_->groupName());
