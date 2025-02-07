@@ -177,6 +177,12 @@ namespace OpcUaModbusGateway
 		return true;
 	}
 
+	RegisterConfig::SPtr
+	OpcUaModbusValue::registerConfig(void)
+	{
+		return registerConfig_;
+	}
+
 	bool
 	OpcUaModbusValue::registerSetterAndGetter(void)
 	{
@@ -372,7 +378,7 @@ namespace OpcUaModbusGateway
 	}
 
 	bool
-	OpcUaModbusValue::setDataValue(bool value)
+	OpcUaModbusValue::setDataValue(OpcUaStatusCode statusCode, bool value)
 	{
 		// Server: WriteSingleCoil
 		// Server: WriteMultipleCoils
@@ -392,7 +398,7 @@ namespace OpcUaModbusGateway
 		OpcUaDataValue dataValue;
 		dataValue.serverTimestamp(now);
 		dataValue.sourceTimestamp(now);
-		dataValue.statusCode(Success);
+		dataValue.statusCode(statusCode);
 		dataValue.variant()->copyFrom(targetVariant);
 		modbusValue_->set_Variable(dataValue);
 		return true;

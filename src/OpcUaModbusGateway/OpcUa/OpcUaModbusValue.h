@@ -47,10 +47,15 @@ namespace OpcUaModbusGateway
 		);
 		bool shutdown(void);
 
+		RegisterConfig::SPtr registerConfig(void);
+
 		bool getDataValue(uint16_t& value); 		// Server
 		bool getDataValue(bool& value);				// Server
 		bool setDataValue(uint16_t value); 			// Client and Server
-		bool setDataValue(bool value);				// Client and Server
+		bool setDataValue( // Client and Server
+			OpcUaStackCore::OpcUaStatusCode statusCode,
+			bool value
+		);
 
 		bool useWriteDataValue(void);				// Client
 		void getWriteDataValue(uint16_t& value); 	// Client
