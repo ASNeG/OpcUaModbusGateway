@@ -340,15 +340,29 @@ namespace OpcUaModbusGateway
 			return false;
 		}
 
-		// Get readInterval attribute from configuration
+		// Get read interval attribute from configuration
 		if (modbusAppl_ == RegisterConfig::ModbusAppl::Slave) {
-			readreadInterval_ = 0;
+			readInterval_ = 0;
 		}
 		else {
-			rc = config.getConfigParameter("<xmlattr>.readInterval", readreadInterval_);
+			rc = config.getConfigParameter("<xmlattr>.ReadInterval", readInterval_);
 			if (rc == false) {
 				Log(Error, "attribute not found in register group configuration")
 					.parameter("Attribute", "readInterval")
+					.parameter("GroupName", groupName_);
+				return false;
+			}
+		}
+
+		// Get write interval attribute from configuration
+		if (modbusAppl_ == RegisterConfig::ModbusAppl::Slave) {
+			writeInterval_ = 0;
+		}
+		else {
+			rc = config.getConfigParameter("<xmlattr>.WriteInterval", writeInterval_);
+			if (rc == false) {
+				Log(Error, "attribute not found in register group configuration")
+					.parameter("Attribute", "WriteInterval")
 					.parameter("GroupName", groupName_);
 				return false;
 			}
@@ -385,9 +399,15 @@ namespace OpcUaModbusGateway
 	}
 
 	uint32_t
+	RegisterGroupConfig::writeInterval(void)
+	{
+		return writeInterval_;
+	}
+
+	uint32_t
 	RegisterGroupConfig::readInterval(void)
 	{
-		return readreadInterval_;
+		return readInterval_;
 	}
 
 	RegisterConfig::Vec&

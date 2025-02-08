@@ -12,34 +12,34 @@
       <RecvTimeout>3000</RecvTimeout>
       <QueryTimeout>3000</QueryTimeout>
     
-      <RegisterGroup Group="Coil" GroupName="Name1" ReadInterval="1000">
+      <RegisterGroup Group="Coil" GroupName="Name1" ReadInterval="1000" WriteInterval="500">
           <Register Address="0" Name="Val0"/>
           <Register Address="1" Name="Val1"/>
           <Register Address="2" Name="Val3" Unit="A" Type="UInt16" A="0" B="2"/>
       </RegisterGroup>
-      <RegisterGroup Group="Coil" GroupName="Name2" ReadInterval="1000">
+      <RegisterGroup Group="Coil" GroupName="Name2" ReadInterval="1000" WriteInterval="500">
           <Register Address="10" Name="Val10"/>
           <Register Address="11" Name="Val11"/>
       </RegisterGroup>
-      <RegisterGroup Group="Input" GroupName="Name3" ReadInterval="1000">
+      <RegisterGroup Group="Input" GroupName="Name3" ReadInterval="1000" WriteInterval="500">
           <Register Address="0" Name="Val0"/>
           <Register Address="1" Name="Val1"/>
       </RegisterGroup>
-      <RegisterGroup Group="HoldingRegister" GroupName="Name4" ReadInterval="1000">
+      <RegisterGroup Group="HoldingRegister" GroupName="Name4" ReadInterval="1000" WriteInterval="500">
           <Register Address="0" Name="Val0" Unit="V" Type="Float" A="0" B="1"/>
           <Register Address="1" Name="Val1" Unit="A" Type="Float" A="0" B="1"/>
           <Register Address="2" Name="Val2" Unit="A" Type="UInt16" A="0" B="1"/>
       </RegisterGroup>
-      <RegisterGroup Group="HoldingRegister" GroupName="UnitConv" ReadInterval="1000">
+      <RegisterGroup Group="HoldingRegister" GroupName="UnitConv" ReadInterval="1000" WriteInterval="500">
           <Register Address="10" Name="Val10" Unit="V" Type="Float" A="-10" B="10"/>
           <Register Address="11" Name="Val11" Unit="A" Type="Float" A="10" B="100"/>
           <Register Address="12" Name="Val12" Unit="°C" Type="Float" A="-50" B="0.00228885"/>
       </RegisterGroup>
-      <RegisterGroup Group="InputRegister" GroupName="Name5" ReadInterval="1000">
+      <RegisterGroup Group="InputRegister" GroupName="Name5" ReadInterval="1000" WriteInterval="500">
           <Register Address="0" Name="Val0" Unit="X" Type="UInt16"/>
           <Register Address="1" Name="Val1" Unit="Y" Type="Float" A="0" B="1"/>
       </RegisterGroup>
-     <RegisterGroup Group="InputRegister" GroupName="Name6" ReadInterval="1000">
+     <RegisterGroup Group="InputRegister" GroupName="Name6" ReadInterval="1000" WriteInterval="500">
           <Register Address="10" Name="Val10" Unit="X" Type="UInt16"/>
           <Register Address="11" Name="Val11" Unit="Y" Type="Float" A="0" B="1"/>
       </RegisterGroup>
