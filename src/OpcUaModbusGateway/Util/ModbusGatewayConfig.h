@@ -122,14 +122,14 @@ namespace OpcUaModbusGateway
 		ModbusGroupType type(void);
 		bool parse(OpcUaStackCore::Config& config);
 		std::string groupName(void);
-		uint32_t interval(void);
+		uint32_t readInterval(void);
 		RegisterConfig::Vec& registerConfigVec(void);
 
 	  private:
 		ModbusGroupType modbusGroupType_ = ModbusGroupType::None;
 		RegisterConfig::ModbusAppl modbusAppl_ = RegisterConfig::ModbusAppl::None;
 		std::string groupName_ = "";
-		uint32_t interval_ = 1000;
+		uint32_t readreadInterval_ = 1000;
 		RegisterConfig::Vec registerConfigVec_;
 	};
 

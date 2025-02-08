@@ -29,6 +29,17 @@
 namespace OpcUaModbusGateway
 {
 
+	class RegisterJob
+	{
+	  public:
+		using SPtr = std::shared_ptr<RegisterJob>;
+		using Vec = std::vector<SPtr>;
+
+		uint16_t startingAddress_ = 0;
+		std::vector<OpcUaModbusValue::SPtr> modbusValueVec_;
+	};
+
+
 	class OpcUaModbusClientGroup
 	{
 	  public:
@@ -64,7 +75,10 @@ namespace OpcUaModbusGateway
 		OpcUaStackCore::IOThread::SPtr ioThread_ = nullptr;
 		OpcUaStackCore::SlotTimerElement::SPtr slotTimerElement_ = nullptr;
 
-		void readCoil(OpcUaModbusValue::SPtr modbusValue);
+		RegisterJob::Vec readRegisterJobs_;
+
+		void initReadJobs(void);
+		void readCoil(OpcUaModbusValue::Vec& modbusValueVec);
 		void readLoop(void);
 	};
 

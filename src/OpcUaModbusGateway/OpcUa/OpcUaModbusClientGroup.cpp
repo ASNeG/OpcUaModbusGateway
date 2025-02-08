@@ -102,10 +102,13 @@ namespace OpcUaModbusGateway
 			modbusValueVec_.push_back(value);
 		}
 
+		// Init all read jobs
+		initReadJobs();
+
 		// Startup read timer
 		slotTimerElement_ = boost::make_shared<SlotTimerElement>();
 		slotTimerElement_->timeoutCallback(boost::bind(&OpcUaModbusClientGroup::readLoop, this));
-		slotTimerElement_->expireTime(boost::posix_time::microsec_clock::local_time(), registerGroupConfig->interval());
+		slotTimerElement_->expireTime(boost::posix_time::microsec_clock::local_time(), registerGroupConfig->readInterval());
 		ioThread_->slotTimer()->start(slotTimerElement_);
 
 		return true;
@@ -142,20 +145,42 @@ namespace OpcUaModbusGateway
 	}
 
 	void
-	OpcUaModbusClientGroup::readCoil(OpcUaModbusValue::SPtr modbusValue)
+	OpcUaModbusClientGroup::initReadJobs(void)
 	{
-		modbusTCPClient_->readCoils(
-			modbusValue->registerConfig()->address(),
-			1,
-			[this, modbusValue](uint32_t errorCode, std::vector<bool>& coilStatus) {
-				if (errorCode != 0) {
-					modbusValue->setDataValue(BadCommunicationError, false);
-				}
-				else {
-					modbusValue->setDataValue(Success, coilStatus[0]);
-				}
+		// Sort modbus values by address
+		OpcUaModbusValue::Vec modbusValueVec = modbusValueVec_;
+		std::sort(
+			modbusValueVec.begin(),
+			modbusValueVec.end(),
+			[](OpcUaModbusValue::SPtr& a, OpcUaModbusValue::SPtr& b) {
+				return a->registerConfig()->address() < b->registerConfig()->address();
 			}
 		);
+
+		// Create read jobs
+		std::cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" << std::endl;
+		for (auto modbusValue : modbusValueVec) {
+			std::cout << "XX " << modbusValue->registerConfig()->address() << std::endl;
+		}
+	}
+
+	void
+	OpcUaModbusClientGroup::readCoil(OpcUaModbusValue::Vec& modbusValueVec)
+	{
+		for (auto modbusValue : modbusValueVec) {
+			modbusTCPClient_->readCoils(
+				modbusValue->registerConfig()->address(),
+				1,
+				[this, modbusValue](uint32_t errorCode, std::vector<bool>& coilStatus) {
+					if (errorCode != 0) {
+						modbusValue->setDataValue(BadCommunicationError, false);
+					}
+					else {
+						modbusValue->setDataValue(Success, coilStatus[0]);
+					}
+				}
+			);
+		}
 	}
 
 	void
@@ -166,7 +191,9 @@ namespace OpcUaModbusGateway
 			// Check modbus type
 			switch(registerGroupConfig_->type()) {
 				case RegisterGroupConfig::ModbusGroupType::Coil:
-					readCoil(modbusValue);
+					OpcUaModbusValue::Vec opcUaModbusValueVec;
+					opcUaModbusValueVec.push_back(modbusValue);
+					readCoil(opcUaModbusValueVec);
 					break;
 			}
 		}
