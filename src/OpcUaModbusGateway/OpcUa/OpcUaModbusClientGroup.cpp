@@ -168,25 +168,60 @@ namespace OpcUaModbusGateway
 		);
 
 		// Create read jobs
-		std::cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" << std::endl;
+		RegisterJob::SPtr registerJob = nullptr;
 		for (auto modbusValue : modbusValueVec) {
-			std::cout << "XX " << modbusValue->registerConfig()->address() << std::endl;
+
+			// Check maximum number of register in read request
+			if (registerJob != nullptr && registerJob->modbusValueVec_.size() >= maxRegisterInRequest_) {
+				registerJob = nullptr;
+			}
+
+			// Create new job
+			if (registerJob == nullptr) {
+				registerJob = std::make_shared<RegisterJob>();
+				registerJob->startingAddress_ = modbusValue->registerConfig()->address();
+				registerJob->actAddress_ = modbusValue->registerConfig()->address();
+				registerJob->modbusValueVec_.push_back(modbusValue);
+				readRegisterJobs_.push_back(registerJob);
+			}
+			else {
+				// Add modbus value to existing job
+				if (registerJob->actAddress_ + 1 == modbusValue->registerConfig()->address()) {
+					registerJob->actAddress_ = modbusValue->registerConfig()->address();
+					registerJob->modbusValueVec_.push_back(modbusValue);
+				}
+
+				// Create new job
+				else {
+					registerJob = std::make_shared<RegisterJob>();
+					registerJob->startingAddress_ = modbusValue->registerConfig()->address();
+					registerJob->actAddress_ = modbusValue->registerConfig()->address();
+					registerJob->modbusValueVec_.push_back(modbusValue);
+					readRegisterJobs_.push_back(registerJob);
+				}
+			}
 		}
 	}
 
 	void
-	OpcUaModbusClientGroup::readCoil(OpcUaModbusValue::Vec& modbusValueVec)
+	OpcUaModbusClientGroup::readCoil(void)
 	{
-		for (auto modbusValue : modbusValueVec) {
+		for (auto job : readRegisterJobs_) {
 			modbusTCPClient_->readCoils(
-				modbusValue->registerConfig()->address(),
-				1,
-				[this, modbusValue](uint32_t errorCode, std::vector<bool>& coilStatus) {
+				job->startingAddress_,
+				job->modbusValueVec_.size(),
+				[this, job](uint32_t errorCode, std::vector<bool>& coilStatus) {
 					if (errorCode != 0) {
-						modbusValue->setDataValue(BadCommunicationError, false);
+						for (auto modbusValue : job->modbusValueVec_) {
+							modbusValue->setDataValue(BadCommunicationError, false);
+						}
 					}
 					else {
-						modbusValue->setDataValue(Success, coilStatus[0]);
+						uint16_t idx = 0;
+						for (auto modbusValue : job->modbusValueVec_) {
+							modbusValue->setDataValue(Success, coilStatus[idx]);
+							idx++;
+						}
 					}
 				}
 			);
@@ -196,16 +231,11 @@ namespace OpcUaModbusGateway
 	void
 	OpcUaModbusClientGroup::readLoop(void)
 	{
-		for (auto modbusValue : modbusValueVec_) {
-
-			// Check modbus type
-			switch(registerGroupConfig_->type()) {
-				case RegisterGroupConfig::ModbusGroupType::Coil:
-					OpcUaModbusValue::Vec opcUaModbusValueVec;
-					opcUaModbusValueVec.push_back(modbusValue);
-					readCoil(opcUaModbusValueVec);
-					break;
-			}
+		// Check modbus type
+		switch(registerGroupConfig_->type()) {
+			case RegisterGroupConfig::ModbusGroupType::Coil:
+				readCoil();
+				break;
 		}
 	}
 

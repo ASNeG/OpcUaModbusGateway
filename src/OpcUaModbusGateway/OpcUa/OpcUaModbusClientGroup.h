@@ -35,6 +35,7 @@ namespace OpcUaModbusGateway
 		using SPtr = std::shared_ptr<RegisterJob>;
 		using Vec = std::vector<SPtr>;
 
+		uint16_t actAddress_ = 0;
 		uint16_t startingAddress_ = 0;
 		std::vector<OpcUaModbusValue::SPtr> modbusValueVec_;
 	};
@@ -79,7 +80,7 @@ namespace OpcUaModbusGateway
 		RegisterJob::Vec readRegisterJobs_;
 
 		void initReadJobs(void);
-		void readCoil(OpcUaModbusValue::Vec& modbusValueVec);
+		void readCoil(void);
 		void readLoop(void);
 		void writeLoop(void);
 	};
