@@ -41,6 +41,12 @@ namespace OpcUaModbusGateway
 	{
 	}
 
+	void
+	OpcUaModbusClientGroup::maxRegisterInRequest(uint32_t maxRegisterInRequest)
+	{
+		maxRegisterInRequest_ = maxRegisterInRequest;
+	}
+
 	bool
 	OpcUaModbusClientGroup::startup(
 		const std::string& namespaceName,

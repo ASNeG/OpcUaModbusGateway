@@ -82,6 +82,7 @@ namespace OpcUaModbusGateway
    			auto registerGroupConfigs = modbusTCPClientConfig->registerGroupConfigVec(registerGroupType);
    			for (auto registerGroupConfig : registerGroupConfigs) {
    				auto clientGroup = std::make_shared<OpcUaModbusClientGroup>();
+   				clientGroup->maxRegisterInRequest(modbusTCPClientConfig->maxNumRegPDU());
    				auto rc =  clientGroup->startup(
    					namespaceName,
 					rootNodeId_.namespaceIndex(),
