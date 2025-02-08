@@ -11,6 +11,7 @@
       <SendTimeout>1000</SendTimeout>
       <RecvTimeout>3000</RecvTimeout>
       <QueryTimeout>3000</QueryTimeout>
+      <MaxNumRegPDU>2</MaxNumRegPDU>
     
       <RegisterGroup Group="Coil" GroupName="Name1" ReadInterval="1000" WriteInterval="500">
           <Register Address="0" Name="Val0"/>

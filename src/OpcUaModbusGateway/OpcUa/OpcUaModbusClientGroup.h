@@ -73,13 +73,15 @@ namespace OpcUaModbusGateway
 		uint32_t maxRegisterInRequest_ = 20;
 		ModbusTCPClient::SPtr modbusTCPClient_ = nullptr;
 		OpcUaStackCore::IOThread::SPtr ioThread_ = nullptr;
-		OpcUaStackCore::SlotTimerElement::SPtr slotTimerElement_ = nullptr;
+		OpcUaStackCore::SlotTimerElement::SPtr readSlotTimer_ = nullptr;
+		OpcUaStackCore::SlotTimerElement::SPtr writeSlotTimer_ = nullptr;
 
 		RegisterJob::Vec readRegisterJobs_;
 
 		void initReadJobs(void);
 		void readCoil(OpcUaModbusValue::Vec& modbusValueVec);
 		void readLoop(void);
+		void writeLoop(void);
 	};
 
 }

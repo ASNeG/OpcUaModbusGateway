@@ -532,7 +532,15 @@ namespace OpcUaModbusGateway
 		if (rc == false) {
 			Log(Debug, "attribute not found in modbus tcp client configuration, use default")
 				.parameter("QueryTimeout", queryTimeout_)
-				.parameter("Attribute", "queryTimeout");
+				.parameter("Attribute", "QueryTimeout");
+		}
+
+		// Get max num reg pdu from configuration
+		rc = config.getConfigParameter("MaxNumRegPDU", maxNumRegPDU_);
+		if (rc == false) {
+			Log(Debug, "attribute not found in modbus tcp client configuration, use default")
+				.parameter("QueryTimeout", maxNumRegPDU_)
+				.parameter("Attribute", "MaxNumRegPDU");
 		}
 
 		// Find register group entries in configuration
@@ -611,6 +619,12 @@ namespace OpcUaModbusGateway
 	ModbusTCPClientConfig::queryTimeout(void)
 	{
 		return queryTimeout_;
+	}
+
+	uint32_t
+	ModbusTCPClientConfig::maxNumRegPDU(void)
+	{
+		return maxNumRegPDU_;
 	}
 
 

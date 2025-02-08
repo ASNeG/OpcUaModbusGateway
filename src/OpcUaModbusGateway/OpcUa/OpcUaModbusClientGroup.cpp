@@ -105,11 +105,17 @@ namespace OpcUaModbusGateway
 		// Init all read jobs
 		initReadJobs();
 
+		// Startup write timer
+		writeSlotTimer_ = boost::make_shared<SlotTimerElement>();
+		writeSlotTimer_->timeoutCallback(boost::bind(&OpcUaModbusClientGroup::writeLoop, this));
+		writeSlotTimer_->expireTime(boost::posix_time::microsec_clock::local_time(), registerGroupConfig->writeInterval());
+		ioThread_->slotTimer()->start(writeSlotTimer_);
+
 		// Startup read timer
-		slotTimerElement_ = boost::make_shared<SlotTimerElement>();
-		slotTimerElement_->timeoutCallback(boost::bind(&OpcUaModbusClientGroup::readLoop, this));
-		slotTimerElement_->expireTime(boost::posix_time::microsec_clock::local_time(), registerGroupConfig->readInterval());
-		ioThread_->slotTimer()->start(slotTimerElement_);
+		readSlotTimer_ = boost::make_shared<SlotTimerElement>();
+		readSlotTimer_->timeoutCallback(boost::bind(&OpcUaModbusClientGroup::readLoop, this));
+		readSlotTimer_->expireTime(boost::posix_time::microsec_clock::local_time(), registerGroupConfig->readInterval());
+		ioThread_->slotTimer()->start(readSlotTimer_);
 
 		return true;
 	}
@@ -118,8 +124,12 @@ namespace OpcUaModbusGateway
 	OpcUaModbusClientGroup::shutdown(void)
 	{
 		// Stop read timer
-		ioThread_->slotTimer()->stop(slotTimerElement_);
-		slotTimerElement_.reset();
+		ioThread_->slotTimer()->stop(readSlotTimer_);
+		readSlotTimer_.reset();
+
+		// Stop write timer
+		ioThread_->slotTimer()->stop(writeSlotTimer_);
+		writeSlotTimer_.reset();
 
 		// Shutdown modbus values
 		for (auto modbusValue : modbusValueVec_) {
@@ -197,6 +207,12 @@ namespace OpcUaModbusGateway
 					break;
 			}
 		}
+	}
+
+	void
+	OpcUaModbusClientGroup::writeLoop(void)
+	{
+
 	}
 
 }
