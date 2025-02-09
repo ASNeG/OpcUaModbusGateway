@@ -438,6 +438,8 @@ namespace OpcUaModbusGateway
 		}
 
 		// Convert and get target value
+		Log(Debug, "new write data found")
+			.parameter("ValueNodeId", valueNodeId_);
 		uint16_t targetValue;
 		bool rc = convertOpcUaToModbus(*writeDataValue_.variant(), targetValue);
 		if (!rc) {
@@ -492,9 +494,18 @@ namespace OpcUaModbusGateway
 
 		// Change write variable
 		if (applicationWriteContext->dataValue_ != writeDataValue_) {
+			Log(Debug, "set new write data")
+				.parameter("ValueNodeId", valueNodeId_);
+
 			writeDataFlag_ = true;
 			applicationWriteContext->dataValue_.copyTo(writeDataValue_);
 		}
+	}
+
+	std::string
+	OpcUaModbusValue::toString(OpcUaStackCore::OpcUaBuildInType type)
+	{
+		return OpcUaBuildInTypeMap::buildInType2String(type);
 	}
 
 	bool
@@ -522,10 +533,11 @@ namespace OpcUaModbusGateway
 		bool rc = TypeConverter::conversion(sourceVariant, targetType, targetVariant);
 		if (!rc) {
 			Log(Error, "value conversion error")
+				.parameter("TargetValue", targetVariant)
 				.parameter("ValueNodeId", valueNodeId_)
 				.parameter("ValueName", registerConfig_->name())
-				.parameter("SourceType", OpcUaBuildInType::OpcUaBuildInType_OpcUaBoolean)
-				.parameter("TargetType", targetType);
+				.parameter("SourceType", toString(OpcUaBuildInType::OpcUaBuildInType_OpcUaBoolean))
+				.parameter("TargetType", toString(targetType));
 			return false;
 		}
 
@@ -557,10 +569,11 @@ namespace OpcUaModbusGateway
 		bool rc = TypeConverter::conversion(sourceVariant, targetType, targetVariant);
 		if (!rc) {
 			Log(Error, "value conversion error")
+				.parameter("TargetValue", targetVariant)
 				.parameter("ValueNodeId", valueNodeId_)
 				.parameter("ValueName", registerConfig_->name())
-				.parameter("SourceType", OpcUaBuildInType::OpcUaBuildInType_OpcUaUInt16)
-				.parameter("TargetType", targetType);
+				.parameter("SourceType", toString(OpcUaBuildInType::OpcUaBuildInType_OpcUaUInt16))
+				.parameter("TargetType", toString(targetType));
 			return false;
 		}
 
@@ -584,10 +597,11 @@ namespace OpcUaModbusGateway
 		bool rc = TypeConverter::conversion(sourceVariant, OpcUaBuildInType_OpcUaDouble, doubleVariant);
 		if (!rc) {
 			Log(Error, "value conversion error")
+				.parameter("SourceValue", sourceVariant)
 				.parameter("ValueNodeId", valueNodeId_)
 				.parameter("ValueName", registerConfig_->name())
-				.parameter("SourceType", sourceType)
-				.parameter("TargetType", OpcUaBuildInType_OpcUaDouble);
+				.parameter("SourceType", toString(sourceType))
+				.parameter("TargetType", toString(OpcUaBuildInType_OpcUaDouble));
 			return false;
 		}
 		double doubleValue;
@@ -605,10 +619,11 @@ namespace OpcUaModbusGateway
 		rc = TypeConverter::conversion(doubleVariant, OpcUaBuildInType_OpcUaBoolean, targetVariant);
 		if (!rc) {
 			Log(Error, "value conversion error")
+				.parameter("SourceValue", sourceVariant)
 				.parameter("ValueNodeId", valueNodeId_)
 				.parameter("ValueName", registerConfig_->name())
-				.parameter("SourceType", OpcUaBuildInType::OpcUaBuildInType_OpcUaDouble)
-				.parameter("TargetType", OpcUaBuildInType::OpcUaBuildInType_OpcUaBoolean);
+				.parameter("SourceType", toString(OpcUaBuildInType::OpcUaBuildInType_OpcUaDouble))
+				.parameter("TargetType", toString(OpcUaBuildInType::OpcUaBuildInType_OpcUaBoolean));
 			return false;
 		}
 		targetVariant.getValue(targetValue);
@@ -636,10 +651,11 @@ namespace OpcUaModbusGateway
 		bool rc = TypeConverter::conversion(sourceVariant, OpcUaBuildInType_OpcUaDouble, doubleVariant);
 		if (!rc) {
 			Log(Error, "value conversion error")
+				.parameter("SourceValue", sourceVariant)
 				.parameter("ValueNodeId", valueNodeId_)
 				.parameter("ValueName", registerConfig_->name())
-				.parameter("SourceType", sourceType)
-				.parameter("TargetType", OpcUaBuildInType_OpcUaUInt16);
+				.parameter("SourceType", toString(sourceType))
+				.parameter("TargetType", toString(OpcUaBuildInType_OpcUaUInt16));
 			return false;
 		}
 		double doubleValue;
@@ -651,15 +667,17 @@ namespace OpcUaModbusGateway
 		}
 
 		// Convert double value to target values
+		if (doubleValue < 0.0) doubleValue = 0.0;
 		doubleVariant.setValue(doubleValue);
 		OpcUaVariant targetVariant;
 		rc = TypeConverter::conversion(doubleVariant, OpcUaBuildInType_OpcUaUInt16, targetVariant);
 		if (!rc) {
 			Log(Error, "value conversion error")
+				.parameter("DoubleValue", doubleVariant)
 				.parameter("ValueNodeId", valueNodeId_)
 				.parameter("ValueName", registerConfig_->name())
-				.parameter("SourceType", OpcUaBuildInType::OpcUaBuildInType_OpcUaDouble)
-				.parameter("TargetType", OpcUaBuildInType::OpcUaBuildInType_OpcUaUInt16);
+				.parameter("SourceType", toString(OpcUaBuildInType::OpcUaBuildInType_OpcUaDouble))
+				.parameter("TargetType", toString(OpcUaBuildInType::OpcUaBuildInType_OpcUaUInt16));
 			return false;
 		}
 		targetVariant.getValue(targetValue);

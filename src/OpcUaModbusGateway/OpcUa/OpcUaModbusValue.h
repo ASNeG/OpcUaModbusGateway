@@ -85,6 +85,7 @@ namespace OpcUaModbusGateway
 		bool registerSetterAndGetter(void);
 		bool deregisterSetterAndGetter(void);
 
+		std::string toString(OpcUaStackCore::OpcUaBuildInType type);
 		bool convertModbusToOpcUa(bool sourceValue, OpcUaStackCore::OpcUaVariant& targetVariant);
 		bool convertModbusToOpcUa(uint16_t sourceValue, OpcUaStackCore::OpcUaVariant& targetVariant);
 		bool convertOpcUaToModbus(OpcUaStackCore::OpcUaVariant& sourceVariant, bool& targetValue);

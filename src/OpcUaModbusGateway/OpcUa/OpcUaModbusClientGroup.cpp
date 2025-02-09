@@ -359,7 +359,8 @@ namespace OpcUaModbusGateway
 					if (errorCode != 0) {
 						Log(Error, "write single coil error")
 							.parameter("GroupName", registerGroupConfig_->groupName())
-							.parameter("Address", address);
+							.parameter("Address", address)
+							.parameter("ErrorCode", errorCode);
 					}
 				}
 			);
@@ -384,9 +385,12 @@ namespace OpcUaModbusGateway
 				address,
 				value,
 				[this, address](uint32_t errorCode) {
-					Log(Error, "write single coil error")
-						.parameter("GroupName", registerGroupConfig_->groupName())
-						.parameter("Address", address);
+					if (errorCode != 0) {
+						Log(Error, "write single holding register error")
+							.parameter("GroupName", registerGroupConfig_->groupName())
+							.parameter("Address", address)
+							.parameter("ErrorCode", errorCode);
+					}
 				}
 			);
 		}
