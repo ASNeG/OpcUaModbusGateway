@@ -452,12 +452,11 @@ namespace OpcUaModbusGateway
 			return;
 		}
 
-		std::cout << "JETZT WURDE DIE VARIABLE GESETZT ..........." << std::endl;
-		// applicationWriteContext->statusCode_ = Success;
-		// applicationWriteContext->dataValue_.copyTo(*it->second);
-
-		// bool writeDataFlag_ = false;
-		// OpcUaStackCore::OpcUaDataValue writeDataValue_;
+		// Change write variable
+		if (applicationWriteContext->dataValue_ != writeDataValue_) {
+			writeDataFlag_ = true;
+			applicationWriteContext->dataValue_.copyTo(writeDataValue_);
+		}
 	}
 
 	bool
