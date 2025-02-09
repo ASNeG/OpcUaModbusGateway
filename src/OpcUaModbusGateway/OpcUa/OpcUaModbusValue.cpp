@@ -433,7 +433,7 @@ namespace OpcUaModbusGateway
 		}
 
 		// Check write data flag
-		if (writeDataFlag_ == true) {
+		if (writeDataFlag_ == false) {
 			return false;
 		}
 
@@ -462,7 +462,7 @@ namespace OpcUaModbusGateway
 		}
 
 		// Check write data flag
-		if (writeDataFlag_ == true) {
+		if (writeDataFlag_ == false) {
 			return false;
 		}
 
@@ -639,7 +639,7 @@ namespace OpcUaModbusGateway
 				.parameter("ValueNodeId", valueNodeId_)
 				.parameter("ValueName", registerConfig_->name())
 				.parameter("SourceType", sourceType)
-				.parameter("TargetType", OpcUaBuildInType_OpcUaDouble);
+				.parameter("TargetType", OpcUaBuildInType_OpcUaUInt16);
 			return false;
 		}
 		double doubleValue;

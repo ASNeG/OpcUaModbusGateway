@@ -86,6 +86,8 @@ namespace OpcUaModbusGateway
 		void readHoldingRegisters(void);
 		void readInputRegisters(void);
 		void readLoop(void);
+		void writeCoils(void);
+		void writeHoldingRegisters(void);
 		void writeLoop(void);
 	};
 

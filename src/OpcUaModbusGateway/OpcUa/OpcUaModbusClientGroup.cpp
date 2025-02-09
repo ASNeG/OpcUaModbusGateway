@@ -339,9 +339,71 @@ namespace OpcUaModbusGateway
 	}
 
 	void
+	OpcUaModbusClientGroup::writeCoils(void)
+	{
+		bool rc;
+		bool value;
+		for (auto modbusValue : modbusValueVec_) {
+			// Get write value if exist
+			rc = modbusValue->getWriteDataValue(value);
+			if (!rc) {
+				continue;
+			}
+
+			// Send write coil to modbus slave
+			uint16_t address = modbusValue->registerConfig()->address();
+			modbusTCPClient_->writeSingleCoil(
+				address,
+				value,
+				[this, address](uint32_t errorCode) {
+					if (errorCode != 0) {
+						Log(Error, "write single coil error")
+							.parameter("GroupName", registerGroupConfig_->groupName())
+							.parameter("Address", address);
+					}
+				}
+			);
+		}
+	}
+
+	void
+	OpcUaModbusClientGroup::writeHoldingRegisters(void)
+	{
+		bool rc;
+		uint16_t value;
+		for (auto modbusValue : modbusValueVec_) {
+			// Get write value if exist
+			rc = modbusValue->getWriteDataValue(value);
+			if (!rc) {
+				continue;
+			}
+
+			// Send write holding registers to modbus slave
+			uint16_t address = modbusValue->registerConfig()->address();
+			modbusTCPClient_->writeSingleHoldingRegister(
+				address,
+				value,
+				[this, address](uint32_t errorCode) {
+					Log(Error, "write single coil error")
+						.parameter("GroupName", registerGroupConfig_->groupName())
+						.parameter("Address", address);
+				}
+			);
+		}
+	}
+
+	void
 	OpcUaModbusClientGroup::writeLoop(void)
 	{
-
+		// Check modbus type
+		switch(registerGroupConfig_->type()) {
+			case RegisterGroupConfig::ModbusGroupType::Coil:
+				writeCoils();
+				break;
+			case RegisterGroupConfig::ModbusGroupType::HoldingRegister:
+				writeHoldingRegisters();
+				break;
+		}
 	}
 
 }

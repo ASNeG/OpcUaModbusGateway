@@ -575,7 +575,7 @@ namespace OpcUaModbusGateway
 		}
 		ModbusProt::ModbusPDU::SPtr req = writeMultipleCoilsReq;
 		modbusTCPClient_.send(slaveId_, req,
-			[this, &writeMultipleCoilsHandler](ModbusProt::ModbusError error, ModbusProt::ModbusPDU::SPtr& req, ModbusProt::ModbusPDU::SPtr& res) {
+			[this, writeMultipleCoilsHandler](ModbusProt::ModbusError error, ModbusProt::ModbusPDU::SPtr& req, ModbusProt::ModbusPDU::SPtr& res) {
 				uint32_t errorCode;
 				uint16_t count;
 
@@ -667,7 +667,7 @@ namespace OpcUaModbusGateway
 		}
 		ModbusProt::ModbusPDU::SPtr req = writeMultipleHoldingRegistersReq;
 		modbusTCPClient_.send(slaveId_, req,
-			[this, &writeMultipleHoldingRegistersHandler](ModbusProt::ModbusError error, ModbusProt::ModbusPDU::SPtr& req, ModbusProt::ModbusPDU::SPtr& res) {
+			[this, writeMultipleHoldingRegistersHandler](ModbusProt::ModbusError error, ModbusProt::ModbusPDU::SPtr& req, ModbusProt::ModbusPDU::SPtr& res) {
 				uint32_t errorCode;
 				uint16_t count;
 
@@ -749,13 +749,17 @@ namespace OpcUaModbusGateway
 		writeSingleCoilReq->value(value);
 		ModbusProt::ModbusPDU::SPtr req = writeSingleCoilReq;
 		modbusTCPClient_.send(slaveId_, req,
-			[this, &writeSingleCoilHandler](ModbusProt::ModbusError error, ModbusProt::ModbusPDU::SPtr& req, ModbusProt::ModbusPDU::SPtr& res) {
+			[this, writeSingleCoilHandler](ModbusProt::ModbusError error, ModbusProt::ModbusPDU::SPtr& req, ModbusProt::ModbusPDU::SPtr& res) {
 				uint32_t errorCode;
 				uint16_t count;
 
+				std::cout << "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS" << std::endl;
+
 				// Handle response
 				writeSingleCoilHandleResponse(error, req, res, errorCode);
+				std::cout << "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS" << std::endl;
 				writeSingleCoilHandler(errorCode);
+				std::cout << "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS" << std::endl;
 			}
 		);
 	}
@@ -831,7 +835,7 @@ namespace OpcUaModbusGateway
 		writeSingleHoldingRegisterReq->registerValue(holdingRegister);
 		ModbusProt::ModbusPDU::SPtr req = writeSingleHoldingRegisterReq;
 		modbusTCPClient_.send(slaveId_, req,
-			[this, &writeSingleHoldingRegisterHandler](ModbusProt::ModbusError error, ModbusProt::ModbusPDU::SPtr& req, ModbusProt::ModbusPDU::SPtr& res) {
+			[this, writeSingleHoldingRegisterHandler](ModbusProt::ModbusError error, ModbusProt::ModbusPDU::SPtr& req, ModbusProt::ModbusPDU::SPtr& res) {
 				uint32_t errorCode;
 
 				// Handle response
