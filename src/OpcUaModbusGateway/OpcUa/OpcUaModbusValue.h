@@ -79,6 +79,7 @@ namespace OpcUaModbusGateway
 		OpcUaStackCore::OpcUaNodeId rootNodeId_;
 
 		ModbusValue::SPtr modbusValue_;
+		bool writeDataFlag_ = false;
 		OpcUaStackCore::OpcUaDataValue writeDataValue_;
 
 		bool registerSetterAndGetter(void);

@@ -105,7 +105,6 @@ namespace OpcUaModbusGateway
 			   	return true;
 			}
 
-
 			// Register write callbacks
 			rc = value->useWriteDataValue();
 			if (!rc) {
@@ -113,7 +112,6 @@ namespace OpcUaModbusGateway
 			   		.parameter("Name", registerConfig->name());
 			   	return true;
 			}
-
 
 			modbusValueVec_.push_back(value);
 		}

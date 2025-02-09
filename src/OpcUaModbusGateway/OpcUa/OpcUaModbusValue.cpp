@@ -444,9 +444,20 @@ namespace OpcUaModbusGateway
 	void
 	OpcUaModbusValue::writeValue(ApplicationWriteContext* applicationWriteContext)
 	{
+		// Check register type
+		if (modbusGroupType_ ==  RegisterGroupConfig::ModbusGroupType::Input ||
+			modbusGroupType_ ==  RegisterGroupConfig::ModbusGroupType::InputRegister
+		) {
+			applicationWriteContext->statusCode_ = BadNotWritable;
+			return;
+		}
+
 		std::cout << "JETZT WURDE DIE VARIABLE GESETZT ..........." << std::endl;
 		// applicationWriteContext->statusCode_ = Success;
 		// applicationWriteContext->dataValue_.copyTo(*it->second);
+
+		// bool writeDataFlag_ = false;
+		// OpcUaStackCore::OpcUaDataValue writeDataValue_;
 	}
 
 	bool
