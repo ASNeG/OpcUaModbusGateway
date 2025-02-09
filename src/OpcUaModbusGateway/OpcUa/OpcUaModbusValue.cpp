@@ -426,7 +426,16 @@ namespace OpcUaModbusGateway
 	{
 		// Client: WriteSingleHoldingRegister
 		// Client: WriteMultipleHoldingRegisters
-		// FIXME: TODO
+
+		// Check register type
+		if (modbusGroupType_ ==  RegisterGroupConfig::ModbusGroupType::InputRegister) {
+			return false;
+		}
+
+		// Check write data flag
+		if (writeDataFlag_ == true) {
+			return false;
+		}
 
 		return true;
 	}
@@ -436,7 +445,16 @@ namespace OpcUaModbusGateway
 	{
 		// Client: WriteSingleCoil
 		// Client: WriteMultipleCoils
-		// FIXME: TODO
+
+		// Check register type
+		if (modbusGroupType_ ==  RegisterGroupConfig::ModbusGroupType::Input) {
+			return false;
+		}
+
+		// Check write data flag
+		if (writeDataFlag_ == true) {
+			return false;
+		}
 
 		return true;
 	}
