@@ -11,7 +11,7 @@
       <SendTimeout>1000</SendTimeout>
       <RecvTimeout>3000</RecvTimeout>
       <QueryTimeout>3000</QueryTimeout>
-      <MaxNumRegPDU>2</MaxNumRegPDU>
+      <MaxNumRegPDU>20</MaxNumRegPDU>
     
       <RegisterGroup Group="Coil" GroupName="Name1" ReadInterval="1000" WriteInterval="500">
           <Register Address="0" Name="Val0"/>
@@ -30,7 +30,7 @@
           <Register Address="0" Name="Val0" Unit="V" Type="Float" A="0" B="1"/>
           <Register Address="1" Name="Val1" Unit="A" Type="Float" A="0" B="1"/>
           <Register Address="2" Name="Val2" Unit="A" Type="UInt16" A="0" B="1"/>
-      </RegisterGroup>
+      </RegisterGroup> 
       <RegisterGroup Group="HoldingRegister" GroupName="UnitConv" ReadInterval="1000" WriteInterval="500">
           <Register Address="10" Name="Val10" Unit="V" Type="Float" A="-10" B="10"/>
           <Register Address="11" Name="Val11" Unit="A" Type="Float" A="10" B="100"/>
