@@ -264,10 +264,10 @@ namespace OpcUaModbusGateway
 	OpcUaModbusClientGroup::readHoldingRegisters(void)
 	{
 		for (auto job : readRegisterJobs_) {
-			modbusTCPClient_->readCoils(
+			modbusTCPClient_->readHoldingRegisters(
 				job->startingAddress_,
 				job->modbusValueVec_.size(),
-				[this, job](uint32_t errorCode, std::vector<bool>& coilStatus) {
+				[this, job](uint32_t errorCode, std::vector<uint16_t>& coilStatus) {
 					if (errorCode != 0) {
 						for (auto modbusValue : job->modbusValueVec_) {
 							modbusValue->setDataValue(BadCommunicationError, false);
@@ -300,6 +300,9 @@ namespace OpcUaModbusGateway
 				break;
 			case RegisterGroupConfig::ModbusGroupType::Input:
 				readInputs();
+				break;
+			case RegisterGroupConfig::ModbusGroupType::HoldingRegister:
+				readHoldingRegisters();
 				break;
 		}
 	}
