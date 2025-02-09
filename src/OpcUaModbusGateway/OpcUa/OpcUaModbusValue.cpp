@@ -16,8 +16,10 @@
  */
 
 #include "OpcUaStackCore/BuildInTypes/OpcUaIdentifier.h"
+#include "OpcUaStackServer/ServiceSetApplication/ForwardNodeSync.h"
 #include "OpcUaStackServer/ServiceSetApplication/CreateVariableInstance.h"
 #include "OpcUaStackServer/ServiceSetApplication/DeleteNodeInstance.h"
+#include "OpcUaStackServer/ServiceSetApplication/RegisterForwardNode.h"
 
 #include "OpcUaModbusGateway/Util/TypeConverter.h"
 #include "OpcUaModbusGateway/OpcUa/OpcUaModbusValue.h"
@@ -199,7 +201,7 @@ namespace OpcUaModbusGateway
 				rc = modbusServerModel_->registerCoils(
 					registerConfig_->address(),
 					[this](bool value) {
-						return setDataValue(value);
+						return setDataValue(Success, value);
 					},
 					[this](bool& value) {
 						return getDataValue(value);
@@ -234,7 +236,7 @@ namespace OpcUaModbusGateway
 				rc = modbusServerModel_->registerHoldingRegisters(
 					registerConfig_->address(),
 					[this](uint16_t value) {
-						return setDataValue(value);
+						return setDataValue(Success, value);
 					},
 					[this](uint16_t& value) {
 						return getDataValue(value);
@@ -351,7 +353,7 @@ namespace OpcUaModbusGateway
 	}
 
 	bool
-	OpcUaModbusValue::setDataValue(uint16_t value)
+	OpcUaModbusValue::setDataValue(OpcUaStackCore::OpcUaStatusCode statusCode, uint16_t value)
 	{
 		// Server: WriteSingleHoldingRegister
 		// Server: WriteMultipleHoldingRegisters
@@ -371,7 +373,7 @@ namespace OpcUaModbusGateway
 		OpcUaDataValue dataValue;
 		dataValue.serverTimestamp(now);
 		dataValue.sourceTimestamp(now);
-		dataValue.statusCode(Success);
+		dataValue.statusCode(statusCode);
 		dataValue.variant()->copyFrom(targetVariant);
 		modbusValue_->set_Variable(dataValue);
 		return true;
@@ -408,24 +410,43 @@ namespace OpcUaModbusGateway
 	OpcUaModbusValue::useWriteDataValue(void)
 	{
 		// Client: register write callback method
-		// FIXME: TODO
+		RegisterForwardNode registerForwardNode(modbusValue_->variable()->nodeId());
+		registerForwardNode.setWriteCallback(boost::bind(&OpcUaModbusValue::writeValue, this, boost::placeholders::_1));
+		if (!registerForwardNode.query(applicationServiceIf_, true)) {
+			Log(Error, "register forward node error")
+				.parameter("NodeId", modbusValue_->variable()->nodeId());
+			return false;
+		}
+
 		return true;
 	}
 
-	void
+	bool
 	OpcUaModbusValue::getWriteDataValue(uint16_t& value)
 	{
 		// Client: WriteSingleHoldingRegister
 		// Client: WriteMultipleHoldingRegisters
 		// FIXME: TODO
+
+		return true;
 	}
 
-	void
+	bool
 	OpcUaModbusValue::getWriteDataValue(bool& value)
 	{
 		// Client: WriteSingleCoil
 		// Client: WriteMultipleCoils
 		// FIXME: TODO
+
+		return true;
+	}
+
+	void
+	OpcUaModbusValue::writeValue(ApplicationWriteContext* applicationWriteContext)
+	{
+		std::cout << "JETZT WURDE DIE VARIABLE GESETZT ..........." << std::endl;
+		// applicationWriteContext->statusCode_ = Success;
+		// applicationWriteContext->dataValue_.copyTo(*it->second);
 	}
 
 	bool

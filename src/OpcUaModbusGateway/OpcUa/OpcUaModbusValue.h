@@ -18,6 +18,7 @@
 #ifndef __OpcUaModbusGateway_OpcUaModbusValue_h__
 #define __OpcUaModbusGateway_OpcUaModbusValue_h__
 
+#include "OpcUaStackCore/Application/ApplicationWriteContext.h"
 #include "OpcUaStackServer/Application/ApplicationServiceIf.h"
 
 #include "OpcUaModbusGateway/Util/ModbusGatewayConfig.h"
@@ -51,15 +52,19 @@ namespace OpcUaModbusGateway
 
 		bool getDataValue(uint16_t& value); 		// Server
 		bool getDataValue(bool& value);				// Server
-		bool setDataValue(uint16_t value); 			// Client and Server
+		bool setDataValue( // Client and Server
+			OpcUaStackCore::OpcUaStatusCode statusCode,
+			uint16_t value
+		);
 		bool setDataValue( // Client and Server
 			OpcUaStackCore::OpcUaStatusCode statusCode,
 			bool value
 		);
 
 		bool useWriteDataValue(void);				// Client
-		void getWriteDataValue(uint16_t& value); 	// Client
-		void getWriteDataValue(bool& value);		// Client
+		bool getWriteDataValue(uint16_t& value); 	// Client
+		bool getWriteDataValue(bool& value);		// Client
+		void writeValue(OpcUaStackCore::ApplicationWriteContext* applicationWriteContext);
 
 	  private:
 		static uint32_t id_;

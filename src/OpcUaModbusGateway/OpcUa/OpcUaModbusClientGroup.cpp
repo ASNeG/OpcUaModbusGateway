@@ -105,6 +105,16 @@ namespace OpcUaModbusGateway
 			   	return true;
 			}
 
+
+			// Register write callbacks
+			rc = value->useWriteDataValue();
+			if (!rc) {
+			   	Log(Error, "register write callback error")
+			   		.parameter("Name", registerConfig->name());
+			   	return true;
+			}
+
+
 			modbusValueVec_.push_back(value);
 		}
 
@@ -242,7 +252,7 @@ namespace OpcUaModbusGateway
 			modbusTCPClient_->readDiscreteInputs(
 				job->startingAddress_,
 				job->modbusValueVec_.size(),
-				[this, job](uint32_t errorCode, std::vector<bool>& coilStatus) {
+				[this, job](uint32_t errorCode, std::vector<bool>& inputStatus) {
 					if (errorCode != 0) {
 						for (auto modbusValue : job->modbusValueVec_) {
 							modbusValue->setDataValue(BadCommunicationError, false);
@@ -251,7 +261,7 @@ namespace OpcUaModbusGateway
 					else {
 						uint16_t idx = 0;
 						for (auto modbusValue : job->modbusValueVec_) {
-							modbusValue->setDataValue(Success, coilStatus[idx]);
+							modbusValue->setDataValue(Success, inputStatus[idx]);
 							idx++;
 						}
 					}
@@ -267,7 +277,7 @@ namespace OpcUaModbusGateway
 			modbusTCPClient_->readHoldingRegisters(
 				job->startingAddress_,
 				job->modbusValueVec_.size(),
-				[this, job](uint32_t errorCode, std::vector<uint16_t>& coilStatus) {
+				[this, job](uint32_t errorCode, std::vector<uint16_t>& holdingRegisters) {
 					if (errorCode != 0) {
 						for (auto modbusValue : job->modbusValueVec_) {
 							modbusValue->setDataValue(BadCommunicationError, false);
@@ -276,7 +286,7 @@ namespace OpcUaModbusGateway
 					else {
 						uint16_t idx = 0;
 						for (auto modbusValue : job->modbusValueVec_) {
-							modbusValue->setDataValue(Success, coilStatus[idx]);
+							modbusValue->setDataValue(Success, holdingRegisters[idx]);
 							idx++;
 						}
 					}
@@ -292,7 +302,7 @@ namespace OpcUaModbusGateway
 			modbusTCPClient_->readInputRegisters(
 				job->startingAddress_,
 				job->modbusValueVec_.size(),
-				[this, job](uint32_t errorCode, std::vector<uint16_t>& coilStatus) {
+				[this, job](uint32_t errorCode, std::vector<uint16_t>& inputRegisters) {
 					if (errorCode != 0) {
 						for (auto modbusValue : job->modbusValueVec_) {
 							modbusValue->setDataValue(BadCommunicationError, false);
@@ -301,7 +311,7 @@ namespace OpcUaModbusGateway
 					else {
 						uint16_t idx = 0;
 						for (auto modbusValue : job->modbusValueVec_) {
-							modbusValue->setDataValue(Success, coilStatus[idx]);
+							modbusValue->setDataValue(Success, inputRegisters[idx]);
 							idx++;
 						}
 					}
