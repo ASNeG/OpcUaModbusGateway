@@ -437,6 +437,16 @@ namespace OpcUaModbusGateway
 			return false;
 		}
 
+		// Convert and get target value
+		uint16_t targetValue;
+		bool rc = convertOpcUaToModbus(*writeDataValue_.variant(), targetValue);
+		if (!rc) {
+			return false;
+		}
+
+		// Get value
+		value = targetValue;
+		writeDataFlag_ = false;
 		return true;
 	}
 
@@ -456,6 +466,16 @@ namespace OpcUaModbusGateway
 			return false;
 		}
 
+		// Convert and get target value
+		bool targetValue;
+		bool rc = convertOpcUaToModbus(*writeDataValue_.variant(), targetValue);
+		if (!rc) {
+			return false;
+		}
+
+		// Get value
+		value = targetValue;
+		writeDataFlag_ = false;
 		return true;
 	}
 
