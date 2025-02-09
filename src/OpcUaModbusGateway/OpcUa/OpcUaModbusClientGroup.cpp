@@ -191,13 +191,14 @@ namespace OpcUaModbusGateway
 				readRegisterJobs_.push_back(registerJob);
 			}
 			else {
-				// Add modbus value to existing job
+				// Add modbus value to existing job - The registers must be connected
+				// in ascending order
 				if (registerJob->actAddress_ + 1 == modbusValue->registerConfig()->address()) {
 					registerJob->actAddress_ = modbusValue->registerConfig()->address();
 					registerJob->modbusValueVec_.push_back(modbusValue);
 				}
 
-				// Create new job
+				// Create new job - There is a gap in the list of registers.
 				else {
 					registerJob = std::make_shared<RegisterJob>();
 					registerJob->startingAddress_ = modbusValue->registerConfig()->address();
@@ -210,7 +211,7 @@ namespace OpcUaModbusGateway
 	}
 
 	void
-	OpcUaModbusClientGroup::readCoil(void)
+	OpcUaModbusClientGroup::readCoils(void)
 	{
 		for (auto job : readRegisterJobs_) {
 			modbusTCPClient_->readCoils(
@@ -235,12 +236,70 @@ namespace OpcUaModbusGateway
 	}
 
 	void
+	OpcUaModbusClientGroup::readInputs(void)
+	{
+		for (auto job : readRegisterJobs_) {
+			modbusTCPClient_->readDiscreteInputs(
+				job->startingAddress_,
+				job->modbusValueVec_.size(),
+				[this, job](uint32_t errorCode, std::vector<bool>& coilStatus) {
+					if (errorCode != 0) {
+						for (auto modbusValue : job->modbusValueVec_) {
+							modbusValue->setDataValue(BadCommunicationError, false);
+						}
+					}
+					else {
+						uint16_t idx = 0;
+						for (auto modbusValue : job->modbusValueVec_) {
+							modbusValue->setDataValue(Success, coilStatus[idx]);
+							idx++;
+						}
+					}
+				}
+			);
+		}
+	}
+
+	void
+	OpcUaModbusClientGroup::readHoldingRegisters(void)
+	{
+		for (auto job : readRegisterJobs_) {
+			modbusTCPClient_->readCoils(
+				job->startingAddress_,
+				job->modbusValueVec_.size(),
+				[this, job](uint32_t errorCode, std::vector<bool>& coilStatus) {
+					if (errorCode != 0) {
+						for (auto modbusValue : job->modbusValueVec_) {
+							modbusValue->setDataValue(BadCommunicationError, false);
+						}
+					}
+					else {
+						uint16_t idx = 0;
+						for (auto modbusValue : job->modbusValueVec_) {
+							modbusValue->setDataValue(Success, coilStatus[idx]);
+							idx++;
+						}
+					}
+				}
+			);
+		}
+	}
+
+	void
+	OpcUaModbusClientGroup::readInputRegisters(void)
+	{
+	}
+
+	void
 	OpcUaModbusClientGroup::readLoop(void)
 	{
 		// Check modbus type
 		switch(registerGroupConfig_->type()) {
 			case RegisterGroupConfig::ModbusGroupType::Coil:
-				readCoil();
+				readCoils();
+				break;
+			case RegisterGroupConfig::ModbusGroupType::Input:
+				readInputs();
 				break;
 		}
 	}

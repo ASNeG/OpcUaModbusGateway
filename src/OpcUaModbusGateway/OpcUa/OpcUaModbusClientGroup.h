@@ -81,7 +81,10 @@ namespace OpcUaModbusGateway
 		RegisterJob::Vec readRegisterJobs_;
 
 		void initReadJobs(void);
-		void readCoil(void);
+		void readCoils(void);
+		void readInputs(void);
+		void readHoldingRegisters(void);
+		void readInputRegisters(void);
 		void readLoop(void);
 		void writeLoop(void);
 	};
