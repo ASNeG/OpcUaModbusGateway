@@ -643,9 +643,6 @@ namespace OpcUaModbusGateway
 			return true;
 		}
 
-		// FIXME: Direct conversion if not calcEnable
-		// FIXME: Range checks
-
 		// Convert source value to double
 		OpcUaVariant doubleVariant;
 		bool rc = TypeConverter::conversion(sourceVariant, OpcUaBuildInType_OpcUaDouble, doubleVariant);
@@ -666,8 +663,11 @@ namespace OpcUaModbusGateway
 			doubleValue = (doubleValue - registerConfig_->a()) / registerConfig_->b();
 		}
 
-		// Convert double value to target values
+		// Check range
 		if (doubleValue < 0.0) doubleValue = 0.0;
+		if (doubleValue > 0xFFFF) doubleValue = 0xFFFF;
+
+		// Convert double value to target values
 		doubleVariant.setValue(doubleValue);
 		OpcUaVariant targetVariant;
 		rc = TypeConverter::conversion(doubleVariant, OpcUaBuildInType_OpcUaUInt16, targetVariant);
