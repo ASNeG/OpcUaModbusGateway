@@ -54,95 +54,95 @@ namespace OpcUaModbusGateway
 		void slaveId(uint8_t slaveId);
 		void stateCallback(StateCallback stateCallback);
 
-		void readCoils(
+		void readCoils( /* only use for opc ua methods */
 			uint16_t startingAddress,
 			uint16_t quantityOfInputs,
 			uint32_t& errorCode,
 			std::vector<bool>& coilStatus
 		);
-		void readCoils(
+		void readCoils( /* use for node access */
 			uint16_t startingAddress,
 			uint16_t quantityOfInputs,
 			ReadCoilsHandler readCoilsHandler
 		);
 
-		void readDiscreteInputs(
+		void readDiscreteInputs( /* only use for opc ua methods */
 			uint16_t startingAddress,
 			uint16_t quantityOfInputs,
 			uint32_t& errorCode,
 			std::vector<bool>& inputStatus
 		);
-		void readDiscreteInputs(
+		void readDiscreteInputs( /* use for node access */
 			uint16_t startingAddress,
 			uint16_t quantityOfInputs,
 			ReadDiscreteInputsHandler readDiscreteInputsHandler
 		);
 
-		void readInputRegisters(
+		void readInputRegisters( /* only use for opc ua methods */
 			uint16_t startingAddress,
 			uint16_t quantityOfInputs,
 			uint32_t& errorCode,
 			std::vector<uint16_t>& inputRegisters
 		);
-		void readInputRegisters(
+		void readInputRegisters( /* use for node access */
 			uint16_t startingAddress,
 			uint16_t quantityOfInputs,
 			ReadInputRegistersHandler readInputRegistersHandler
 		);
 
-		void readHoldingRegisters(
+		void readHoldingRegisters( /* only use for opc ua methods */
 			uint16_t startingAddress,
 			uint16_t quantityOfInputs,
 			uint32_t& errorCode,
 			std::vector<uint16_t>& holdingRegisters
 		);
-		void readHoldingRegisters(
+		void readHoldingRegisters( /* use for node access */
 			uint16_t startingAddress,
 			uint16_t quantityOfInputs,
 			ReadHoldingRegistersHandler readHoldingRegistersHandler
 		);
 
-		void writeMultipleCoils(
+		void writeMultipleCoils( /* only use for opc ua methods */
 			uint16_t startingAddress,
 			std::vector<bool>& coils,
 			uint32_t& errorCode,
 			uint16_t& count
 		);
-		void writeMultipleCoils(
+		void writeMultipleCoils( /* use for node access */
 			uint16_t startingAddress,
 			std::vector<bool>& coils,
 			WriteMultipleCoilsHandler writeMultipleCoilsHandler
 		);
 
-		void writeMultipleHoldingRegisters(
+		void writeMultipleHoldingRegisters( /* only use for opc ua methods */
 			uint16_t startingAddress,
 			std::vector<uint16_t>& holdingRegisters,
 			uint32_t& errorCode,
 			uint16_t& count
 		);
-		void writeMultipleHoldingRegisters(
+		void writeMultipleHoldingRegisters( /* use for node access */
 			uint16_t startingAddress,
 			std::vector<uint16_t>& holdingRegisters,
 			WriteMultipleHoldingRegistersHandler writeMultipleHoldingRegistersHandler
 		);
 
-		void writeSingleCoil(
+		void writeSingleCoil( /* only use for opc ua methods */
 			uint16_t startingAddress,
 			bool value,
 			uint32_t& errorCode
 		);
-		void writeSingleCoil(
+		void writeSingleCoil( /* use for node access */
 			uint16_t startingAddress,
 			bool value,
 			WriteSingleCoilHandler writeSingleCoilHandler
 		);
 
-		void writeSingleHoldingRegister(
+		void writeSingleHoldingRegister( /* only use for opc ua methods */
 			uint16_t startingAddress,
 			uint16_t holdingRegister,
 			uint32_t& errorCode
 		);
-		void writeSingleHoldingRegister(
+		void writeSingleHoldingRegister( /* use for node access */
 			uint16_t startingAddress,
 			uint16_t holdingRegister,
 			WriteSingleHoldingRegisterHandler writeSingleHoldingRegisterHandler
