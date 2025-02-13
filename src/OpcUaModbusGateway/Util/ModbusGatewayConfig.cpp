@@ -359,12 +359,17 @@ namespace OpcUaModbusGateway
 			writeInterval_ = 0;
 		}
 		else {
-			rc = config.getConfigParameter("<xmlattr>.WriteInterval", writeInterval_);
-			if (rc == false) {
-				Log(Error, "attribute not found in register group configuration")
-					.parameter("Attribute", "WriteInterval")
-					.parameter("GroupName", groupName_);
-				return false;
+			if (modbusAccess == RegisterConfig::ModbusAccess::Read) {
+				writeInterval_ = 0;
+			}
+			else {
+				rc = config.getConfigParameter("<xmlattr>.WriteInterval", writeInterval_);
+				if (rc == false) {
+					Log(Error, "attribute not found in register group configuration")
+						.parameter("Attribute", "WriteInterval")
+						.parameter("GroupName", groupName_);
+					return false;
+				}
 			}
 		}
 

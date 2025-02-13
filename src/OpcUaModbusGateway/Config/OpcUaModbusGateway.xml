@@ -60,7 +60,7 @@
       <QueryTimeout>3000</QueryTimeout>
       <MaxNumRegPDU>20</MaxNumRegPDU>
       
-      <RegisterGroup Group="InputRegister" GroupName="SDM2030" ReadInterval="1000" WriteInterval="500">
+      <RegisterGroup Group="InputRegister" GroupName="SDM2030" ReadInterval="1000">
           <Register Address="0" Name="LineToNeutralVolts" Unit="V" Type="UInt16"/>
           <Register Address="6" Name="Current" Unit="A" Type="UInt16"/>
           <Register Address="12" Name="ActivePower" Unit="W" Type="UInt16"/>
