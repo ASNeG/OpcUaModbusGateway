@@ -47,11 +47,27 @@
 
   </ModbusTCPClient>
 
-<!-- Next modbus client
-  <ModbusTCPClient Name="ModbusClient1">
-    ...
+  
+  <ModbusTCPClient Name="PythonModbusServer">
+      <IPAddress>127.0.0.1</IPAddress>
+      <Port>5502</Port>
+      <SlaveId>0</SlaveId>
+    
+      <ConnectTimeout>1000</ConnectTimeout>
+      <ReconnectTimeout>5000</ReconnectTimeout>
+      <SendTimeout>1000</SendTimeout>
+      <RecvTimeout>3000</RecvTimeout>
+      <QueryTimeout>3000</QueryTimeout>
+      <MaxNumRegPDU>20</MaxNumRegPDU>
+      
+      <RegisterGroup Group="InputRegister" GroupName="SDM2030" ReadInterval="1000" WriteInterval="500">
+          <Register Address="0" Name="LineToNeutralVolts" Unit="V" Type="UInt16"/>
+          <Register Address="6" Name="Current" Unit="A" Type="UInt16"/>
+          <Register Address="12" Name="ActivePower" Unit="W" Type="UInt16"/>
+      </RegisterGroup>
+      
   </ModbusTCPClient>
--->
+
 
   <ModbusTCPServer Name="ExampleModbusServer">
       <IPAddress>127.0.0.1</IPAddress>
