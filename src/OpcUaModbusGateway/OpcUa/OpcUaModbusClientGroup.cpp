@@ -221,8 +221,10 @@ namespace OpcUaModbusGateway
 	void
 	OpcUaModbusClientGroup::readCoils(void)
 	{
+		// Don't block this function
+
 		for (auto job : readRegisterJobs_) {
-			modbusTCPClient_->readCoils(
+			modbusTCPClient_->readCoils( // asynchronous call
 				job->startingAddress_,
 				job->modbusValueVec_.size(),
 				[this, job](uint32_t errorCode, std::vector<bool>& coilStatus) {
@@ -246,8 +248,10 @@ namespace OpcUaModbusGateway
 	void
 	OpcUaModbusClientGroup::readInputs(void)
 	{
+		// Don't block this function
+
 		for (auto job : readRegisterJobs_) {
-			modbusTCPClient_->readDiscreteInputs(
+			modbusTCPClient_->readDiscreteInputs( // asynchronous call
 				job->startingAddress_,
 				job->modbusValueVec_.size(),
 				[this, job](uint32_t errorCode, std::vector<bool>& inputStatus) {
@@ -271,8 +275,10 @@ namespace OpcUaModbusGateway
 	void
 	OpcUaModbusClientGroup::readHoldingRegisters(void)
 	{
+		// Don't block this function
+
 		for (auto job : readRegisterJobs_) {
-			modbusTCPClient_->readHoldingRegisters(
+			modbusTCPClient_->readHoldingRegisters( // asynchronous call
 				job->startingAddress_,
 				job->modbusValueVec_.size(),
 				[this, job](uint32_t errorCode, std::vector<uint16_t>& holdingRegisters) {
@@ -296,8 +302,10 @@ namespace OpcUaModbusGateway
 	void
 	OpcUaModbusClientGroup::readInputRegisters(void)
 	{
+		// Don't block this function
+
 		for (auto job : readRegisterJobs_) {
-			modbusTCPClient_->readInputRegisters(
+			modbusTCPClient_->readInputRegisters( // asynchronous call
 				job->startingAddress_,
 				job->modbusValueVec_.size(),
 				[this, job](uint32_t errorCode, std::vector<uint16_t>& inputRegisters) {
@@ -341,6 +349,8 @@ namespace OpcUaModbusGateway
 	void
 	OpcUaModbusClientGroup::writeCoils(void)
 	{
+		// Don't block this function
+
 		bool rc;
 		bool value;
 		for (auto modbusValue : modbusValueVec_) {
@@ -352,7 +362,7 @@ namespace OpcUaModbusGateway
 
 			// Send write coil to modbus slave
 			uint16_t address = modbusValue->registerConfig()->address();
-			modbusTCPClient_->writeSingleCoil(
+			modbusTCPClient_->writeSingleCoil( // asynchronous call
 				address,
 				value,
 				[this, address](uint32_t errorCode) {
@@ -370,6 +380,8 @@ namespace OpcUaModbusGateway
 	void
 	OpcUaModbusClientGroup::writeHoldingRegisters(void)
 	{
+		// Don't block this function
+
 		bool rc;
 		uint16_t value;
 		for (auto modbusValue : modbusValueVec_) {
@@ -381,7 +393,7 @@ namespace OpcUaModbusGateway
 
 			// Send write holding registers to modbus slave
 			uint16_t address = modbusValue->registerConfig()->address();
-			modbusTCPClient_->writeSingleHoldingRegister(
+			modbusTCPClient_->writeSingleHoldingRegister( // asynchronous call
 				address,
 				value,
 				[this, address](uint32_t errorCode) {

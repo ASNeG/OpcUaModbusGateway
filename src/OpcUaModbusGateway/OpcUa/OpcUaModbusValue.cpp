@@ -484,6 +484,8 @@ namespace OpcUaModbusGateway
 	void
 	OpcUaModbusValue::writeValue(ApplicationWriteContext* applicationWriteContext)
 	{
+		// Don't block this function
+
 		// Check register type
 		if (modbusGroupType_ ==  RegisterGroupConfig::ModbusGroupType::Input ||
 			modbusGroupType_ ==  RegisterGroupConfig::ModbusGroupType::InputRegister
